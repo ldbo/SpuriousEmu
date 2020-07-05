@@ -78,7 +78,7 @@ class Instruction:
         return f"Instruction({self.instruction})"
 
 
-class InstructionsExtractor:
+class Preprocessor:
     """
     Used to extract single instructions from the content of a source file.
     """
