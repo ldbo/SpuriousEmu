@@ -168,6 +168,7 @@ class Literal(Expression):
     # add a type member
     def __init__(self, value, **kwargs):
         super(Literal, self).__init__(**kwargs)
+        self.value = value
 
 ###########
 #  Blocs  #
