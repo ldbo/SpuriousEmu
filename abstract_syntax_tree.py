@@ -1,0 +1,175 @@
+"""Definition of the nodes of an abstract syntax tree."""
+
+from abc import ABC, abstractmethod
+from typing import List
+
+
+##################
+#  Base classes  #
+##################
+
+class AST(ABC):
+    """Base class of all the nodes of the tree."""
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+
+class Statement(AST):
+    """
+    Generic statement, usually corresponding to a simple instruction, or the
+    declaration of e.g. a function.
+    """
+
+    @abstractmethod
+    def __init__(self, file: str = "", line_number: int = 0):
+        """ Initialize a statement, saving its context. Must be called by
+        child classes.
+
+        :arg file: Name of the source file
+        :arg line_number: Line number of the statement
+        """
+        self.file = file
+        self.line_number = line_number
+
+
+class Sequence(AST):
+    """
+    Sequence of statements, often the base node of an AST describing a file.
+    """
+
+    def __init__(self, statements: List[Statement]):
+        self.statements = statements
+
+
+############################
+#  Declarative statements  #
+############################
+
+
+class VarDec(Statement):
+    """
+    Single variable declaration, corresponding to a Dim or Const statement
+    with a one-member variable list.
+    """
+
+    def __init__(self, identifier, type, value, **kwargs):
+        super(VarDec, self).__init__(**kwargs)
+        self.identifier = identifier
+        self.type = identifier
+        self.value = value
+
+
+class MultipleVarDec(Statement):
+    """
+    Variable declaration corresponding to a generic Dim or Const statement
+    with potentially multiple variables.
+    """
+
+    def __init__(self, declarations: List[VarDec], **kwargs):
+        super(MultipleVarDec, self).__init__(**kwargs)
+        self.declarations = declarations
+
+
+class VarAssign(Statement):
+    """Variable assignment."""
+
+    def __init__(self, variable, value: "Expression", **kwargs):
+        super(VarAssign, self).__init__(**kwargs)
+        self.variable = variable
+        self.value = value
+
+
+class FunDef(Statement):
+    """Function definition, corresponding to the Function keyword."""
+
+    def __init__(self, name, arguments, body: Sequence, **kwargs):
+        super(FunDef, self).__init__(**kwargs)
+        self.name = name
+        self.arguments = arguments
+        self.body = body
+
+
+class ProcDef(Statement):
+    """Procedure definition, corresponding to the Sub keyword."""
+
+    def __init__(self, name, arguments, body: Sequence, **kwargs):
+        super(ProcDef, self).__init__(**kwargs)
+        self.name = name
+        self.arguments = arguments
+        self.body = body
+
+###########################
+#  Executable statements  #
+###########################
+
+
+class Expression(Statement):
+    @abstractmethod
+    def __init__(self, **kwargs):
+        super(Expression, self).__init__(**kwargs)
+
+
+class FunCall(Expression):
+    def __init__(self, function, arguments, **kwargs):
+        super(FunCall, self).__init__(**kwargs)
+        self.function = function
+        self.arguments = arguments
+
+
+class UnOp(Expression):
+    def __init__(self, operator, argument, **kwargs):
+        super(UnOp, self).__init__(**kwargs)
+        self.operator = operator
+        self.argument = argument
+
+
+class BinOp(Expression):
+    def __init__(self, operator, left, right, **kwargs):
+        super(BinOpOp, self).__init__(**kwargs)
+        self.operator = operator
+        self.left = left
+        self.right = right
+
+
+class Var(Expression):
+    def __init__(self, identifier, **kwargs):
+        super(Var, self).__init__(**kwargs)
+        self.identifier = identifier
+
+
+class Literal(Expression):
+    # TODO value smells fishy, maybe add child classes for different types or
+    # add a type member
+    def __init__(self, value, **kwargs):
+        super(Literal, self).__init__(**kwargs)
+
+###########
+#  Blocs  #
+###########
+
+
+class If(Statement):
+    """If statement."""
+
+    def __init__(self,
+                 if_conditions: List[Expression], if_actions: List[Sequence],
+                 else_action: Sequence,
+                 **kwargs):
+        super(If, self).__init__(**kwargs)
+        self.if_conditions = if_conditions
+        self.if_actions = if_actions
+        self.else_action = else_action
+
+
+class For(Statement):
+    """For statement with a counter."""
+
+    def __init__(self, counter: Var, start: Expression, end: Expression,
+                 body: Sequence):
+        super(For, self).__init__()
+        self.counter = counter
+        self.start = start
+        self.end = end
+        self.body = body
