@@ -144,6 +144,11 @@ class Preprocessor:
 
         self.__line_number += 1
 
+    def extract_instructions_from_file(self, path: str) -> List[Instruction]:
+        with open(path) as f:
+            content = f.read()
+            return self.extract_instructions(path, content)
+
     def __add_instruction(self, instruction: str, single: bool) -> None:
         self.__instructions.append(Instruction(
             instruction=instruction.strip(),
