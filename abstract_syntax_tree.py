@@ -1,6 +1,7 @@
 """Definition of the nodes of an abstract syntax tree."""
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from typing import List
 
 
@@ -14,6 +15,29 @@ class AST(ABC):
     @abstractmethod
     def __init__(self):
         pass
+
+    def to_dict(self):
+        def attribute_filter(attribute):
+            return not attribute.startswith('_') \
+                and not callable(getattr(self, attribute))
+
+        d = {'_type': type(self).__name__}
+        for attr_name in filter(attribute_filter, dir(self)):
+            attr = getattr(self, attr_name)
+
+            if isinstance(attr, AST):
+                d[attr_name] = attr.to_dict()
+            elif isinstance(attr, (list, tuple)):
+                d[attr_name] = []
+                for elt in attr:
+                    try:
+                        d[attr_name].append(elt.to_dict())
+                    except AttributeError:
+                        d[attr_name].append(elt)
+            else:
+                d[attr_name] = attr
+
+        return d
 
 
 class Statement(AST):
