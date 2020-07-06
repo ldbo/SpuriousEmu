@@ -37,7 +37,7 @@ class AST(ABC):
                     except AttributeError:
                         d[attr_name].append(elt)
             else:
-                d[attr_name] = attr
+                d[attr_name] = str(attr)
 
         return d
 
