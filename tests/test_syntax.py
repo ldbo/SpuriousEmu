@@ -1,5 +1,7 @@
 from emu import syntax
 
+from nose.tools import assert_equals
+
 import json
 
 
@@ -7,12 +9,13 @@ def assert_expected_result(test_name, result):
     with open(test_name + ".json") as f:
         expected = json.load(f)
 
-    assert(expected == result)
+    assert_equals(expected, result)
 
 
-def assert_correct_parsing(test_name):
-    ast = syntax.parse_file(test + '.vbs')
-    assert_expected_result(test, ast.to_dict())
+def assert_correct_parsing(test):
+    path = "tests/" + test
+    ast = syntax.parse_file(path + '.vbs')
+    assert_expected_result(path, ast.to_dict())
 
 
 def test_expressions():
