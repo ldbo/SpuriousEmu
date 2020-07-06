@@ -1,4 +1,4 @@
-' Allow to test parsing of expressions and function calls
+' Expressions tests
 v1 - v2 * (v3 - v4) + v5
 v1 / v2 * v3 / v4 * v5
 f(a)
