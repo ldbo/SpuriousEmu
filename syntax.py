@@ -60,14 +60,40 @@ binary_operators = [
     ("&", 2, opAssoc.LEFT, __build_binary_operator)
 ]
 
-terminal = (literal | identifier)
+# Function call
+
+
+def __build_arguments_list(expr, pos, result):
+    import pdb
+    pdb.set_trace()
+
+
+arguments_list_paren = (lparen + Optional(delimitedList(expression)) + rparen) \
+    .setName("arguments_list").setParseAction(lambda r: ArgList(list(r)))
+function_call_paren = (identifier + arguments_list_paren) \
+    .setParseAction(lambda r: FunCall(r[0], r[1]))
+
+arguments_list_no_paren = Optional(delimitedList(expression)) \
+    .setName("arguments_list_non_empty") \
+    .setParseAction(lambda r: ArgList(list(r)))
+function_call_no_paren = (StringStart() + identifier
+                          + arguments_list_no_paren + StringEnd()
+                          ).setParseAction(lambda r: FunCall(r[0], r[1]))
+function_call_no_paren.setDebug()
+
+terminal = (function_call_paren | literal | identifier)
 expression << infixNotation(
     terminal, binary_operators, lpar=Suppress('('), rpar=Suppress(')'))
 
 
-###########
-#  Parser #
-###########
+statement << function_call_no_paren | expression
+
+############
+#  Parser  #
+############
+
+# Packrat parsing cache parsing results, improving speed
+ParserElement.enablePackrat(cache_size_limit=128)
 
 
 class SyntaxError(Exception):
@@ -99,7 +125,7 @@ class Parser:
 
     def __parse_instruction(self, instruction: Instruction) -> Statement:
         try:
-            parse_results = expression.parseString(
+            parse_results = statement.parseString(
                 instruction.instruction, parseAll=True)
         except ParseException as e:
             raise SyntaxError(instruction.file_name, instruction.line_number,
