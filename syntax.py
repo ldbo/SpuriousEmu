@@ -130,6 +130,22 @@ class Parser:
         return parse_results[0]
 
 
+def parse_file(path: str) -> AST:
+    """
+    Parse a file into an abstract syntax tree.
+
+    :arg path: Path of the file
+    :return: An AST representing the syntax of the file
+    """
+    preprocessor = Preprocessor()
+    parser = Parser()
+
+    instructions = preprocessor.extract_instructions_from_file(path)
+    tree = parser.build_ast(instructions)
+
+    return tree
+
+
 if __name__ == "__main__":
     from json import load
     from pprint import pprint
