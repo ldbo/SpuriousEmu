@@ -5,8 +5,8 @@ from type import Type
 from abstract_syntax_tree import *
 from preprocessor import Instruction, Preprocessor
 
-from pyparsing import (Forward, Optional, ParseException, ParserElement, Regex,
-                       Suppress, StringEnd, StringStart, Word,
+from pyparsing import (Forward, Optional, Or, ParseException, ParserElement,
+                       Regex, Suppress, StringEnd, StringStart, Word,
                        delimitedList, infixNotation, nums, oneOf, opAssoc)
 
 from typing import List
@@ -61,32 +61,21 @@ binary_operators = [
 ]
 
 # Function call
-
-
-def __build_arguments_list(expr, pos, result):
-    import pdb
-    pdb.set_trace()
-
-
-arguments_list_paren = (lparen + Optional(delimitedList(expression)) + rparen) \
-    .setName("arguments_list").setParseAction(lambda r: ArgList(list(r)))
-function_call_paren = (identifier + arguments_list_paren) \
-    .setParseAction(lambda r: FunCall(r[0], r[1]))
-
-arguments_list_no_paren = Optional(delimitedList(expression)) \
-    .setName("arguments_list_non_empty") \
+arguments_list = Optional(delimitedList(expression)).setName("arguments_list") \
     .setParseAction(lambda r: ArgList(list(r)))
-function_call_no_paren = (StringStart() + identifier
-                          + arguments_list_no_paren + StringEnd()
-                          ).setParseAction(lambda r: FunCall(r[0], r[1]))
-function_call_no_paren.setDebug()
+function_call_paren = (identifier + lparen + arguments_list + rparen) \
+    .setName("function_call_paren") \
+    .setParseAction(lambda r: FunCall(r[0], r[1]))
+function_call_no_paren = (StringStart() + identifier + arguments_list
+                          + StringEnd()) \
+    .setName("function_call_no_paren") \
+    .setParseAction(lambda r: FunCall(r[0], r[1]))
 
 terminal = (function_call_paren | literal | identifier)
 expression << infixNotation(
-    terminal, binary_operators, lpar=Suppress('('), rpar=Suppress(')'))
+    terminal, binary_operators, lpar=lparen, rpar=rparen)
 
-
-statement << function_call_no_paren | expression
+statement <<= function_call_no_paren ^ expression
 
 ############
 #  Parser  #
