@@ -5,7 +5,8 @@ from type import Type
 from abstract_syntax_tree import *
 from preprocessor import Instruction, Preprocessor
 
-from pyparsing import (Forward, Optional, ParseException, Regex, Suppress, Word,
+from pyparsing import (Forward, Optional, ParseException, ParserElement, Regex,
+                       Suppress, StringEnd, StringStart, Word,
                        delimitedList, infixNotation, nums, oneOf, opAssoc)
 
 from typing import List
@@ -18,16 +19,22 @@ expression = Forward().setName("expression")
 statement = Forward().setName("statement")
 terminal = Forward().setName("terminal")
 
+# Punctuation
+lparen = Suppress("(")
+rparen = Suppress(")")
+
 # Literal
-integer = Word(nums).setParseAction(lambda r: Literal(Type.Integer, r[0]))
-boolean = oneOf("True False").setParseAction(
-    lambda r: Literal(Type.Boolean, r[0]))
-literal = (integer | boolean)
+integer = Word(nums).setName("integer") \
+    .setParseAction(lambda r: Literal(Type.Integer, r[0]))
+boolean = oneOf("True False").setName("boolean") \
+    .setParseAction(lambda r: Literal(Type.Boolean, r[0]))
+literal = (integer | boolean).setName("literal")
 
 # Identifier
 element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
-identifier = Regex(identifier_regex).setParseAction(lambda r: Identifier(r[0]))
+identifier = Regex(identifier_regex).setName("identifier") \
+    .setParseAction(lambda r: Identifier(r[0]))
 
 # Operator
 
