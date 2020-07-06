@@ -1,9 +1,8 @@
-SpuriousEmu
-====
+# SpuriousEmu
 
 Visual Basic for Applications tools allowing to parse VBA files, interpret them and extract behaviour information for malware analysis purpose.
 
-# Requirements
+## Requirements
 
 Python 3.8 is used, and the main dependency is `pyparsing`, which allows to parse the VBA grammar. Additionally, `nose` is needed to run the tests. You can create a conda development environment using `requirements.txt`:
 
@@ -11,7 +10,7 @@ Python 3.8 is used, and the main dependency is `pyparsing`, which allows to pars
 conda create --name SpuriousEmu --file requirements.txt
 ```
 
-# Tests
+## Tests
 
 All test files are in `tests`, including:
     - Python test scripts, starting with `test_`
