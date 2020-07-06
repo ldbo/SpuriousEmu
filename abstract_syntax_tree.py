@@ -137,8 +137,29 @@ class Expression(Statement):
         super(Expression, self).__init__(**kwargs)
 
 
+class Identifier(Expression):
+    def __init__(self, name, **kwargs):
+        super(Identifier, self).__init__(**kwargs)
+        self.name = name
+
+
+class Literal(Expression):
+    # TODO value smells fishy, maybe add child classes for different types or
+    # add a type member
+    def __init__(self, type: Type, value, **kwargs):
+        super(Literal, self).__init__(**kwargs)
+        self.value = value
+        self.type = type
+
+
+class ArgList(Statement):
+    def __init__(self, args, **kwargs):
+        super(ArgList, self).__init__(**kwargs)
+        self.args = args
+
+
 class FunCall(Expression):
-    def __init__(self, function, arguments, **kwargs):
+    def __init__(self, function: Identifier, arguments: ArgList, **kwargs):
         super(FunCall, self).__init__(**kwargs)
         self.function = function
         self.arguments = arguments
@@ -157,21 +178,6 @@ class BinOp(Expression):
         self.operator = operator
         self.left = left
         self.right = right
-
-
-class Identifier(Expression):
-    def __init__(self, name, **kwargs):
-        super(Identifier, self).__init__(**kwargs)
-        self.name = name
-
-
-class Literal(Expression):
-    # TODO value smells fishy, maybe add child classes for different types or
-    # add a type member
-    def __init__(self, type: Type, value, **kwargs):
-        super(Literal, self).__init__(**kwargs)
-        self.value = value
-        self.type = type
 
 ###########
 #  Blocs  #
