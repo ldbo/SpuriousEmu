@@ -1,5 +1,7 @@
 """Definition of the nodes of an abstract syntax tree."""
 
+from type import Type
+
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import List
@@ -151,24 +153,25 @@ class UnOp(Expression):
 
 class BinOp(Expression):
     def __init__(self, operator, left, right, **kwargs):
-        super(BinOpOp, self).__init__(**kwargs)
+        super(BinOp, self).__init__(**kwargs)
         self.operator = operator
         self.left = left
         self.right = right
 
 
-class Var(Expression):
-    def __init__(self, identifier, **kwargs):
-        super(Var, self).__init__(**kwargs)
-        self.identifier = identifier
+class Identifier(Expression):
+    def __init__(self, name, **kwargs):
+        super(Identifier, self).__init__(**kwargs)
+        self.name = name
 
 
 class Literal(Expression):
     # TODO value smells fishy, maybe add child classes for different types or
     # add a type member
-    def __init__(self, value, **kwargs):
+    def __init__(self, type: Type, value, **kwargs):
         super(Literal, self).__init__(**kwargs)
         self.value = value
+        self.type = type
 
 ###########
 #  Blocs  #
@@ -191,7 +194,7 @@ class If(Statement):
 class For(Statement):
     """For statement with a counter."""
 
-    def __init__(self, counter: Var, start: Expression, end: Expression,
+    def __init__(self, counter: Identifier, start: Expression, end: Expression,
                  body: Sequence):
         super(For, self).__init__()
         self.counter = counter
