@@ -1,6 +1,6 @@
 """Definition of the nodes of an abstract syntax tree."""
 
-from type import Type
+from .type import Type
 
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
