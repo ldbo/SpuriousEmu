@@ -1,6 +1,6 @@
 """Define the grammar of a VBA source file and implement a syntactic parser."""
 
-from type import Type
+from type import Type, types
 
 from abstract_syntax_tree import *
 from preprocessor import Instruction, Preprocessor
@@ -35,6 +35,13 @@ element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
 identifier = Regex(identifier_regex).setName("identifier") \
     .setParseAction(lambda r: Identifier(r[0]))
+
+# Types
+variable_type = oneOf(types)
+
+#################
+#  Expressions  #
+#################
 
 # Operator
 
