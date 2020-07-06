@@ -153,7 +153,7 @@ class Literal(Expression):
 
 
 class ArgList(Statement):
-    def __init__(self, args, **kwargs):
+    def __init__(self, args: List["Expression"], **kwargs):
         super(ArgList, self).__init__(**kwargs)
         self.args = args
 
