@@ -124,9 +124,12 @@ class Parser:
 
 
 if __name__ == "__main__":
+    from json import load
     from pprint import pprint
 
     file = "tests/basic_01.vbs"
+    with open('tests/basic_01.json') as f:
+        expected_result = load(f)
 
     preprocessor = Preprocessor()
     parser = Parser()
@@ -134,4 +137,5 @@ if __name__ == "__main__":
     instructions = preprocessor.extract_instructions_from_file(file)
     tree = parser.build_ast(instructions)
 
-    pprint(tree.to_dict())
+    assert(expected_result == tree.to_dict())
+    print(f'Test: {file} OK')

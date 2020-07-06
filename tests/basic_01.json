@@ -1,0 +1,350 @@
+{
+  "_type": "Sequence",
+  "statements": [
+    {
+      "_type": "BinOp",
+      "file": "",
+      "left": {
+        "_type": "BinOp",
+        "file": "",
+        "left": {
+          "_type": "Identifier",
+          "file": "",
+          "line_number": "0",
+          "name": "v1"
+        },
+        "line_number": "0",
+        "operator": "-",
+        "right": {
+          "_type": "BinOp",
+          "file": "",
+          "left": {
+            "_type": "Identifier",
+            "file": "",
+            "line_number": "0",
+            "name": "v2"
+          },
+          "line_number": "0",
+          "operator": "*",
+          "right": {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "v3"
+            },
+            "line_number": "0",
+            "operator": "-",
+            "right": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "v4"
+            }
+          }
+        }
+      },
+      "line_number": "0",
+      "operator": "+",
+      "right": {
+        "_type": "Identifier",
+        "file": "",
+        "line_number": "0",
+        "name": "v5"
+      }
+    },
+    {
+      "_type": "BinOp",
+      "file": "",
+      "left": {
+        "_type": "BinOp",
+        "file": "",
+        "left": {
+          "_type": "BinOp",
+          "file": "",
+          "left": {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "v1"
+            },
+            "line_number": "0",
+            "operator": "/",
+            "right": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "v2"
+            }
+          },
+          "line_number": "0",
+          "operator": "*",
+          "right": {
+            "_type": "Identifier",
+            "file": "",
+            "line_number": "0",
+            "name": "v3"
+          }
+        },
+        "line_number": "0",
+        "operator": "/",
+        "right": {
+          "_type": "Identifier",
+          "file": "",
+          "line_number": "0",
+          "name": "v4"
+        }
+      },
+      "line_number": "0",
+      "operator": "*",
+      "right": {
+        "_type": "Identifier",
+        "file": "",
+        "line_number": "0",
+        "name": "v5"
+      }
+    },
+    {
+      "_type": "FunCall",
+      "arguments": {
+        "_type": "ArgList",
+        "args": [
+          {
+            "_type": "Identifier",
+            "file": "",
+            "line_number": "0",
+            "name": "a"
+          }
+        ],
+        "file": "",
+        "line_number": "0"
+      },
+      "file": "",
+      "function": {
+        "_type": "Identifier",
+        "file": "",
+        "line_number": "0",
+        "name": "f"
+      },
+      "line_number": "0"
+    },
+    {
+      "_type": "FunCall",
+      "arguments": {
+        "_type": "ArgList",
+        "args": [
+          {
+            "_type": "Literal",
+            "file": "",
+            "line_number": "0",
+            "type": "Type.Integer",
+            "value": "1"
+          },
+          {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "var1"
+            },
+            "line_number": "0",
+            "operator": "+",
+            "right": {
+              "_type": "Literal",
+              "file": "",
+              "line_number": "0",
+              "type": "Type.Integer",
+              "value": "2"
+            }
+          },
+          {
+            "_type": "FunCall",
+            "arguments": {
+              "_type": "ArgList",
+              "args": [
+                {
+                  "_type": "Literal",
+                  "file": "",
+                  "line_number": "0",
+                  "type": "Type.Integer",
+                  "value": "1"
+                }
+              ],
+              "file": "",
+              "line_number": "0"
+            },
+            "file": "",
+            "function": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "g"
+            },
+            "line_number": "0"
+          }
+        ],
+        "file": "",
+        "line_number": "0"
+      },
+      "file": "",
+      "function": {
+        "_type": "Identifier",
+        "file": "",
+        "line_number": "0",
+        "name": "f"
+      },
+      "line_number": "0"
+    },
+    {
+      "_type": "BinOp",
+      "file": "",
+      "left": {
+        "_type": "BinOp",
+        "file": "",
+        "left": {
+          "_type": "BinOp",
+          "file": "",
+          "left": {
+            "_type": "FunCall",
+            "arguments": {
+              "_type": "ArgList",
+              "args": [],
+              "file": "",
+              "line_number": "0"
+            },
+            "file": "",
+            "function": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "g"
+            },
+            "line_number": "0"
+          },
+          "line_number": "0",
+          "operator": "+",
+          "right": {
+            "_type": "FunCall",
+            "arguments": {
+              "_type": "ArgList",
+              "args": [],
+              "file": "",
+              "line_number": "0"
+            },
+            "file": "",
+            "function": {
+              "_type": "Identifier",
+              "file": "",
+              "line_number": "0",
+              "name": "d"
+            },
+            "line_number": "0"
+          }
+        },
+        "line_number": "0",
+        "operator": "/",
+        "right": {
+          "_type": "Identifier",
+          "file": "",
+          "line_number": "0",
+          "name": "var2"
+        }
+      },
+      "line_number": "0",
+      "operator": "+",
+      "right": {
+        "_type": "BinOp",
+        "file": "",
+        "left": {
+          "_type": "Literal",
+          "file": "",
+          "line_number": "0",
+          "type": "Type.Integer",
+          "value": "2"
+        },
+        "line_number": "0",
+        "operator": "*",
+        "right": {
+          "_type": "BinOp",
+          "file": "",
+          "left": {
+            "_type": "Identifier",
+            "file": "",
+            "line_number": "0",
+            "name": "var1"
+          },
+          "line_number": "0",
+          "operator": "+",
+          "right": {
+            "_type": "Identifier",
+            "file": "",
+            "line_number": "0",
+            "name": "var2"
+          }
+        }
+      }
+    },
+    {
+      "_type": "FunCall",
+      "arguments": {
+        "_type": "ArgList",
+        "args": [
+          {
+            "_type": "Literal",
+            "file": "",
+            "line_number": "0",
+            "type": "Type.Integer",
+            "value": "1"
+          },
+          {
+            "_type": "Literal",
+            "file": "",
+            "line_number": "0",
+            "type": "Type.Integer",
+            "value": "12"
+          },
+          {
+            "_type": "Identifier",
+            "file": "",
+            "line_number": "0",
+            "name": "abcd"
+          }
+        ],
+        "file": "",
+        "line_number": "0"
+      },
+      "file": "",
+      "function": {
+        "_type": "Identifier",
+        "file": "",
+        "line_number": "0",
+        "name": "f"
+      },
+      "line_number": "0"
+    },
+    {
+      "_type": "FunCall",
+      "arguments": {
+        "_type": "ArgList",
+        "args": [],
+        "file": "",
+        "line_number": "0"
+      },
+      "file": "",
+      "function": {
+        "_type": "Identifier",
+        "file": "",
+        "line_number": "0",
+        "name": "f"
+      },
+      "line_number": "0"
+    }
+  ]
+}
