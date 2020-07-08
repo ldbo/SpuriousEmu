@@ -1,34 +1,45 @@
-from emu import syntax
+import json
+from typing import Callable, Dict, Any
 
 from nose.tools import assert_equals
 
-import json
+from emu import syntax
+
+Result = Dict[str, Any]
+SourceFile = str
 
 
-def load_result(test):
-    result_file = f"tests/{test}.json"
-    with open(result_file) as f:
+def result_path(test: str) -> str:
+    """Path of the JSON file containing the test result"""
+    return f"tests/{test}.json"
+
+
+def load_result(test: str) -> Result:
+    """Return the dict containing the test result"""
+    with open(result_path(test)) as f:
         return json.load(f)
 
 
-def vbs_path(test):
+def export_result(test: str, function: Callable[[SourceFile], Result]) -> None:
+    """Export the result of the test to JSON"""
+    with open(result_path(test), 'r') as f:
+        json.dump(function(vbs_path(test)), f)
+
+
+def vbs_path(test: str) -> str:
+    """Return the path of the VBS source file of the test"""
     return f"tests/{test}.vbs"
 
 
-def load_vbs(test):
-    vbs = vbs_path(test)
-    with open(vbs) as f:
-        return f.read()
-
-
-def assert_correct_function(test, function):
-    result = function(test)
+def assert_correct_function(test: str, function: Callable[[SourceFile], Result]) -> None:
+    """Load the expected result from JSON and compare to the function result"""
+    result = function(vbs_path(test))
     expected_result = load_result(test)
     assert_equals(result, expected_result)
 
 
-def parsing(test):
-    ast = syntax.parse_file(vbs_path(test))
+def parsing(vbs: SourceFile) -> Result:
+    ast = syntax.parse_file(vbs)
     return ast.to_dict()
 
 
