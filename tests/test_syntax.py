@@ -5,18 +5,32 @@ from nose.tools import assert_equals
 import json
 
 
-def assert_expected_result(test_name, result):
-    with open(test_name + ".json") as f:
-        expected = json.load(f)
+def load_result(test):
+    result_file = f"tests/{test}.json"
+    with open(result_file) as f:
+        return json.load(f)
 
-    assert_equals(expected, result)
+
+def vbs_path(test):
+    return f"tests/{test}.vbs"
 
 
-def assert_correct_parsing(test):
-    path = "tests/" + test
-    ast = syntax.parse_file(path + '.vbs')
-    assert_expected_result(path, ast.to_dict())
+def load_vbs(test):
+    vbs = vbs_path(test)
+    with open(vbs) as f:
+        return f.read()
+
+
+def assert_correct_function(test, function):
+    result = function(test)
+    expected_result = load_result(test)
+    assert_equals(result, expected_result)
+
+
+def parsing(test):
+    ast = syntax.parse_file(vbs_path(test))
+    return ast.to_dict()
 
 
 def test_expressions():
-    assert_correct_parsing("basic_01")
+    assert_correct_function("basic_01", parsing)
