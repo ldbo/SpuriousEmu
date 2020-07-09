@@ -3,8 +3,13 @@
 from abc import abstractmethod
 from typing import List
 
+from .abstract_syntax_tree import For, Sequence
+
 
 class BlockElement:
+    FirstElement = False
+    LastElement = False
+
     @abstractmethod
     def __init__(self):
         pass
@@ -31,3 +36,6 @@ class PartialBlock:
         super().__init__()
         self.elements = elements if elements is not None else []
         self.statements = statements if statements is not None else []
+
+    def build_block(self):
+        pass

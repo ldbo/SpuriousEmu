@@ -180,12 +180,21 @@ class Parser:
         return parse_results[0]
 
     def __handle_statement(self, statement: Statement) -> None:
+        print(f'Add statement to {self.__nested_blocks[-1].elements}')
         current_block = self.__nested_blocks[-1]
         current_block.statements.append(statement)
 
     def __handle_block_element(self, block_element: BlockElement) -> None:
-        # TODO allow nested blocks
-        self.__nested_blocks[-1].elements.append(block_element)
+        if block_element.FirstElement:
+            new_block = PartialBlock([block_element])
+            self.__nested_blocks.append(new_block)
+        else:
+            self.__nested_blocks[-1].elements.append(block_element)
+
+        if block_element.LastElement:
+            complete_block = self.__nested_blocks.pop().build_block()
+            parent_block = self.__nested_blocks[-1]
+            parent_block.statements.append(complete_block)
 
 
 def parse_file(path: str) -> AST:
