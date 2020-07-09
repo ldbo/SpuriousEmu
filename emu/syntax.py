@@ -180,7 +180,6 @@ class Parser:
         return parse_results[0]
 
     def __handle_statement(self, statement: Statement) -> None:
-        print(f'Add statement to {self.__nested_blocks[-1].elements}')
         current_block = self.__nested_blocks[-1]
         current_block.statements.append(statement)
 

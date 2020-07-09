@@ -16,6 +16,8 @@ class BlockElement:
 
 
 class ForHeader(BlockElement):
+    FirstElement = True
+
     def __init__(self, counter, start, end, step=None):
         super().__init__()
         self.counter = counter
@@ -25,6 +27,8 @@ class ForHeader(BlockElement):
 
 
 class ForFooter(BlockElement):
+    LastElement = True
+
     def __init__(self, counter=None):
         super().__init__()
         self.counter = counter
@@ -38,4 +42,11 @@ class PartialBlock:
         self.statements = statements if statements is not None else []
 
     def build_block(self):
-        pass
+        # TODO improve format
+        if isinstance(self.elements[0], ForHeader) and len(self.elements) == 2:
+            # TODO check footer variable coherence
+            header: ForHeader = self.elements[0]
+            for_block = For(header.counter, header.start, header.end, header.step)
+            for_block.body = Sequence(self.statements)
+            return for_block
+
