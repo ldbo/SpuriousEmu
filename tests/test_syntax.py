@@ -52,3 +52,7 @@ def parsing(vbs: SourceFile) -> Result:
 
 def test_expressions():
     assert_correct_function("basic_01", parsing)
+
+
+def test_inline_declarations():
+    run_function("basic_02", parsing)
