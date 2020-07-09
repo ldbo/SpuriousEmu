@@ -23,7 +23,7 @@ def load_result(test: str) -> Result:
 
 def export_result(test: str, function: Callable[[SourceFile], Result]) -> None:
     """Export the result of the test to JSON"""
-    with open(result_path(test), 'r') as f:
+    with open(result_path(test), 'w') as f:
         json.dump(function(vbs_path(test)), f)
 
 
