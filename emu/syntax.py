@@ -102,7 +102,7 @@ statement <<= function_call_no_paren ^ expression
 ParserElement.enablePackrat(cache_size_limit=128)
 
 
-class SyntaxError(Exception):
+class ParsingError(Exception):
     """
     Error raised during parsing.
     """
@@ -134,8 +134,8 @@ class Parser:
             parse_results = statement.parseString(
                 instruction.instruction, parseAll=True)
         except ParseException as e:
-            raise SyntaxError(instruction.file_name, instruction.line_number,
-                              str(e))
+            raise ParsingError(instruction.file_name, instruction.line_number,
+                               str(e))
 
         return parse_results[0]
 

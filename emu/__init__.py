@@ -1,4 +1,4 @@
 """SpuriousEmu interface"""
 
-from .syntax import Parser, SyntaxError, parse_file
+from .syntax import Parser, ParsingError, parse_file
 from .preprocessor import Preprocessor, PreprocessorError
