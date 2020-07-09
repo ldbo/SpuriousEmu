@@ -55,4 +55,4 @@ def test_expressions():
 
 
 def test_inline_declarations():
-    run_function("basic_02", parsing)
+    assert_correct_function("basic_02", parsing)
