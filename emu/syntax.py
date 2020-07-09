@@ -91,7 +91,10 @@ variable_declaration = (Suppress('Dim') + identifier
                                    + Optional(Suppress('=') + expression))) \
     .setParseAction(lambda r: VarDec(*r))
 
-declarative_statement = variable_declaration
+variable_assignment = (Suppress('Set') + identifier + Suppress('=') + expression) \
+    .setParseAction(lambda r: VarAssign(*r))
+
+declarative_statement = variable_declaration | variable_assignment
 
 # Wrap up
 statement <<= declarative_statement | expression_statement
