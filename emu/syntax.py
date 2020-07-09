@@ -21,6 +21,12 @@ statement = Forward().setName("statement")
 lparen = Suppress("(")
 rparen = Suppress(")")
 
+# Keywords
+set_kw = Suppress('Set')
+dim_kw = Suppress('Dim')
+as_kw = Suppress('As')
+
+
 # Literal
 integer = Word(nums).setName("integer") \
     .setParseAction(lambda r: Literal(Type.Integer, r[0]))
@@ -86,12 +92,12 @@ expression_statement = function_call_no_paren ^ expression
 ##################
 
 # Variable
-variable_declaration = (Suppress('Dim') + identifier
-                        + Optional(Suppress("As") + variable_type
+variable_declaration = (dim_kw + identifier
+                        + Optional(as_kw + variable_type
                                    + Optional(Suppress('=') + expression))) \
     .setParseAction(lambda r: VarDec(*r))
 
-variable_assignment = (Suppress('Set') + identifier + Suppress('=') + expression) \
+variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
     .setParseAction(lambda r: VarAssign(*r))
 
 declarative_statement = variable_declaration | variable_assignment
