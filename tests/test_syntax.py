@@ -1,4 +1,5 @@
 import json
+from pprint import pprint
 from typing import Callable, Dict, Any
 
 from nose.tools import assert_equals
@@ -36,6 +37,12 @@ def assert_correct_function(test: str, function: Callable[[SourceFile], Result])
     result = function(vbs_path(test))
     expected_result = load_result(test)
     assert_equals(result, expected_result)
+
+
+def run_function(test : str, function: Callable[[SourceFile], Result]) -> None:
+    """Display the result of a function call. Used during development until an expected result has been produced"""
+    result = function(vbs_path(test))
+    pprint(result)
 
 
 def parsing(vbs: SourceFile) -> Result:
