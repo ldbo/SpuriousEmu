@@ -80,10 +80,10 @@ class VarDec(Statement):
     with a one-member variable list.
     """
 
-    def __init__(self, identifier, type, value, **kwargs):
+    def __init__(self, identifier, type=None, value=None, **kwargs):
         super(VarDec, self).__init__(**kwargs)
         self.identifier = identifier
-        self.type = identifier
+        self.type = value
         self.value = value
 
 

@@ -1,15 +1,14 @@
 """Define the grammar of a VBA source file and implement a syntactic parser."""
 
-from .type import Type, types
+from typing import List
 
-from .abstract_syntax_tree import *
-from .preprocessor import Instruction, Preprocessor
-
-from pyparsing import (Forward, Optional, Or, ParseException, ParserElement,
+from pyparsing import (Forward, Optional, ParseException, ParserElement,
                        Regex, Suppress, StringEnd, StringStart, Word,
                        delimitedList, infixNotation, nums, oneOf, opAssoc)
 
-from typing import List
+from .abstract_syntax_tree import *
+from .preprocessor import Instruction, Preprocessor
+from .type import types
 
 #############
 #  Grammar  #
@@ -17,7 +16,6 @@ from typing import List
 
 expression = Forward().setName("expression")
 statement = Forward().setName("statement")
-terminal = Forward().setName("terminal")
 
 # Punctuation
 lparen = Suppress("(")
@@ -81,6 +79,7 @@ function_call_no_paren = (StringStart() + identifier + arguments_list
 terminal = (function_call_paren | literal | identifier)
 expression << infixNotation(
     terminal, binary_operators, lpar=lparen, rpar=rparen)
+expression_statement = function_call_no_paren ^ expression
 
 ##################
 #  Declarations  #
@@ -92,7 +91,10 @@ variable_declaration = (Suppress('Dim') + identifier
                                    + Optional(Suppress('=') + expression))) \
     .setParseAction(lambda r: VarDec(*r))
 
-statement <<= function_call_no_paren ^ expression
+declarative_statement = variable_declaration
+
+# Wrap up
+statement <<= declarative_statement | expression_statement
 
 ############
 #  Parser  #
