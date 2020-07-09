@@ -26,8 +26,8 @@ class ForFooter(BlockElement):
 
 
 class PartialBlock:
-    def __init__(self, elements: List[BlockElement] = [],
-                 statements: List["Statement"] = []):
+    def __init__(self, elements: List[BlockElement] = None,
+                 statements: List["Statement"] = None):
         super().__init__()
-        self.elements = elements
-        self.statements = statements
+        self.elements = elements if elements is not None else []
+        self.statements = statements if statements is not None else []
