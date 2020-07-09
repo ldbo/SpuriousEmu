@@ -85,7 +85,7 @@ class VarDec(Statement):
     def __init__(self, identifier, type=None, value=None, **kwargs):
         super().__init__(**kwargs)
         self.identifier = identifier
-        self.type = value
+        self.type = type
         self.value = value
 
 
