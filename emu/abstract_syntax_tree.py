@@ -56,6 +56,7 @@ class Statement(AST):
         :arg file: Name of the source file
         :arg line_number: Line number of the statement
         """
+        super().__init__()
         self.file = file
         self.line_number = line_number
 
@@ -66,6 +67,7 @@ class Sequence(AST):
     """
 
     def __init__(self, statements: List[Statement]):
+        super().__init__()
         self.statements = statements
 
 
@@ -81,7 +83,7 @@ class VarDec(Statement):
     """
 
     def __init__(self, identifier, type=None, value=None, **kwargs):
-        super(VarDec, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.identifier = identifier
         self.type = value
         self.value = value
@@ -94,7 +96,7 @@ class MultipleVarDec(Statement):
     """
 
     def __init__(self, declarations: List[VarDec], **kwargs):
-        super(MultipleVarDec, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.declarations = declarations
 
 
@@ -102,7 +104,7 @@ class VarAssign(Statement):
     """Variable assignment."""
 
     def __init__(self, variable, value: "Expression", **kwargs):
-        super(VarAssign, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.variable = variable
         self.value = value
 
@@ -111,7 +113,7 @@ class FunDef(Statement):
     """Function definition, corresponding to the Function keyword."""
 
     def __init__(self, name, arguments, body: Sequence, **kwargs):
-        super(FunDef, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.arguments = arguments
         self.body = body
@@ -121,7 +123,7 @@ class ProcDef(Statement):
     """Procedure definition, corresponding to the Sub keyword."""
 
     def __init__(self, name, arguments, body: Sequence, **kwargs):
-        super(ProcDef, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
         self.arguments = arguments
         self.body = body
@@ -134,12 +136,12 @@ class ProcDef(Statement):
 class Expression(Statement):
     @abstractmethod
     def __init__(self, **kwargs):
-        super(Expression, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
 
 class Identifier(Expression):
     def __init__(self, name, **kwargs):
-        super(Identifier, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.name = name
 
 
@@ -147,34 +149,34 @@ class Literal(Expression):
     # TODO value smells fishy, maybe add child classes for different types or
     # add a type member
     def __init__(self, type: Type, value, **kwargs):
-        super(Literal, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.value = value
         self.type = type
 
 
 class ArgList(Statement):
     def __init__(self, args: List["Expression"], **kwargs):
-        super(ArgList, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.args = args
 
 
 class FunCall(Expression):
     def __init__(self, function: Identifier, arguments: ArgList, **kwargs):
-        super(FunCall, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.function = function
         self.arguments = arguments
 
 
 class UnOp(Expression):
     def __init__(self, operator, argument, **kwargs):
-        super(UnOp, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.operator = operator
         self.argument = argument
 
 
 class BinOp(Expression):
     def __init__(self, operator, left, right, **kwargs):
-        super(BinOp, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.operator = operator
         self.left = left
         self.right = right
@@ -191,7 +193,7 @@ class If(Statement):
                  if_conditions: List[Expression], if_actions: List[Sequence],
                  else_action: Sequence,
                  **kwargs):
-        super(If, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.if_conditions = if_conditions
         self.if_actions = if_actions
         self.else_action = else_action
@@ -202,7 +204,7 @@ class For(Statement):
 
     def __init__(self, counter: Identifier, start: Expression, end: Expression,
                  body: Sequence):
-        super(For, self).__init__()
+        super().__init__()
         self.counter = counter
         self.start = start
         self.end = end
