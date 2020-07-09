@@ -154,21 +154,3 @@ def parse_file(path: str) -> AST:
     tree = parser.build_ast(instructions)
 
     return tree
-
-
-if __name__ == "__main__":
-    from json import load
-    from pprint import pprint
-
-    file = "tests/basic_01.vbs"
-    with open('tests/basic_01.json') as f:
-        expected_result = load(f)
-
-    preprocessor = Preprocessor()
-    parser = Parser()
-
-    instructions = preprocessor.extract_instructions_from_file(file)
-    tree = parser.build_ast(instructions)
-
-    assert(expected_result == tree.to_dict())
-    print(f'Test: {file} OK')
