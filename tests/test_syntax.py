@@ -56,3 +56,6 @@ def test_expressions():
 
 def test_inline_declarations():
     assert_correct_function("basic_02", parsing)
+
+def test_loops():
+    run_function("basic_03", parsing)
