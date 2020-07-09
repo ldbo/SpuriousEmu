@@ -1,6 +1,6 @@
 """Define the grammar of a VBA source file and implement a syntactic parser."""
 
-from typing import List
+from typing import List, Union
 
 from pyparsing import (Forward, Optional, ParseException, ParserElement,
                        Regex, Suppress, StringEnd, StringStart, Word,
@@ -8,6 +8,7 @@ from pyparsing import (Forward, Optional, ParseException, ParserElement,
 
 from .abstract_syntax_tree import *
 from .partial_block import *
+from .partial_block import PartialBlock
 from .preprocessor import Instruction, Preprocessor
 from .type import types
 
@@ -146,19 +147,29 @@ class ParsingError(Exception):
 
 
 class Parser:
+    __nested_blocks: List[PartialBlock]
+
     def __init__(self):
         pass
 
     def build_ast(self, instructions: List[Instruction], file_name: str = "") \
             -> AST:
-        nodes = []
+        self.__nested_blocks = [PartialBlock()]
         for instruction in instructions:
             if instruction.instruction.strip() != '':
-                nodes.append(self.__parse_instruction(instruction))
+                parsed_instruction = self.__parse_instruction(instruction)
+                if isinstance(parsed_instruction, Statement):
+                    self.__handle_statement(parsed_instruction)
+                elif isinstance(parsed_instruction, BlockElement):
+                    self.__handle_block_element(parsed_instruction)
+                else:
+                    assert(False)
 
-        return Sequence(nodes)
+        top_level_block = self.__nested_blocks.pop()
+        main_sequence = Sequence(top_level_block.statements)
+        return main_sequence
 
-    def __parse_instruction(self, instruction: Instruction) -> Statement:
+    def __parse_instruction(self, instruction: Instruction) -> Union[Statement, BlockElement]:
         try:
             parse_results = statement.parseString(
                 instruction.instruction, parseAll=True)
@@ -167,6 +178,14 @@ class Parser:
                                str(e))
 
         return parse_results[0]
+
+    def __handle_statement(self, statement: Statement) -> None:
+        current_block = self.__nested_blocks[-1]
+        current_block.statements.append(statement)
+
+    def __handle_block_element(self, block_element: BlockElement) -> None:
+        # TODO allow nested blocks
+        self.__nested_blocks[-1].elements.append(block_element)
 
 
 def parse_file(path: str) -> AST:
