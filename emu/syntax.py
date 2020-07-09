@@ -7,6 +7,7 @@ from pyparsing import (Forward, Optional, ParseException, ParserElement,
                        delimitedList, infixNotation, nums, oneOf, opAssoc)
 
 from .abstract_syntax_tree import *
+from .partial_block import *
 from .preprocessor import Instruction, Preprocessor
 from .type import types
 
@@ -22,10 +23,13 @@ lparen = Suppress("(")
 rparen = Suppress(")")
 
 # Keywords
-set_kw = Suppress('Set')
-dim_kw = Suppress('Dim')
 as_kw = Suppress('As')
-
+dim_kw = Suppress('Dim')
+for_kw = Suppress('For')
+next_kw = Suppress('Next')
+set_kw = Suppress('Set')
+step_kw = Suppress('Step')
+to_kw = Suppress('To')
 
 # Literal
 integer = Word(nums).setName("integer") \
@@ -42,6 +46,7 @@ identifier = Regex(identifier_regex).setName("identifier") \
 
 # Types
 variable_type = oneOf(types)
+
 
 #################
 #  Expressions  #
@@ -102,8 +107,21 @@ variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
 
 declarative_statement = variable_declaration | variable_assignment
 
+############################
+#  Loops and conditionals  #
+############################
+
+# For
+for_header = (for_kw + identifier + Suppress('=') + expression
+              + to_kw + expression + Optional(step_kw + expression)) \
+    .setParseAction(lambda r: ForHeader(*r))
+for_footer = (next_kw + Optional(identifier)) \
+    .setParseAction(lambda r: ForFooter(*r))
+
+loop_statement = for_header | for_footer
+
 # Wrap up
-statement <<= declarative_statement | expression_statement
+statement <<= declarative_statement | loop_statement | expression_statement
 
 ############
 #  Parser  #
