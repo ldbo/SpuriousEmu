@@ -187,18 +187,23 @@ class BinOp(Expression):
 #  Blocs  #
 ###########
 
-# TODO improve If structure, List[Block] is ugly
-class If(Statement):
+class ElseIf(Block):
+    """Single condition/action block, used internally by If."""
+
+    def __init__(self, condition: Expression, **kwargs):
+        super().__init__(**kwargs)
+        self.condition = condition
+
+class If(Block):
     """If statement."""
 
-    def __init__(self,
-                 if_conditions: List[Expression], if_actions: List[Block],
-                 else_action: Block,
-                 **kwargs):
+    def __init__(self, condition: Expression,
+                 elsifs: Union[None, List[ElseIf]]=None,
+                 else_block: Union[None, Block]=None, **kwargs):
         super().__init__(**kwargs)
-        self.if_conditions = if_conditions
-        self.if_actions = if_actions
-        self.else_action = else_action
+        self.condition = condition
+        self.elsifs = elsifs if elsifs is not None else []
+        self.else_block = else_block
 
 
 class For(Block):
