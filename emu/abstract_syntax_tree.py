@@ -4,7 +4,7 @@ from .type import Type
 
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from typing import List
+from typing import List, Union
 
 
 ##################
@@ -21,7 +21,7 @@ class AST(ABC):
     def to_dict(self):
         def attribute_filter(attribute):
             return not attribute.startswith('_') \
-                and not callable(getattr(self, attribute))
+                   and not callable(getattr(self, attribute))
 
         d = {'_type': type(self).__name__}
         for attr_name in filter(attribute_filter, dir(self)):
@@ -61,14 +61,16 @@ class Statement(AST):
         self.line_number = line_number
 
 
-class Sequence(AST):
+class Block(AST):
     """
-    Sequence of statements, often the base node of an AST describing a file.
+    Sequence of statements, used as is to describe the main scope of a file,
+    or inherited to implement block statements (loops, conditionals,
+    functions definition, ...).
     """
 
-    def __init__(self, statements: List[Statement]):
+    def __init__(self, body: List[Statement] = None):
         super().__init__()
-        self.statements = statements
+        self.body = body if body is not None else []
 
 
 ############################
@@ -109,24 +111,23 @@ class VarAssign(Statement):
         self.value = value
 
 
-class FunDef(Statement):
+class FunDef(Block):
     """Function definition, corresponding to the Function keyword."""
 
-    def __init__(self, name, arguments, body: Sequence, **kwargs):
+    def __init__(self, name, arguments, **kwargs):
         super().__init__(**kwargs)
         self.name = name
         self.arguments = arguments
-        self.body = body
 
 
 class ProcDef(Statement):
     """Procedure definition, corresponding to the Sub keyword."""
 
-    def __init__(self, name, arguments, body: Sequence, **kwargs):
+    def __init__(self, name, arguments, **kwargs):
         super().__init__(**kwargs)
         self.name = name
         self.arguments = arguments
-        self.body = body
+
 
 ###########################
 #  Executable statements  #
@@ -181,17 +182,18 @@ class BinOp(Expression):
         self.left = left
         self.right = right
 
+
 ###########
 #  Blocs  #
 ###########
 
-
+# TODO improve If structure, List[Block] is ugly
 class If(Statement):
     """If statement."""
 
     def __init__(self,
-                 if_conditions: List[Expression], if_actions: List[Sequence],
-                 else_action: Sequence,
+                 if_conditions: List[Expression], if_actions: List[Block],
+                 else_action: Block,
                  **kwargs):
         super().__init__(**kwargs)
         self.if_conditions = if_conditions
@@ -199,13 +201,13 @@ class If(Statement):
         self.else_action = else_action
 
 
-class For(Statement):
+class For(Block):
     """For statement with a counter."""
 
     def __init__(self, counter: Identifier, start: Expression, end: Expression,
-                 body: Sequence):
-        super().__init__()
+                 step: Union[None, Expression]=None, **kwargs):
+        super().__init__(**kwargs)
         self.counter = counter
         self.start = start
         self.end = end
-        self.body = body
+        self.step = step

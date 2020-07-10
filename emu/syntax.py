@@ -166,7 +166,7 @@ class Parser:
                     assert(False)
 
         top_level_block = self.__nested_blocks.pop()
-        main_sequence = Sequence(top_level_block.statements)
+        main_sequence = Block(top_level_block.statements)
         return main_sequence
 
     def __parse_instruction(self, instruction: Instruction) -> Union[Statement, BlockElement]:

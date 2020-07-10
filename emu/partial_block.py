@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from typing import List
 
-from .abstract_syntax_tree import For, Sequence
+from .abstract_syntax_tree import For, Block
 
 
 class BlockElement:
@@ -46,7 +46,7 @@ class PartialBlock:
         if isinstance(self.elements[0], ForHeader) and len(self.elements) == 2:
             # TODO check footer variable coherence
             header: ForHeader = self.elements[0]
-            for_block = For(header.counter, header.start, header.end, header.step)
-            for_block.body = Sequence(self.statements)
+            for_block = For(header.counter, header.start, header.end,
+                            header.step, body=self.statements)
             return for_block
 
