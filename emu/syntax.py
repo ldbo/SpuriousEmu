@@ -26,10 +26,15 @@ rparen = Suppress(")")
 # Keywords
 as_kw = Suppress('As')
 dim_kw = Suppress('Dim')
+else_kw = Suppress('Else')
+elseif_kw = Suppress('ElseIf')
+end_kw = Suppress('End')
 for_kw = Suppress('For')
+if_kw = Suppress('If')
 next_kw = Suppress('Next')
 set_kw = Suppress('Set')
 step_kw = Suppress('Step')
+then_kw = Suppress('Then')
 to_kw = Suppress('To')
 
 # Literal
@@ -121,8 +126,19 @@ for_footer = (next_kw + Optional(identifier)) \
 
 loop_statement = for_header | for_footer
 
+# If
+if_header = (if_kw + expression + Optional(then_kw)) \
+    .setParseAction(lambda r: IfHeader(*r))
+elseif_header = (elseif_kw + expression + Optional(then_kw)) \
+    .setParseAction(lambda r: ElseIfHeader(*r))
+else_header = else_kw.setParseAction(lambda r: ElseHeader())
+if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
+
+conditional_statement = if_header | elseif_header | else_header | if_footer
+
 # Wrap up
-statement <<= declarative_statement | loop_statement | expression_statement
+statement <<= declarative_statement | loop_statement | conditional_statement \
+    | expression_statement
 
 ############
 #  Parser  #
@@ -163,10 +179,10 @@ class Parser:
                 elif isinstance(parsed_instruction, BlockElement):
                     self.__handle_block_element(parsed_instruction)
                 else:
-                    assert(False)
+                    assert (False)
 
         top_level_block = self.__nested_blocks.pop()
-        main_sequence = Block(top_level_block.statements)
+        main_sequence = Block(top_level_block.statements_blocks.pop())
         return main_sequence
 
     def __parse_instruction(self, instruction: Instruction) -> Union[Statement, BlockElement]:
@@ -181,7 +197,7 @@ class Parser:
 
     def __handle_statement(self, statement: Statement) -> None:
         current_block = self.__nested_blocks[-1]
-        current_block.statements.append(statement)
+        current_block.statements_blocks[-1].append(statement)
 
     def __handle_block_element(self, block_element: BlockElement) -> None:
         if block_element.FirstElement:
@@ -189,11 +205,13 @@ class Parser:
             self.__nested_blocks.append(new_block)
         else:
             self.__nested_blocks[-1].elements.append(block_element)
+            if not block_element.LastElement:
+                self.__nested_blocks[-1].statements_blocks.append([])
 
         if block_element.LastElement:
             complete_block = self.__nested_blocks.pop().build_block()
             parent_block = self.__nested_blocks[-1]
-            parent_block.statements.append(complete_block)
+            parent_block.statements_blocks[-1].append(complete_block)
 
 
 def parse_file(path: str) -> AST:
