@@ -11,3 +11,11 @@ Sub proc3 (start, end)
         print i
     Next
 End Sub
+
+Function fun1
+    Set fun1 = 12
+End Function
+
+Function fun2(i, j, k)
+    Set fun2 = 12 * i + (12 * 23 * j) + k
+End Function

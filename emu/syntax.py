@@ -36,6 +36,7 @@ step_kw = Suppress('Step')
 sub_kw = Suppress('Sub')
 then_kw = Suppress('Then')
 to_kw = Suppress('To')
+function_kw = Suppress('Function')
 
 # Literal
 integer = Word(nums).setName("integer") \
@@ -119,8 +120,16 @@ procedure_header = (sub_kw + identifier +
 procedure_footer = (end_kw + sub_kw) \
     .setParseAction(lambda r: ProcDefFooter())
 
+function_header = (function_kw + identifier +
+                   Optional(lparen + arguments_list + rparen)) \
+    .setParseAction(lambda r: FunDefHeader(*r))
+function_footer = (end_kw + function_kw) \
+    .setParseAction(lambda r: FunDefFooter())
+
+
 declarative_statement = variable_declaration | variable_assignment \
-                        | procedure_header | procedure_footer
+                        | procedure_header | procedure_footer \
+                        | function_header | function_footer
 
 ############################
 #  Loops and conditionals  #

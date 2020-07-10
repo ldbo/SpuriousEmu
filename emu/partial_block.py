@@ -3,7 +3,7 @@
 from abc import abstractmethod
 from typing import List
 
-from .abstract_syntax_tree import For, ElseIf, If, Block, ProcDef
+from .abstract_syntax_tree import For, ElseIf, If, Block, ProcDef, FunDef
 
 class BlockElement:
     FirstElement = False
@@ -67,7 +67,17 @@ class ProcDefHeader(BlockElement):
 class ProcDefFooter(BlockElement):
     LastElement = True
 
-    pass
+class FunDefHeader(BlockElement):
+    FirstElement = True
+
+    def __init__(self, name, arguments=None):
+        super().__init__()
+        self.name = name
+        self.arguments = arguments
+
+
+class FunDefFooter(BlockElement):
+    LastElement = True
 
 class PartialBlock:
     """A PartialBlock is used in the process of building block statements,
@@ -110,9 +120,12 @@ class PartialBlock:
         elif isinstance(header, ProcDefHeader):
             body = self.statements_blocks.pop()
             proc_def = ProcDef(header.name, header.arguments, body=body)
-
-            print(f'Build {proc_def}')
             return proc_def
 
+        elif isinstance(header, FunDefHeader):
+            body = self.statements_blocks.pop()
+            fun_def = FunDef(header.name, header.arguments, body=body)
+            return fun_def
+
         else:
-            print('Plop')
+            raise NotImplementedError()
