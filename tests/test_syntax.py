@@ -24,7 +24,7 @@ def load_result(test: str) -> Result:
 def export_result(test: str, function: Callable[[SourceFile], Result]) -> None:
     """Export the result of the test to JSON"""
     with open(result_path(test), 'w') as f:
-        json.dump(function(vbs_path(test)), f)
+        json.dump(function(vbs_path(test)), f, indent=4)
 
 
 def vbs_path(test: str) -> str:
@@ -56,6 +56,7 @@ def test_expressions():
 
 def test_inline_declarations():
     assert_correct_function("basic_02", parsing)
+
 
 def test_loops():
     run_function("basic_03", parsing)
