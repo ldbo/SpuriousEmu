@@ -1,0 +1,105 @@
+{
+    "_type": "Block",
+    "body": [
+        {
+            "_type": "For",
+            "body": [
+                {
+                    "_type": "FunCall",
+                    "arguments": {
+                        "_type": "ArgList",
+                        "args": [
+                            {
+                                "_type": "Identifier",
+                                "file": "",
+                                "line_number": "0",
+                                "name": "var1"
+                            }
+                        ],
+                        "file": "",
+                        "line_number": "0"
+                    },
+                    "file": "",
+                    "function": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "print"
+                    },
+                    "line_number": "0"
+                }
+            ],
+            "counter": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "var1"
+            },
+            "end": {
+                "_type": "Literal",
+                "file": "",
+                "line_number": "0",
+                "type": "Type.Integer",
+                "value": "10"
+            },
+            "start": {
+                "_type": "Literal",
+                "file": "",
+                "line_number": "0",
+                "type": "Type.Integer",
+                "value": "1"
+            },
+            "step": "None"
+        },
+        {
+            "_type": "For",
+            "body": [
+                {
+                    "_type": "FunCall",
+                    "arguments": {
+                        "_type": "ArgList",
+                        "args": [
+                            {
+                                "_type": "Identifier",
+                                "file": "",
+                                "line_number": "0",
+                                "name": "var2"
+                            }
+                        ],
+                        "file": "",
+                        "line_number": "0"
+                    },
+                    "file": "",
+                    "function": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "print"
+                    },
+                    "line_number": "0"
+                }
+            ],
+            "counter": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "var2"
+            },
+            "end": {
+                "_type": "Literal",
+                "file": "",
+                "line_number": "0",
+                "type": "Type.Integer",
+                "value": "10"
+            },
+            "start": {
+                "_type": "Literal",
+                "file": "",
+                "line_number": "0",
+                "type": "Type.Integer",
+                "value": "1"
+            },
+            "step": "None"
+        }
+    ]
+}

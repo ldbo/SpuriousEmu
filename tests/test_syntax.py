@@ -59,4 +59,4 @@ def test_inline_declarations():
 
 
 def test_loops():
-    run_function("basic_03", parsing)
+    assert_correct_function("basic_03", parsing)
