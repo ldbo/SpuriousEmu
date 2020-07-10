@@ -1,10 +1,9 @@
 """Definition of the nodes of an abstract syntax tree."""
 
-from .type import Type
-
 from abc import ABC, abstractmethod
-from collections.abc import Iterable
-from typing import List, Union
+from typing import List, Optional, Dict, Any, Union
+
+from .type import Type
 
 
 ##################
@@ -15,11 +14,17 @@ class AST(ABC):
     """Base class of all the nodes of the tree."""
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def to_dict(self):
-        def attribute_filter(attribute):
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert a tree to a recursive dict, using all the public members of
+        the nodes as keys. A node has a '_type' key containing its type.
+        """
+        d: Dict[str, Any]
+
+        def attribute_filter(attribute: str) -> bool:
             return not attribute.startswith('_') \
                    and not callable(getattr(self, attribute))
 
@@ -47,9 +52,11 @@ class Statement(AST):
     Generic statement, usually corresponding to a simple instruction, or the
     declaration of e.g. a function.
     """
+    file: str
+    line_number: int
 
     @abstractmethod
-    def __init__(self, file: str = "", line_number: int = 0):
+    def __init__(self, file: str = "", line_number: int = 0) -> None:
         """ Initialize a statement, saving its context. Must be called by
         child classes.
 
@@ -67,8 +74,10 @@ class Block(AST):
     or inherited to implement block statements (loops, conditionals,
     functions definition, ...).
     """
+    body: Optional[List[Union[Statement, "Block"]]]
 
-    def __init__(self, body: List[Statement] = None):
+    def __init__(self, body: Optional[List[Union[Statement, "Block"]]] = None)\
+            -> None:
         super().__init__()
         self.body = body if body is not None else []
 
@@ -83,29 +92,38 @@ class VarDec(Statement):
     Single variable declaration, corresponding to a Dim or Const statement
     with a one-member variable list.
     """
+    identifier: "Identifier"
+    type: Optional[Type]
+    value: Optional["Expression"]
 
-    def __init__(self, identifier, type=None, value=None, **kwargs):
+    def __init__(self, identifier: "Identifier", type: Optional[Type] = None,
+                 value: Optional["Expression"] = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.identifier = identifier
         self.type = type
         self.value = value
 
 
+# TODO implement
 class MultipleVarDec(Statement):
     """
     Variable declaration corresponding to a generic Dim or Const statement
     with potentially multiple variables.
     """
+    declarations: List[VarDec]
 
-    def __init__(self, declarations: List[VarDec], **kwargs):
+    def __init__(self, declarations: List[VarDec], **kwargs) -> None:
         super().__init__(**kwargs)
         self.declarations = declarations
 
 
 class VarAssign(Statement):
     """Variable assignment."""
+    variable: "Identifier"
+    value: "Expression"
 
-    def __init__(self, variable, value: "Expression", **kwargs):
+    def __init__(self, variable: "Identifier", value: "Expression", **kwargs) \
+            -> None:
         super().__init__(**kwargs)
         self.variable = variable
         self.value = value
@@ -113,8 +131,11 @@ class VarAssign(Statement):
 
 class FunDef(Block):
     """Function definition, corresponding to the Function keyword."""
+    name: "Identifier"
+    arguments: "ArgList"
 
-    def __init__(self, name, arguments, **kwargs):
+    def __init__(self, name: "Identifier", arguments: "ArgList", **kwargs) \
+            -> None:
         super().__init__(**kwargs)
         self.name = name
         self.arguments = arguments
@@ -122,8 +143,11 @@ class FunDef(Block):
 
 class ProcDef(Block):
     """Procedure definition, corresponding to the Sub keyword."""
+    name: "Identifier"
+    arguments: "ArgList"
 
-    def __init__(self, name, arguments, **kwargs):
+    def __init__(self, name: "Identifier", arguments: "ArgList", **kwargs) \
+            -> None:
         super().__init__(**kwargs)
         self.name = name
         self.arguments = arguments
@@ -135,48 +159,78 @@ class ProcDef(Block):
 
 
 class Expression(Statement):
+    """
+    Root of an expression tree, made of binary and unary operators, with
+    literals, identifiers and function calls as leafs.
+    """
+
     @abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
 
 
 class Identifier(Expression):
-    def __init__(self, name, **kwargs):
+    """Identifier of a variable or function."""
+    name: str
+
+    def __init__(self, name: str, **kwargs) -> None:
         super().__init__(**kwargs)
         self.name = name
 
 
 class Literal(Expression):
-    # TODO value smells fishy, maybe add child classes for different types or
-    # add a type member
-    def __init__(self, type: Type, value, **kwargs):
+    """Literal value : integer, double, boolean, string, ..."""
+    type: Type
+    value: Union[int, float, bool, str]
+
+    def __init__(self, type: Type, value: Union[int, float, bool, str],
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.value = value
         self.type = type
 
 
+# TODO differentiate between ArgList for calls and definitions
 class ArgList(Statement):
-    def __init__(self, args: List["Expression"], **kwargs):
+    """List of arguments, used by function calls and declarations"""
+    args: List["Expression"]
+
+    def __init__(self, args: List["Expression"], **kwargs) -> None:
         super().__init__(**kwargs)
         self.args = args
 
 
 class FunCall(Expression):
-    def __init__(self, function: Identifier, arguments: ArgList, **kwargs):
+    """Function call"""
+    function: Identifier
+    arguments: ArgList
+
+    def __init__(self, function: Identifier, arguments: ArgList, **kwargs) \
+            -> None:
         super().__init__(**kwargs)
         self.function = function
         self.arguments = arguments
 
 
 class UnOp(Expression):
-    def __init__(self, operator, argument, **kwargs):
+    """Unary operator"""
+    operator: str
+    argument: Expression
+
+    def __init__(self, operator: str, argument: Expression, **kwargs) -> None:
         super().__init__(**kwargs)
         self.operator = operator
         self.argument = argument
 
 
 class BinOp(Expression):
-    def __init__(self, operator, left, right, **kwargs):
+    """Binary operator"""
+    operator: str
+    left: Expression
+    right: Expression
+
+    def __init__(self, operator: str, left: Expression, right: Expression,
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.operator = operator
         self.left = left
@@ -188,18 +242,23 @@ class BinOp(Expression):
 ###########
 
 class ElseIf(Block):
-    """Single condition/action block, used internally by If."""
+    """Single condition/action block, used internally by If"""
+    condition: Expression
 
-    def __init__(self, condition: Expression, **kwargs):
+    def __init__(self, condition: Expression, **kwargs) -> None:
         super().__init__(**kwargs)
         self.condition = condition
 
+
 class If(Block):
-    """If statement."""
+    """If statement"""
+    condition: Expression
+    elsifs: List[ElseIf]
+    else_block: Optional[Block]
 
     def __init__(self, condition: Expression,
-                 elsifs: Union[None, List[ElseIf]]=None,
-                 else_block: Union[None, Block]=None, **kwargs):
+                 elsifs: Optional[List[ElseIf]] = None,
+                 else_block: Optional[Block] = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.condition = condition
         self.elsifs = elsifs if elsifs is not None else []
@@ -207,10 +266,14 @@ class If(Block):
 
 
 class For(Block):
-    """For statement with a counter."""
+    """For statement with a counter"""
+    counter: Identifier
+    start: Expression
+    end: Expression
+    step: Optional[Expression]
 
     def __init__(self, counter: Identifier, start: Expression, end: Expression,
-                 step: Union[None, Expression]=None, **kwargs):
+                 step: Optional[Expression] = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.counter = counter
         self.start = start

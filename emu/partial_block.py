@@ -3,19 +3,24 @@
 from abc import abstractmethod
 from typing import List
 
-from .abstract_syntax_tree import For, ElseIf, If, Block, ProcDef, FunDef
+from .abstract_syntax_tree import For, ElseIf, If, Block, ProcDef, FunDef, Statement
+
 
 class BlockElement:
-    FirstElement = False
-    LastElement = False
+    """
+    Structural element of a block, for example an ElseIf line in an If block,
+    only used during the parsing process.
+    """
+    IsHeader: bool = False
+    IsFooter: bool = False
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
 
 class ForHeader(BlockElement):
-    FirstElement = True
+    IsHeader = True
 
     def __init__(self, counter, start, end, step=None):
         super().__init__()
@@ -26,7 +31,7 @@ class ForHeader(BlockElement):
 
 
 class ForFooter(BlockElement):
-    LastElement = True
+    IsFooter = True
 
     def __init__(self, counter=None):
         super().__init__()
@@ -34,7 +39,7 @@ class ForFooter(BlockElement):
 
 
 class IfHeader(BlockElement):
-    FirstElement = True
+    IsHeader = True
 
     def __init__(self, condition):
         super().__init__()
@@ -48,15 +53,17 @@ class ElseIfHeader(BlockElement):
 
 
 class ElseHeader(BlockElement):
-    pass
-
+    def __init__(self):
+        super().__init__()
 
 class IfFooter(BlockElement):
-    LastElement = True
+    IsFooter = True
 
+    def __init__(self):
+        super().__init__()
 
 class ProcDefHeader(BlockElement):
-    FirstElement = True
+    IsHeader = True
 
     def __init__(self, name, arguments=None):
         super().__init__()
@@ -65,10 +72,13 @@ class ProcDefHeader(BlockElement):
 
 
 class ProcDefFooter(BlockElement):
-    LastElement = True
+    IsFooter = True
+
+    def __init__(self):
+        super().__init__()
 
 class FunDefHeader(BlockElement):
-    FirstElement = True
+    IsHeader = True
 
     def __init__(self, name, arguments=None):
         super().__init__()
@@ -77,22 +87,33 @@ class FunDefHeader(BlockElement):
 
 
 class FunDefFooter(BlockElement):
-    LastElement = True
+    IsFooter = True
+
+    def __init__(self):
+        super().__init__()
 
 class PartialBlock:
-    """A PartialBlock is used in the process of building block statements,
+    """
+    A PartialBlock is used in the process of building block statements,
     e.g. function definitions or conditionals. It handles statements with
-    multiple subblocks, as in a if/elseif/else structure."""
+    multiple sub-blocks, as in a if/elseif/else structure.
+    """
+    elements: List[BlockElement]
+    statements_blocks: List[List[Statement]]
 
     def __init__(self, elements: List[BlockElement] = None,
-                 statements_blocks: List[List["Statement"]] = None):
+                 statements_blocks: List[List[Statement]] = None) -> None:
         super().__init__()
         self.elements = elements if elements is not None else []
-        self.statements_blocks = statements_blocks if statements_blocks is not None else [[]]
-
+        self.statements_blocks = statements_blocks \
+            if statements_blocks is not None else [[]]
 
     # TODO add syntax check
-    def build_block(self):
+    def build_block(self) -> Block:
+        """
+        Build the Block obtained after pulling together all the BlockElement
+        and Statements it is made of.
+        """
         header = self.elements[0]
         if isinstance(header, ForHeader) and len(self.elements) == 2:
             for_block = For(header.counter, header.start, header.end,
@@ -102,7 +123,7 @@ class PartialBlock:
         elif isinstance(header, IfHeader):
             blocks = zip(self.statements_blocks, self.elements)
             if_body, if_header = next(blocks)
-            assert(isinstance(if_header, IfHeader))
+            assert (isinstance(if_header, IfHeader))
             if_block = If(condition=if_header.condition, body=if_body)
 
             for statements, element in blocks:

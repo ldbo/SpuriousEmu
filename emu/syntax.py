@@ -2,9 +2,10 @@
 
 from typing import List, Union
 
-from pyparsing import (Forward, Optional, ParseException, ParserElement,
+from pyparsing import (Forward, ParseException, ParserElement,
                        Regex, Suppress, StringEnd, StringStart, Word,
                        delimitedList, infixNotation, nums, oneOf, opAssoc)
+from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
 from .partial_block import *
@@ -84,7 +85,7 @@ binary_operators = [
 ]
 
 # Function call
-arguments_list = Optional(delimitedList(expression)).setName("arguments_list") \
+arguments_list = pOptional(delimitedList(expression)).setName("arguments_list") \
     .setParseAction(lambda r: ArgList(list(r)))
 function_call_paren = (identifier + lparen + arguments_list + rparen) \
     .setName("function_call_paren") \
@@ -105,8 +106,8 @@ expression_statement = function_call_no_paren ^ expression
 
 # Variable
 variable_declaration = (dim_kw + identifier
-                        + Optional(as_kw + variable_type
-                                   + Optional(Suppress('=') + expression))) \
+                        + pOptional(as_kw + variable_type
+                                   + pOptional(Suppress('=') + expression))) \
     .setParseAction(lambda r: VarDec(*r))
 
 variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
@@ -115,13 +116,13 @@ variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
 # Function
 
 procedure_header = (sub_kw + identifier +
-                    Optional(lparen + arguments_list + rparen)) \
+                    pOptional(lparen + arguments_list + rparen)) \
     .setParseAction(lambda r: ProcDefHeader(*r))
 procedure_footer = (end_kw + sub_kw) \
     .setParseAction(lambda r: ProcDefFooter())
 
 function_header = (function_kw + identifier +
-                   Optional(lparen + arguments_list + rparen)) \
+                   pOptional(lparen + arguments_list + rparen)) \
     .setParseAction(lambda r: FunDefHeader(*r))
 function_footer = (end_kw + function_kw) \
     .setParseAction(lambda r: FunDefFooter())
@@ -137,17 +138,17 @@ declarative_statement = variable_declaration | variable_assignment \
 
 # For
 for_header = (for_kw + identifier + Suppress('=') + expression
-              + to_kw + expression + Optional(step_kw + expression)) \
+              + to_kw + expression + pOptional(step_kw + expression)) \
     .setParseAction(lambda r: ForHeader(*r))
-for_footer = (next_kw + Optional(identifier)) \
+for_footer = (next_kw + pOptional(identifier)) \
     .setParseAction(lambda r: ForFooter(*r))
 
 loop_statement = for_header | for_footer
 
 # If
-if_header = (if_kw + expression + Optional(then_kw)) \
+if_header = (if_kw + expression + pOptional(then_kw)) \
     .setParseAction(lambda r: IfHeader(*r))
-elseif_header = (elseif_kw + expression + Optional(then_kw)) \
+elseif_header = (elseif_kw + expression + pOptional(then_kw)) \
     .setParseAction(lambda r: ElseIfHeader(*r))
 else_header = else_kw.setParseAction(lambda r: ElseHeader())
 if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
@@ -181,13 +182,22 @@ class ParsingError(Exception):
 
 
 class Parser:
+    """
+    Syntactic parser used to transform a list of instructions into an abstract
+    syntax tree.
+    """
     __nested_blocks: List[PartialBlock]
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def build_ast(self, instructions: List[Instruction], file_name: str = "") \
             -> AST:
+        """
+        Main method of the Parser. Parses each of the instructions using a
+        pyparsing grammar, and then process the results to handle multiline
+        structures such as loops, conditionals, etc.
+        """
         self.__nested_blocks = [PartialBlock()]
         for instruction in instructions:
             if instruction.instruction.strip() != '':
@@ -203,7 +213,9 @@ class Parser:
         main_sequence = Block(top_level_block.statements_blocks.pop())
         return main_sequence
 
-    def __parse_instruction(self, instruction: Instruction) -> Union[Statement, BlockElement]:
+    def __parse_instruction(self, instruction: Instruction)\
+            -> Union[Statement, BlockElement]:
+        """Use the pyparsing grammar to parse a single instruction."""
         try:
             parse_results = statement.parseString(
                 instruction.instruction, parseAll=True)
@@ -214,19 +226,28 @@ class Parser:
         return parse_results[0]
 
     def __handle_statement(self, statement: Statement) -> None:
+        """
+        Add a single-line statement to the last statements block of the
+        innermost nest block.
+        """
         current_block = self.__nested_blocks[-1]
         current_block.statements_blocks[-1].append(statement)
 
     def __handle_block_element(self, block_element: BlockElement) -> None:
-        if block_element.FirstElement:
+        """
+        Add a block element to the list of elements of the innermost partial
+        block. Create it or add it to the statements of the parent block if
+        needed.
+        """
+        if block_element.IsHeader:
             new_block = PartialBlock([block_element])
             self.__nested_blocks.append(new_block)
         else:
             self.__nested_blocks[-1].elements.append(block_element)
-            if not block_element.LastElement:
+            if not block_element.IsFooter:
                 self.__nested_blocks[-1].statements_blocks.append([])
 
-        if block_element.LastElement:
+        if block_element.IsFooter:
             complete_block = self.__nested_blocks.pop().build_block()
             parent_block = self.__nested_blocks[-1]
             parent_block.statements_blocks[-1].append(complete_block)

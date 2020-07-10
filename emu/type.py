@@ -4,8 +4,5 @@
 
 from enum import Enum
 
-types = (
-    'Integer',
-    'Boolean'
-)
-Type = Enum("Type", ' '.join(types))
+Type = Enum("Type", "Integer Boolean")
+types = tuple(Type.__members__.keys())
