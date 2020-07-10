@@ -1,0 +1,166 @@
+{
+    "_type": "Block",
+    "body": [
+        {
+            "_type": "ProcDef",
+            "arguments": "None",
+            "body": [],
+            "name": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "proc1"
+            }
+        },
+        {
+            "_type": "ProcDef",
+            "arguments": {
+                "_type": "ArgList",
+                "args": [
+                    {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "v1"
+                    },
+                    {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "v2"
+                    },
+                    {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "v3"
+                    }
+                ],
+                "file": "",
+                "line_number": "0"
+            },
+            "body": [
+                {
+                    "_type": "FunCall",
+                    "arguments": {
+                        "_type": "ArgList",
+                        "args": [
+                            {
+                                "_type": "Identifier",
+                                "file": "",
+                                "line_number": "0",
+                                "name": "v1"
+                            },
+                            {
+                                "_type": "Identifier",
+                                "file": "",
+                                "line_number": "0",
+                                "name": "v2"
+                            },
+                            {
+                                "_type": "Identifier",
+                                "file": "",
+                                "line_number": "0",
+                                "name": "v3"
+                            }
+                        ],
+                        "file": "",
+                        "line_number": "0"
+                    },
+                    "file": "",
+                    "function": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "print"
+                    },
+                    "line_number": "0"
+                }
+            ],
+            "name": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "proc2"
+            }
+        },
+        {
+            "_type": "ProcDef",
+            "arguments": {
+                "_type": "ArgList",
+                "args": [
+                    {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "start"
+                    },
+                    {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "end"
+                    }
+                ],
+                "file": "",
+                "line_number": "0"
+            },
+            "body": [
+                {
+                    "_type": "For",
+                    "body": [
+                        {
+                            "_type": "FunCall",
+                            "arguments": {
+                                "_type": "ArgList",
+                                "args": [
+                                    {
+                                        "_type": "Identifier",
+                                        "file": "",
+                                        "line_number": "0",
+                                        "name": "i"
+                                    }
+                                ],
+                                "file": "",
+                                "line_number": "0"
+                            },
+                            "file": "",
+                            "function": {
+                                "_type": "Identifier",
+                                "file": "",
+                                "line_number": "0",
+                                "name": "print"
+                            },
+                            "line_number": "0"
+                        }
+                    ],
+                    "counter": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "i"
+                    },
+                    "end": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "end"
+                    },
+                    "start": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "start"
+                    },
+                    "step": "None"
+                }
+            ],
+            "name": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "proc3"
+            }
+        }
+    ]
+}

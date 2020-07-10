@@ -120,7 +120,7 @@ class FunDef(Block):
         self.arguments = arguments
 
 
-class ProcDef(Statement):
+class ProcDef(Block):
     """Procedure definition, corresponding to the Sub keyword."""
 
     def __init__(self, name, arguments, **kwargs):

@@ -8,7 +8,6 @@ from pyparsing import (Forward, Optional, ParseException, ParserElement,
 
 from .abstract_syntax_tree import *
 from .partial_block import *
-from .partial_block import PartialBlock
 from .preprocessor import Instruction, Preprocessor
 from .type import types
 
@@ -34,6 +33,7 @@ if_kw = Suppress('If')
 next_kw = Suppress('Next')
 set_kw = Suppress('Set')
 step_kw = Suppress('Step')
+sub_kw = Suppress('Sub')
 then_kw = Suppress('Then')
 to_kw = Suppress('To')
 
@@ -111,7 +111,16 @@ variable_declaration = (dim_kw + identifier
 variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
     .setParseAction(lambda r: VarAssign(*r))
 
-declarative_statement = variable_declaration | variable_assignment
+# Function
+
+procedure_header = (sub_kw + identifier +
+                    Optional(lparen + arguments_list + rparen)) \
+    .setParseAction(lambda r: ProcDefHeader(*r))
+procedure_footer = (end_kw + sub_kw) \
+    .setParseAction(lambda r: ProcDefFooter())
+
+declarative_statement = variable_declaration | variable_assignment \
+                        | procedure_header | procedure_footer
 
 ############################
 #  Loops and conditionals  #
@@ -138,7 +147,7 @@ conditional_statement = if_header | elseif_header | else_header | if_footer
 
 # Wrap up
 statement <<= declarative_statement | loop_statement | conditional_statement \
-    | expression_statement
+              | expression_statement
 
 ############
 #  Parser  #

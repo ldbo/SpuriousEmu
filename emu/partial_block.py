@@ -3,8 +3,7 @@
 from abc import abstractmethod
 from typing import List
 
-from .abstract_syntax_tree import For, ElseIf, If, Block
-
+from .abstract_syntax_tree import For, ElseIf, If, Block, ProcDef
 
 class BlockElement:
     FirstElement = False
@@ -56,6 +55,20 @@ class IfFooter(BlockElement):
     LastElement = True
 
 
+class ProcDefHeader(BlockElement):
+    FirstElement = True
+
+    def __init__(self, name, arguments=None):
+        super().__init__()
+        self.name = name
+        self.arguments = arguments
+
+
+class ProcDefFooter(BlockElement):
+    LastElement = True
+
+    pass
+
 class PartialBlock:
     """A PartialBlock is used in the process of building block statements,
     e.g. function definitions or conditionals. It handles statements with
@@ -67,15 +80,16 @@ class PartialBlock:
         self.elements = elements if elements is not None else []
         self.statements_blocks = statements_blocks if statements_blocks is not None else [[]]
 
+
+    # TODO add syntax check
     def build_block(self):
-        # TODO add syntax check
-        if isinstance(self.elements[0], ForHeader) and len(self.elements) == 2:
-            header: ForHeader = self.elements[0]
+        header = self.elements[0]
+        if isinstance(header, ForHeader) and len(self.elements) == 2:
             for_block = For(header.counter, header.start, header.end,
                             header.step, body=self.statements_blocks[0])
             return for_block
 
-        if isinstance(self.elements[0], IfHeader):
+        elif isinstance(header, IfHeader):
             blocks = zip(self.statements_blocks, self.elements)
             if_body, if_header = next(blocks)
             assert(isinstance(if_header, IfHeader))
@@ -92,3 +106,13 @@ class PartialBlock:
                     break
 
             return if_block
+
+        elif isinstance(header, ProcDefHeader):
+            body = self.statements_blocks.pop()
+            proc_def = ProcDef(header.name, header.arguments, body=body)
+
+            print(f'Build {proc_def}')
+            return proc_def
+
+        else:
+            print('Plop')

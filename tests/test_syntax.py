@@ -64,3 +64,7 @@ def test_loops():
 
 def test_conditionals():
     assert_correct_function("basic_04", parsing)
+
+
+def test_function_definitions():
+    assert_correct_function("basic_05", parsing)
