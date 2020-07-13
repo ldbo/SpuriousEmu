@@ -11,6 +11,7 @@ from .abstract_syntax_tree import *
 from .partial_block import *
 from .preprocessor import Instruction, Preprocessor
 from .type import types
+from .operator import *
 
 #############
 #  Grammar  #
@@ -65,11 +66,12 @@ variable_type = oneOf(types)
 
 def __build_binary_operator(expr, pos, result):
     tokens = result[0].asList()
-    operators = tokens[1::2]
+    operator_symbols = tokens[1::2]
     operands = tokens[0::2]
 
     tree = operands[0]
-    for operator, operand in zip(operators, operands[1:]):
+    for operator_symbol, operand in zip(operator_symbols, operands[1:]):
+        operator = BinaryOperator.build_operator(operator_symbol)
         tree = BinOp(operator, tree, operand)
 
     return tree
