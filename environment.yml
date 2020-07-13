@@ -1,0 +1,47 @@
+name: SpuriousEmu
+channels:
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - backcall=0.2.0=py_0
+  - ca-certificates=2020.6.24=0
+  - certifi=2020.6.20=py38_0
+  - coverage=5.0=py38h7b6447c_0
+  - decorator=4.4.2=py_0
+  - ipython=7.16.1=py38h5ca1d4c_0
+  - ipython_genutils=0.2.0=py38_0
+  - jedi=0.17.1=py38_0
+  - ld_impl_linux-64=2.33.1=h53a641e_7
+  - libedit=3.1.20191231=h14c3975_1
+  - libffi=3.3=he6710b0_2
+  - libgcc-ng=9.1.0=hdf63c60_0
+  - libstdcxx-ng=9.1.0=hdf63c60_0
+  - mypy=0.782=py_0
+  - mypy_extensions=0.4.3=py38_0
+  - ncurses=6.2=he6710b0_1
+  - nose=1.3.7=py38_2
+  - openssl=1.1.1g=h7b6447c_0
+  - parso=0.7.0=py_0
+  - pexpect=4.8.0=py38_0
+  - pickleshare=0.7.5=py38_1000
+  - pip=20.1.1=py38_1
+  - prompt-toolkit=3.0.5=py_0
+  - psutil=5.7.0=py38h7b6447c_0
+  - ptyprocess=0.6.0=py38_0
+  - pygments=2.6.1=py_0
+  - pyparsing=2.4.7=py_0
+  - python=3.8.3=hcff3b4d_2
+  - readline=8.0=h7b6447c_0
+  - setuptools=45.2.0=py38_0
+  - six=1.15.0=py_0
+  - sqlite=3.32.3=h62c20be_0
+  - tk=8.6.10=hbc83047_0
+  - traitlets=4.3.3=py38_0
+  - typed-ast=1.4.1=py38h7b6447c_0
+  - typing_extensions=3.7.4.2=py_0
+  - wcwidth=0.2.5=py_0
+  - wheel=0.34.2=py38_0
+  - xz=5.2.5=h7b6447c_0
+  - zlib=1.2.11=h7b6447c_3
+prefix: /home/louis/.conda/envs/SpuriousEmu
+

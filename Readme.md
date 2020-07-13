@@ -4,10 +4,10 @@ Visual Basic for Applications tools allowing to parse VBA files, interpret them 
 
 ## Requirements
 
-Python 3.8 is used, and the main dependency is `pyparsing`, which allows to parse the VBA grammar. Additionally, `nose` is needed to run the tests. You can create a conda development environment using `requirements.txt`:
+Python 3.8 is used, and the main dependency is `pyparsing`, which allows to parse the VBA grammar. Additionally, `nose` is needed to run the tests. You can create a conda development environment using `environment.yml`:
 
 ```bash
-conda create --name SpuriousEmu --file requirements.txt
+conda env create -f environment.yml
 ```
 
 ## Tests
