@@ -26,20 +26,20 @@ lparen = Suppress("(")
 rparen = Suppress(")")
 
 # Keywords
-as_kw = Suppress('As')
-dim_kw = Suppress('Dim')
-else_kw = Suppress('Else')
-elseif_kw = Suppress('ElseIf')
-end_kw = Suppress('End')
-for_kw = Suppress('For')
-if_kw = Suppress('If')
-next_kw = Suppress('Next')
-set_kw = Suppress('Set')
-step_kw = Suppress('Step')
-sub_kw = Suppress('Sub')
-then_kw = Suppress('Then')
-to_kw = Suppress('To')
-function_kw = Suppress('Function')
+as_kw = Suppress('As').setName('as')
+dim_kw = Suppress('Dim').setName('dim')
+else_kw = Suppress('Else').setName('else')
+elseif_kw = Suppress('ElseIf').setName('elseif')
+end_kw = Suppress('End').setName('end')
+for_kw = Suppress('For').setName('for')
+if_kw = Suppress('If').setName('if')
+next_kw = Suppress('Next').setName('next')
+set_kw = Suppress('Set').setName('set')
+step_kw = Suppress('Step').setName('step')
+sub_kw = Suppress('Sub').setName('sub')
+then_kw = Suppress('Then').setName('then')
+to_kw = Suppress('To').setName('to')
+function_kw = Suppress('Function').setName('function')
 true_kw = Keyword('True')
 false_kw = Keyword('False')
 
@@ -107,8 +107,10 @@ function_call_no_paren = (StringStart() + identifier + arguments_list
 
 terminal = (literal | function_call_paren | identifier)
 expression << infixNotation(
-    terminal, binary_operators, lpar=lparen, rpar=rparen)
-expression_statement = boolean | function_call_no_paren | expression
+    terminal, binary_operators, lpar=lparen, rpar=rparen) \
+    .setName('expression')
+expression_statement = (boolean | function_call_no_paren | expression) \
+    .setName("expression_statement")
 
 ##################
 #  Declarations  #
@@ -118,29 +120,37 @@ expression_statement = boolean | function_call_no_paren | expression
 variable_declaration = (dim_kw + identifier
                         + pOptional(as_kw + variable_type
                                     + pOptional(Suppress('=') + expression))) \
-    .setParseAction(lambda r: VarDec(*r))
+    .setParseAction(lambda r: VarDec(*r)) \
+    .setName("var dec")
 
 variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
-    .setParseAction(lambda r: VarAssign(*r))
+    .setParseAction(lambda r: VarAssign(*r)) \
+    .setName("var assign")
 
 # Function
 
 procedure_header = (sub_kw + identifier
                     + pOptional(lparen + arguments_list + rparen)) \
-    .setParseAction(lambda r: ProcDefHeader(*r))
+    .setParseAction(lambda r: ProcDefHeader(*r)) \
+    .setName("proc header")
 procedure_footer = (end_kw + sub_kw) \
-    .setParseAction(lambda r: ProcDefFooter())
+    .setParseAction(lambda r: ProcDefFooter()) \
+    .setName("proc footer")
 
 function_header = (function_kw + identifier
                    + pOptional(lparen + arguments_list + rparen)) \
-    .setParseAction(lambda r: FunDefHeader(*r))
+    .setParseAction(lambda r: FunDefHeader(*r)) \
+    .setName("function header")
 function_footer = (end_kw + function_kw) \
-    .setParseAction(lambda r: FunDefFooter())
+    .setParseAction(lambda r: FunDefFooter()) \
+    .setName("function footer")
 
 
-declarative_statement = variable_declaration | variable_assignment \
-    | procedure_header | procedure_footer \
-    | function_header | function_footer
+declarative_statement = (
+    variable_declaration | variable_assignment
+    | procedure_header | procedure_footer
+    | function_header | function_footer) \
+    .setName("declaration")
 
 ############################
 #  Loops and conditionals  #
