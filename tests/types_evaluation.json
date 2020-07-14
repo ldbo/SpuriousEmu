@@ -1,0 +1,12 @@
+[
+    "Integer(1)",
+    "Integer(100)",
+    "Boolean(True)",
+    "Boolean(False)",
+    "String()",
+    "String(abcd)",
+    "String(plop\"plop)",
+    "String(plop\"plip\"plop)",
+    "String(bzz\"\"bzz)",
+    "String(\")"
+]

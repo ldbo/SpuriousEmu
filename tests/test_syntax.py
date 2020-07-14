@@ -1,6 +1,5 @@
 from emu import syntax
-from tests.test import (assert_correct_function, run_function, SourceFile,
-                        Result)
+from tests.test import (assert_correct_function, SourceFile, Result)
 
 
 def parsing(vbs: SourceFile) -> Result:
@@ -26,3 +25,7 @@ def test_conditionals():
 
 def test_function_definitions():
     assert_correct_function("basic_05", parsing)
+
+
+def test_types():
+    assert_correct_function("types", parsing)
