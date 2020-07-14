@@ -24,20 +24,20 @@ comments, etc.
 #       - after From in a collection initializer TODO
 #
 # Comments:
-#  - ' and REM comments removed from instruction DONE
 #  - Comments added in Instruction pretty-print TODO
-#
 
-from typing import List
-from re import split
+from typing import List, Dict, Any
 
 
 class PreprocessorError(Exception):
     """
     Error raised during preprocessing.
     """
+    file_name: str
+    line_number: int
+    message: str
 
-    def __init__(self, file_name: str, line_number: int, message: str):
+    def __init__(self, file_name: str, line_number: int, message: str) -> None:
         self.file_name = file_name
         self.line_number = line_number
         self.message = message
@@ -48,9 +48,14 @@ class PreprocessorError(Exception):
 
 class Instruction:
     """A single instruction, stored with its context."""
+    instruction: str
+    multiline: str
+    single: bool
+    file_name: str
+    line_number: int
 
     def __init__(self, instruction: str, multiline: str, single: bool,
-                 file_name: str, line_number: int):
+                 file_name: str, line_number: int) -> None:
         """
         :arg instruction: Unique instruction
         :arg multiline: Group of continuing lines the instruction is part of
@@ -77,6 +82,9 @@ class Instruction:
     def __repr__(self) -> str:
         return f"Instruction({self.instruction})"
 
+    def to_dict(self) -> Dict[str, Any]:
+        return self.__dict__
+
 
 class Preprocessor:
     """
@@ -84,11 +92,13 @@ class Preprocessor:
     """
     CONTINUING_LINE_DELIMITER = " _"
     CONTINUING_LINE_OPERATORS = (",", "&")
+    COMMENT_DELIMITERS = ("REM", "'")
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def extract_instructions(self, file_name, file_content) -> List[Instruction]:
+    def extract_instructions(self, file_name: str, file_content: str) \
+            -> List[Instruction]:
         """
         Extract all the individual instructions from a file.
 
@@ -160,4 +170,32 @@ class Preprocessor:
 
     @classmethod
     def __remove_comments(cls, line: str) -> str:
-        return split("REM|'", line)[0]
+        """
+        Search for the first REM or ' character not enclosed in a string or in
+        another token
+        """
+        in_string = False
+        position = 0
+
+        if any(line.startswith(f"{d} ") for d in cls.COMMENT_DELIMITERS):
+            return ''
+
+        while position < len(line):
+            char = line[position]
+            remaining_line = line[position:]
+
+            if in_string:
+                if remaining_line.startswith('""'):
+                    position += 1
+                elif char == '"':
+                    in_string = False
+            else:
+                if any(remaining_line.startswith(f" {d} ")
+                       for d in cls.COMMENT_DELIMITERS):
+                    return line[:position]
+                elif char == '"':
+                    in_string = True
+
+            position += 1
+
+        return line
