@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass
 from typing import Callable, Any, List
 
 from .type import Type
@@ -11,10 +11,14 @@ class OperatorError(Exception):
 
 @dataclass
 class BinaryOperation:
-    function: Callable[[Any], Any]
+    function: InitVar[Callable[[Any, Any], Any]]
     left_type: Type
     right_type: Type
     return_type: Type
+
+    # Workaround for mypy not supporting class-level hints for callbacks
+    def __post_init__(self, function: Callable[[Any, Any], Any]) -> None:
+        self.function = function
 
 
 class BinaryOperator:
@@ -49,7 +53,7 @@ class BinaryOperator:
         raise OperatorError(error_message)
 
     @staticmethod
-    def build_operator(symbol: str) : "BinaryOperator":
+    def build_operator(symbol: str) -> "BinaryOperator":
         """Build an operator from its symbol. It uses OPERATOR_MAP."""
         try:
             return OPERATORS_MAP[symbol]

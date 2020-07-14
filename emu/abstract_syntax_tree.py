@@ -26,7 +26,7 @@ class AST(ABC):
 
         def attribute_filter(attribute: str) -> bool:
             return not attribute.startswith('_') \
-                   and not callable(getattr(self, attribute))
+                and not callable(getattr(self, attribute))
 
         d = {'_type': type(self).__name__}
         for attr_name in filter(attribute_filter, dir(self)):

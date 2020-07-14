@@ -1,9 +1,10 @@
 """Define parts of AST nodes, useful for block statements."""
 
 from abc import abstractmethod
-from typing import List
+from typing import List, Union
 
-from .abstract_syntax_tree import For, ElseIf, If, Block, ProcDef, FunDef, Statement
+from .abstract_syntax_tree import (For, ElseIf, If, Block, ProcDef, FunDef,
+                                   Statement)
 
 
 class BlockElement:
@@ -56,11 +57,13 @@ class ElseHeader(BlockElement):
     def __init__(self):
         super().__init__()
 
+
 class IfFooter(BlockElement):
     IsFooter = True
 
     def __init__(self):
         super().__init__()
+
 
 class ProcDefHeader(BlockElement):
     IsHeader = True
@@ -77,6 +80,7 @@ class ProcDefFooter(BlockElement):
     def __init__(self):
         super().__init__()
 
+
 class FunDefHeader(BlockElement):
     IsHeader = True
 
@@ -92,6 +96,7 @@ class FunDefFooter(BlockElement):
     def __init__(self):
         super().__init__()
 
+
 class PartialBlock:
     """
     A PartialBlock is used in the process of building block statements,
@@ -99,14 +104,15 @@ class PartialBlock:
     multiple sub-blocks, as in a if/elseif/else structure.
     """
     elements: List[BlockElement]
-    statements_blocks: List[List[Statement]]
+    statements_blocks: List[List[Union[Statement, Block]]]
 
     def __init__(self, elements: List[BlockElement] = None,
                  statements_blocks: List[List[Statement]] = None) -> None:
         super().__init__()
         self.elements = elements if elements is not None else []
         self.statements_blocks = statements_blocks \
-            if statements_blocks is not None else [[]]
+            if statements_blocks is not None \
+            else [[]]  # type: ignore[assignment]
 
     # TODO add syntax check
     def build_block(self) -> Block:
@@ -128,7 +134,8 @@ class PartialBlock:
 
             for statements, element in blocks:
                 if isinstance(element, ElseIfHeader):
-                    elseif = ElseIf(condition=element.condition, body=statements)
+                    elseif = ElseIf(
+                        condition=element.condition, body=statements)
                     if_block.elsifs.append(elseif)
                 elif isinstance(element, ElseHeader):
                     else_block = Block(statements)

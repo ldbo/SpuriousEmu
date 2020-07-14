@@ -87,7 +87,8 @@ binary_operators = [
 ]
 
 # Function call
-arguments_list = pOptional(delimitedList(expression)).setName("arguments_list") \
+arguments_list = pOptional(delimitedList(expression)) \
+    .setName("arguments_list") \
     .setParseAction(lambda r: ArgList(list(r)))
 function_call_paren = (identifier + lparen + arguments_list + rparen) \
     .setName("function_call_paren") \
@@ -109,7 +110,7 @@ expression_statement = function_call_no_paren ^ expression
 # Variable
 variable_declaration = (dim_kw + identifier
                         + pOptional(as_kw + variable_type
-                                   + pOptional(Suppress('=') + expression))) \
+                                    + pOptional(Suppress('=') + expression))) \
     .setParseAction(lambda r: VarDec(*r))
 
 variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
@@ -117,22 +118,22 @@ variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
 
 # Function
 
-procedure_header = (sub_kw + identifier +
-                    pOptional(lparen + arguments_list + rparen)) \
+procedure_header = (sub_kw + identifier
+                    + pOptional(lparen + arguments_list + rparen)) \
     .setParseAction(lambda r: ProcDefHeader(*r))
 procedure_footer = (end_kw + sub_kw) \
     .setParseAction(lambda r: ProcDefFooter())
 
-function_header = (function_kw + identifier +
-                   pOptional(lparen + arguments_list + rparen)) \
+function_header = (function_kw + identifier
+                   + pOptional(lparen + arguments_list + rparen)) \
     .setParseAction(lambda r: FunDefHeader(*r))
 function_footer = (end_kw + function_kw) \
     .setParseAction(lambda r: FunDefFooter())
 
 
 declarative_statement = variable_declaration | variable_assignment \
-                        | procedure_header | procedure_footer \
-                        | function_header | function_footer
+    | procedure_header | procedure_footer \
+    | function_header | function_footer
 
 ############################
 #  Loops and conditionals  #
@@ -159,7 +160,7 @@ conditional_statement = if_header | elseif_header | else_header | if_footer
 
 # Wrap up
 statement <<= declarative_statement | loop_statement | conditional_statement \
-              | expression_statement
+    | expression_statement
 
 ############
 #  Parser  #
