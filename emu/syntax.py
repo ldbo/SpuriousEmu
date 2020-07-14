@@ -2,9 +2,10 @@
 
 from typing import List, Union
 
-from pyparsing import (Forward, ParseException, ParserElement,
+from pyparsing import (Forward, ParseException, ParserElement, QuotedString,
                        Regex, Suppress, StringEnd, StringStart, Word,
-                       delimitedList, infixNotation, nums, oneOf, opAssoc)
+                       delimitedList, infixNotation, nums, oneOf, opAssoc,
+                       Keyword)
 from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
@@ -39,15 +40,21 @@ sub_kw = Suppress('Sub')
 then_kw = Suppress('Then')
 to_kw = Suppress('To')
 function_kw = Suppress('Function')
+true_kw = Keyword('True')
+false_kw = Keyword('False')
+
 
 # Literal
 integer = Word(nums).setName("integer") \
     .setParseAction(lambda r: Literal(Type.Integer, r[0]))
-boolean = oneOf("True False").setName("boolean") \
+boolean = (true_kw | false_kw).setName("boolean") \
     .setParseAction(lambda r: Literal(Type.Boolean, r[0]))
-literal = (integer | boolean).setName("literal")
+string = QuotedString(quoteChar='"', escQuote='""').setName("string") \
+    .setParseAction(lambda r: Literal(Type.String, r[0]))
+literal = (integer | boolean | string).setName("literal")
 
 # Identifier
+# TODO prevent from using keywords in identifier
 element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
 identifier = Regex(identifier_regex).setName("identifier") \
@@ -98,10 +105,10 @@ function_call_no_paren = (StringStart() + identifier + arguments_list
     .setName("function_call_no_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
 
-terminal = (function_call_paren | literal | identifier)
+terminal = (literal | function_call_paren | identifier)
 expression << infixNotation(
     terminal, binary_operators, lpar=lparen, rpar=rparen)
-expression_statement = function_call_no_paren ^ expression
+expression_statement = boolean | function_call_no_paren | expression
 
 ##################
 #  Declarations  #

@@ -1,3 +1,11 @@
+"""Define classes allowing to store object values"""
+
+# See type.py for a list of type still to be implemented
+#
+# To add a new supported value, you must:
+#  - subclass Value
+#  - add the Type/Value correspondance in TYPES_MAP
+
 from abc import abstractmethod
 from typing import Any, Union
 
@@ -53,7 +61,7 @@ class Value:
             return TYPES_MAP[to_type](value)
         except KeyError:
             return NotImplementedError(f"Type {to_type} is not already "
-                                  "implemented")
+                                       "implemented")
 
     @staticmethod
     def from_literal(literal):
@@ -94,7 +102,19 @@ class Boolean(Value):
             return Integer(1) if self.value else Integer(0)
 
 
+class String(Value):
+    base_type = Type.String
+
+    def __init__(self, string: str):
+        self.value = string
+
+    def __convert_to(self, to_type):
+        # TODO
+        pass
+
+
 TYPES_MAP = {
     Type.Integer: Integer,
-    Type.Boolean: Boolean
+    Type.Boolean: Boolean,
+    Type.String: String
 }
