@@ -1,3 +1,10 @@
+"""Defines the logic of built-in VBA operators"""
+
+# To implement support for a new operator, you must:
+#  - ensure the types it works with are implemented, see type.py
+#  - add a new entry to OPERATORS_MAP, with the symbol of the operator as key,
+#    and build the corresponding BinaryOperator as value.
+
 from dataclasses import InitVar, dataclass
 from typing import Callable, Any, List
 
@@ -87,10 +94,16 @@ OPERATORS_MAP = {
     ]),
     "+": BinaryOperator('+', [
         BinaryOperation(lambda l, r: l.value + r.value,
-                        Type.Integer, Type.Integer, Type.Integer)
+                        Type.Integer, Type.Integer, Type.Integer),
+        BinaryOperation(lambda l, r: l.value + r.value,
+                        Type.String, Type.String, Type.String)
     ]),
     '-': BinaryOperator('-', [
         BinaryOperation(lambda l, r: l.value - r.value,
                         Type.Integer, Type.Integer, Type.Integer)
+    ]),
+    '&': BinaryOperator('&', [
+        BinaryOperation(lambda l, r: l.value + r.value,
+                        Type.String, Type.String, Type.String)
     ])
 }

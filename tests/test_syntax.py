@@ -1,5 +1,6 @@
 from emu import syntax
 from tests.test import (assert_correct_function, SourceFile, Result)
+from tests.test import run_function
 
 
 def parsing(vbs: SourceFile) -> Result:

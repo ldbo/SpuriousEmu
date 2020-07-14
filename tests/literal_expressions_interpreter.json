@@ -1,0 +1,10 @@
+{
+    "expressions": [
+        "Integer(3)",
+        "Integer(29)",
+        "Integer(15)",
+        "Integer(10)",
+        "String(don't panic)",
+        "String(mostly harmless)"
+    ]
+}
