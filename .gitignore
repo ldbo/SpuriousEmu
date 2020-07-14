@@ -3,4 +3,4 @@ __pycache__
 
 # Tests
 .coverage
-htmlcov
+tests/report/
