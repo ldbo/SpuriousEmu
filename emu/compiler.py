@@ -17,10 +17,6 @@ class Symbol:
     """
     Type = Enum("Type", "Namespace Module Function Variable")
 
-    # Class member
-    _root: Optional["Symbol"] = None
-
-    # Attributes
     _name: str
     _symbol_type: Type
     _parent: Optional["Symbol"]
@@ -28,19 +24,15 @@ class Symbol:
     _position: Tuple[int]
     __search_nodes: List["Symbol"]
 
-    @classmethod
-    def get_root(cls) -> "Symbol":
-        """Build the root if needed, and return it."""
-        if cls._root is None:
-            name = "<Root>"
-            symbol_type = cls.Type.Namespace
-            parent = None
-            children = []
-            position = tuple()
-            cls._root = Symbol(
-                name, symbol_type, parent, children, position)
-
-        return cls._root
+    @staticmethod
+    def build_root() -> "Symbol":
+        """Build a root namespace symbol, with no parent."""
+        name = "<Root>"
+        symbol_type = Symbol.Type.Namespace
+        parent = None
+        children = []
+        position = tuple()
+        return Symbol(name, symbol_type, parent, children, position)
 
     def __init__(self, name, symbol_type, parent=None, children=None,
                  position=None) -> None:
@@ -134,9 +126,12 @@ class Symbol:
             else:
                 return child.__resolve(name[1:])
 
+    def is_root(self) -> bool:
+        return self._parent is None
+
     def full_name(self) -> str:
         """Build the absolute name of the symbol, starting with <Root>."""
-        if self is Symbol._root:
+        if self.is_root():
             return self._name
         else:
             return self._parent.full_name() + '.' + self._name
@@ -145,7 +140,7 @@ class Symbol:
         return f"{self.full_name()}({self._symbol_type.name})"
 
     def __iter__(self):
-        self.__search_nodes = [Symbol.get_root()]
+        self.__search_nodes = [self]
         return self
 
     def __next__(self):
@@ -176,10 +171,12 @@ class Compiler:
         pass
 
     def extract_symbols(self, ast: AST, module_name: str = None) -> None:
-        self.__current_node = Symbol.get_root()
-        self.__current_node.add_child(module_name, Symbol.Type.Module)
+        root = Symbol.build_root()
+        self.__current_node = root.add_child(module_name, Symbol.Type.Module)
 
         self.__parse_ast(ast)
+
+        return root
 
     def __parse_ast(self, ast):
         def type_test(node_type):
