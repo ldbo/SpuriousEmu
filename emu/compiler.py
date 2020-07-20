@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import List, Tuple, Optional
 
-from .abstract_syntax_tree import AST, Block, ArgList
+from .abstract_syntax_tree import *
 
 
 class CompilationError(Exception):
@@ -15,7 +15,7 @@ class Symbol:
     A symbol extracted during compilation, representing a named programming
     element.
     """
-    Type = Enum("Type", "Namespace Module Function")
+    Type = Enum("Type", "Namespace Module Function Variable")
 
     # Class member
     _root: Optional["Symbol"] = None
@@ -176,21 +176,27 @@ class Compiler:
         pass
 
     def extract_symbols(self, ast: AST, module_name: str = None) -> None:
-        __current_node = Symbol.get_root()
-        __current_node.add_child(module_name, Symbol.Type.Module)
+        self.__current_node = Symbol.get_root()
+        self.__current_node.add_child(module_name, Symbol.Type.Module)
 
         self.__parse_ast(ast)
 
     def __parse_ast(self, ast):
+        def type_test(node_type):
+            return type(ast) is node_type
 
+        if type_test(Block):
+            for statement in ast.body:
+                self.__parse_ast(statement)
 
+        if type_test(VarDec):
+            self.__current_node.add_child(ast.identifier.name,
+                                          Symbol.Type.Variable)
 
-a = Symbol.get_root()
-
-b = a.add_child("System", a.Type.Namespace)
-c = b.add_child("Out", a.Type.Module)
-d = c.add_function("println", None, None)
-e = c.add_function("sbob", None, None)
-f = b.add_child("In", a.Type.Module)
-g = f.add_function("println", None, None)
-h = f.add_function("sbob", None, None)
+        elif type_test(FunDef):
+            name = ast.name.name
+            args = ast.arguments
+            body = ast.body
+            fct = self.__current_node.add_function(name, args, body)
+            self.__current_node = fct
+            self.__parse_ast(Block(body))
