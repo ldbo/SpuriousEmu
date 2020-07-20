@@ -93,6 +93,7 @@ class Preprocessor:
     CONTINUING_LINE_DELIMITER = " _"
     CONTINUING_LINE_OPERATORS = (",", "&")
     COMMENT_DELIMITERS = ("REM", "'")
+    MULTIPLE_INSTRUCTIONS_DELIMITER = ":"
 
     def __init__(self) -> None:
         pass
@@ -142,7 +143,7 @@ class Preprocessor:
             self.__continuing_line = True
             # If the instruction is complete
         else:
-            instructions = self.__concatenated_line.split(':')
+            instructions = self.__split_line(self.__concatenated_line)
             single = len(instructions) == 1 \
                 and "\n" not in self.__multiline
             for instruction in instructions:
@@ -199,3 +200,37 @@ class Preprocessor:
             position += 1
 
         return line
+
+    @classmethod
+    def __split_line(cls, line: str) -> List[str]:
+        """
+        Split a line containing no comments into its different instructions,
+        ignoring separators inside strings.
+        """
+        in_string = False
+        instruction_start = 0
+        position = 0
+        delim = cls.MULTIPLE_INSTRUCTIONS_DELIMITER
+        instructions = []
+
+        while position < len(line):
+            char = line[position]
+            remaining_line = line[position:]
+
+            if in_string:
+                if remaining_line.startswith('""'):
+                    position += 1
+                elif char == '"':
+                    in_string = False
+            else:
+                if remaining_line.startswith(delim):
+                    instructions.append(line[instruction_start:position])
+                    instruction_start = position + 1
+                elif char == '"':
+                    in_string = True
+
+            position += 1
+
+        instructions.append(line[instruction_start:position])
+
+        return instructions
