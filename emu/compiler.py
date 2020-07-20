@@ -151,6 +151,9 @@ class Symbol:
         except IndexError:
             raise StopIteration
 
+    def __contains__(self, name):
+        return name in map(lambda s: s._name, self._children)
+
 
 class FunctionSymbol(Symbol):
     args_list: ArgList
