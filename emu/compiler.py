@@ -42,19 +42,11 @@ class Compiler:
 
     @property
     def symbols(self):
-        if self.__root_symbol is None:
-            raise RuntimeError("You must analyse a module before accessing "
-                               "its symbols")
-        else:
-            return self.__root_symbol
+        return self.__root_symbol
 
     @property
     def memory(self):
-        if self.__memory is None:
-            raise RuntimeError("You must analyse a module before accessing "
-                               "its memory")
-        else:
-            return self.__memory
+        return self.__memory
 
     def __parse_ast(self, ast):
         def type_test(node_type):
