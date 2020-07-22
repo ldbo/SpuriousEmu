@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Callable, List
+from inspect import getfullargspec
+from typing import Callable, List, Optional
 
 from .value import Value
 from .abstract_syntax_tree import Block
@@ -26,11 +27,31 @@ class ExternalFunction(Function):
       - a list of Value objects, the actual arguments of the function
     It has to return a Value object.
     """
-    external_function: Callable[["Interpreter", List[Value]], Value]
+    Signature = Callable[["Interpreter", List[Value]], Value]
+    external_function: "ExternalFunction.Signature"
 
     def call(self, interpreter: "Interpreter", arguments_values: List[Value]) \
             -> None:
         self.external_function(interpreter, arguments_values)
+
+    @staticmethod
+    def from_function(
+            python_function: Optional["ExternalFunction.Signature"] = None,
+            name: Optional[str] = None) -> "ExternalFunction.Signature":
+        """
+        Create an ExternalFunction from a Python function, optionally changing
+        its name.
+        """
+        def decorator(python_function: "ExternalFunction.Signature") \
+                -> "ExternalFunction":
+            new_name = python_function.__name__ if name is None else name
+            arguments_names = list(getfullargspec(python_function)[0])
+            return ExternalFunction(new_name, arguments_names, python_function)
+
+        if python_function is None:
+            return decorator
+        else:
+            return decorator(python_function)
 
 
 @dataclass
