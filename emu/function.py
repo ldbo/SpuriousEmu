@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from dataclasses import dataclass
 from inspect import getfullargspec
 from typing import Callable, List, Optional
@@ -13,11 +12,6 @@ class Function:
     name: str
     arguments_names: List[str]
 
-    @abstractmethod
-    def call(self, interpreter: "Interpreter", arguments_values: List[Value]) \
-            -> None:
-        pass
-
 
 @dataclass
 class ExternalFunction(Function):
@@ -29,10 +23,6 @@ class ExternalFunction(Function):
     """
     Signature = Callable[["Interpreter", List[Value]], Value]
     external_function: "ExternalFunction.Signature"
-
-    def call(self, interpreter: "Interpreter", arguments_values: List[Value]) \
-            -> None:
-        self.external_function(interpreter, arguments_values)
 
     @staticmethod
     def from_function(
@@ -58,7 +48,3 @@ class ExternalFunction(Function):
 class InternalFunction(Function):
     """VBA function."""
     body: Block
-
-    def call(self, interpreter: "Interpreter", arguments_values: List[Value]) \
-            -> None:
-        interpreter.call_function(self, arguments_values)
