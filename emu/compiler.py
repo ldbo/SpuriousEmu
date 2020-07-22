@@ -82,10 +82,6 @@ class Compiler:
                 args = list(map(lambda t: t.name, ast.arguments.args))
 
             body = ast.body
-
-            print(f"name: {name}")
-            print(f"args: {args}")
-
             fct_symbol = self.__current_node.add_child(name,
                                                        Symbol.Type.Function)
             fct_object = InternalFunction(name, args, body)
