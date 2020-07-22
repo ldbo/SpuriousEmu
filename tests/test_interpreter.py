@@ -12,12 +12,13 @@ def interpreting(vbs: SourceFile) -> Result:
         lambda interp, args: print(f"msgBox {args[0].value}"),
         name="msgBox")
 
-    interp = interpreter.Interpreter(comp.symbols, comp.memory)
+    print("Symbols:")
+    for symbol in comp.symbols:
+        print(symbol.full_name())
+    print("------\n")
 
-    for main in comp.symbols.find('Main'):
-        function = comp.memory.get_function(main.full_name())
-        print(f"Main : {function}")
-        interp.call_function(function, [])
+    interp = interpreter.Interpreter(comp.symbols, comp.memory)
+    interp.run("Main")
 
     return []
 
