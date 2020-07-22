@@ -6,14 +6,14 @@
 #  - subclass Value
 #  - add the Type/Value correspondance in TYPES_MAP
 
-from abc import abstractmethod
-from typing import Any, Union
+from abc import abstractmethod, ABC
+from typing import Any, Union, Optional
 
 from .error import ConversionError
 from .type import Type
 
 
-class Value:
+class Value(ABC):
     """Represents the interpretation of an expression."""
     base_type: Type
     value: Any
@@ -28,7 +28,7 @@ class Value:
         if self.base_type == to_type:
             return self
         else:
-            converted = self.__convert_to(to_type)
+            converted = self.convert_to_different_type(to_type)
             if converted is not None:
                 return converted
             else:
@@ -36,10 +36,11 @@ class Value:
                 raise ConversionError(msg)
 
     @abstractmethod
-    def __convert_to(self, to_type: Type) -> "Value":
+    def convert_to_different_type(self, to_type: Type) -> Optional["Value"]:
         """
         Function overridden by child classes, to define how to convert the
-        value. Don't override convert_to !
+        value to different types. It should return None for non-supported
+        types. Don't override convert_to !
         """
         pass
 
@@ -79,7 +80,7 @@ class Integer(Value):
         else:
             self.value = int(integer, 10)
 
-    def __convert_to(self, to_type):
+    def convert_to_different_type(self, to_type):
         if to_type == Type.Boolean:
             return Boolean(self.value != 0)
 
@@ -93,7 +94,7 @@ class Boolean(Value):
         else:
             self.value = boolean == "True"
 
-    def __convert_to(self, to_type):
+    def convert_to_different_type(self, to_type):
         if to_type == Type.Integer:
             return Integer(1) if self.value else Integer(0)
 
@@ -104,7 +105,7 @@ class String(Value):
     def __init__(self, string: str):
         self.value = string
 
-    def __convert_to(self, to_type):
+    def convert_to_different_type(self, to_type):
         # TODO
         pass
 

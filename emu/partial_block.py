@@ -1,13 +1,13 @@
 """Define parts of AST nodes, useful for block statements."""
 
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import List, Union
 
 from .abstract_syntax_tree import (For, ElseIf, If, Block, ProcDef, FunDef,
                                    Statement)
 
 
-class BlockElement:
+class BlockElement(ABC):
     """
     Structural element of a block, for example an ElseIf line in an If block,
     only used during the parsing process.
