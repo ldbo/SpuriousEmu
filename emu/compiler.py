@@ -14,15 +14,16 @@ class Compiler:
     __memory: Optional[Memory]
 
     def __init__(self) -> None:
-        self.__root_symbol = None
+        self.reset()
+
+    def reset(self) -> None:
+        self.__root_symbol = Symbol.build_root()
         self.__current_node = None
-        self.__memory = None
+        self.__memory = Memory()
 
     def analyse_module(self, ast: AST, module_name: str = None) -> None:
-        self.__root_symbol = Symbol.build_root()
         self.__current_node = self.__root_symbol.add_child(
             module_name, Symbol.Type.Module)
-        self.__memory = Memory()
 
         self.__parse_ast(ast)
 
@@ -62,15 +63,19 @@ class Compiler:
         elif type_test(FunDef) or type_test(ProcDef):
             name = ast.name.name
 
-            # import ipdb
-            # pdb.set_trace()
+            if ast.arguments is None:
+                args = []
+            else:
+                args = list(map(lambda t: t.name, ast.arguments.args))
 
-            args = list(map(ast.arguments))
             body = ast.body
+
+            print(f"name: {name}")
+            print(f"args: {args}")
 
             fct_symbol = self.__current_node.add_child(name,
                                                        Symbol.Type.Function)
-            fct_object = InternalFunction(body, args)
+            fct_object = InternalFunction(name, args, body)
 
             self.__current_node = fct_symbol
             self.__memory.add_function(fct_symbol.full_name(), fct_object)
