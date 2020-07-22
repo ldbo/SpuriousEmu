@@ -78,7 +78,10 @@ class Compiler:
                                                        Symbol.Type.Function)
             fct_object = InternalFunction(name, args, body)
 
+            previous_node = self.__current_node
             self.__current_node = fct_symbol
             self.__memory.add_function(fct_symbol.full_name(), fct_object)
 
             self.__parse_ast(Block(body))
+
+            self.__current_node = previous_node
