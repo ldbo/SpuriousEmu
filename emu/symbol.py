@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional, List, Tuple
 
-from .error import CompilationError
+from .error import CompilationError, ResolutionError
 
 
 class Symbol:
@@ -99,9 +99,14 @@ class Symbol:
 
         return sum((child.find(name) for child in self._children), ret)
 
-    def resolve(self, name: str) -> Optional["Symbol"]:
+    def resolve(self, name: str) -> "Symbol":
         """Resolve a name in the recursive children of the symbol."""
-        return self.__resolve(name.split('.'))
+        resolution = self.__resolve(name.split('.'))
+        if resolution is None:
+            msg = f"Can't resolve {name} from {self.full_name()}"
+            raise ResolutionError(msg)
+        else:
+            return resolution
 
     def __resolve(self, name: List[str]) -> Optional["Symbol"]:
         if self._symbol_type == Symbol.Type.Function:

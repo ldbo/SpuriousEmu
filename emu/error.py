@@ -40,3 +40,7 @@ class OperatorError(Exception):
 
 class ConversionError(Exception):
     pass
+
+
+class ResolutionError(Exception):
+    pass
