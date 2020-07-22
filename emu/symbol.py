@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Optional, List, Tuple
 
+from .error import CompilationError
+
 
 class Symbol:
     """
