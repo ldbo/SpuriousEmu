@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, List
+from typing import Callable, List
 
 from .value import Value
 from .abstract_syntax_tree import Block
@@ -20,8 +20,13 @@ class Function:
 
 @dataclass
 class ExternalFunction(Function):
-    """Python function."""
-    external_function: Callable[[Any], Any]
+    """
+    Python function wrapper, the function will be called with two arguments:
+      - a reference to the interpreter, allowing to have side effects
+      - a list of Value objects, the actual arguments of the function
+    It has to return a Value object.
+    """
+    external_function: Callable[["Interpreter", List[Value]], Value]
 
     def call(self, interpreter: "Interpreter", arguments_values: List[Value]) \
             -> None:
