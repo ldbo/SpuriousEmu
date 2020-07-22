@@ -1,7 +1,8 @@
 from typing import List, Dict, Any
 
 from .abstract_syntax_tree import *
-from .compiler import Function, Symbol
+from .function import Function
+from .symbol import Symbol
 from .value import Value
 
 
