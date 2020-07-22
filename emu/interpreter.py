@@ -49,7 +49,7 @@ class Interpreter:
             self._local_vars[-1][statement.variable.name] = value
         elif t is FunCall:
             short_name = statement.function.name
-            function_name = self._symbols.resolve(short_name)
+            function_name = self._symbols.resolve(short_name).full_name()
             if function_name is None:
                 raise RuntimeError(f"Can't resolve symbol {short_name}")
 

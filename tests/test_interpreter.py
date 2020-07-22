@@ -8,6 +8,7 @@ def interpreting(vbs: SourceFile) -> Result:
     ast = syntax.parse_file(vbs)
     comp = compiler.Compiler()
     comp.analyse_module(ast, "main_module")
+    comp.add_builtin(lambda var1: print(f"msgBox {var1}"), name="msgBox")
 
     interp = interpreter.Interpreter(comp.symbols, comp.memory)
 

@@ -3,7 +3,7 @@
 from typing import Optional
 
 from .abstract_syntax_tree import *
-from .function import InternalFunction
+from .function import ExternalFunction, InternalFunction
 from .symbol import Symbol
 from .memory import Memory
 
@@ -26,6 +26,19 @@ class Compiler:
             module_name, Symbol.Type.Module)
 
         self.__parse_ast(ast)
+
+    def add_builtin(self,
+                    function: Union[InternalFunction,
+                                    ExternalFunction.Signature],
+                    name: Optional[str] = None) -> None:
+        if type(function) is not InternalFunction:
+            function = ExternalFunction.from_function(function)
+
+        if name is None:
+            name = function.name
+
+        symbol = self.__root_symbol.add_child(name, Symbol.Type.Function)
+        self.__memory.add_function(symbol.full_name(), function)
 
     @property
     def symbols(self):
