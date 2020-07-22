@@ -12,10 +12,6 @@ from .type import Type
 from .value import ConversionError, Value
 
 
-class OperatorError(Exception):
-    pass
-
-
 @dataclass
 class BinaryOperation:
     function: InitVar[Callable[[Any, Any], Any]]

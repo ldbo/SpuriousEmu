@@ -9,12 +9,8 @@
 from abc import abstractmethod
 from typing import Any, Union
 
-from .abstract_syntax_tree import Literal
+from .error import ConversionError
 from .type import Type
-
-
-class ConversionError(Exception):
-    pass
 
 
 class Value:

@@ -28,22 +28,7 @@ comments, etc.
 
 from typing import List, Dict, Any
 
-
-class PreprocessorError(Exception):
-    """
-    Error raised during preprocessing.
-    """
-    file_name: str
-    line_number: int
-    message: str
-
-    def __init__(self, file_name: str, line_number: int, message: str) -> None:
-        self.file_name = file_name
-        self.line_number = line_number
-        self.message = message
-
-    def __str__(self) -> str:
-        return f"{self.file_name}:{self.line_number}: {self.message}"
+from .error import PreprocessorError
 
 
 class Instruction:

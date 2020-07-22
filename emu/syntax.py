@@ -13,6 +13,7 @@ from .partial_block import *
 from .preprocessor import Instruction, Preprocessor
 from .type import types
 from .operator import *
+from .error import ParsingError
 
 #############
 #  Grammar  #
@@ -185,20 +186,6 @@ statement <<= declarative_statement | loop_statement | conditional_statement \
 
 # Packrat parsing cache parsing results, improving speed
 ParserElement.enablePackrat(cache_size_limit=128)
-
-
-class ParsingError(Exception):
-    """
-    Error raised during parsing.
-    """
-
-    def __init__(self, file_name: str, line_number: int, message: str):
-        self.file_name = file_name
-        self.line_number = line_number
-        self.message = message
-
-    def __str__(self) -> str:
-        return f"{self.file_name}:{self.line_number}: {self.message}"
 
 
 class Parser:
