@@ -22,10 +22,10 @@ class Memory:
         self._functions = dict()
 
     def add_function(self, full_name: str, function: Function) -> None:
-        self._function[full_name] = function
+        self._functions[full_name] = function
 
     def get_function(self, full_name: str) -> Function:
-        return self._function[full_name]
+        return self._functions[full_name]
 
     def set_variable(self, local_name: str, value: Value) -> None:
         self._local_variables[-1][local_name] = value

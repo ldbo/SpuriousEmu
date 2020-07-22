@@ -1,11 +1,20 @@
-from emu import syntax, interpreter
+from emu import syntax, interpreter, compiler
 from tests.test import (assert_correct_function, SourceFile, Result)
+
+from tests.test import run_function
 
 
 def interpreting(vbs: SourceFile) -> Result:
     ast = syntax.parse_file(vbs)
-    interp = interpreter.Interpreter()
-    return interp.evaluate_expression(ast.body[0])
+    comp = compiler.Compiler()
+    comp.analyse_module(ast, "main_module")
+
+    interp = interpreter.Interpreter(comp.symbols, comp.memory)
+
+    for main in comp.symbols.find('Main'):
+        interp.call_procedure(comp.memory.get_function(main.full_name()))
+
+    return []
 
 
 def evaluate_expressions(vbs: SourceFile) -> Result:
@@ -24,3 +33,7 @@ def test_types():
 def test_literal_expressions():
     assert_correct_function('literal_expressions_interpreter',
                             evaluate_expressions)
+
+
+def test_draf():
+    run_function('interpreter_01', interpreting)

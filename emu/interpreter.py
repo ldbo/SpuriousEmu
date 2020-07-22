@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 
 from .abstract_syntax_tree import *
 from .function import Function
+from .memory import Memory
 from .symbol import Symbol
 from .value import Value
 
@@ -9,12 +10,12 @@ from .value import Value
 class Interpreter:
     _local_vars: List[Dict[str, Any]]
     _symbols: Symbol
-    _functions: Dict[str, Function]
+    _memory: Dict[str, Function]
 
-    def __init__(self, symbols=None, functions=None):
+    def __init__(self, symbols=None, memory=None):
         self._local_vars = []
         self._symbols = symbols if symbols is not None else Symbol.build_root()
-        self._functions = functions if functions is not None else dict()
+        self._memory = memory if memory is not None else Memory()
 
     def evaluate_expression(self, expression):
         if isinstance(expression, Literal):
@@ -37,6 +38,10 @@ class Interpreter:
         for statement in procedure.body:
             self.interprete_statement(statement)
 
+    def call_function():
+        # TODODO
+        pass
+
     def interprete_statement(self, statement: AST) -> None:
         t = type(statement)
         if t is VarAssign:
@@ -48,13 +53,7 @@ class Interpreter:
             if function_name is None:
                 raise RuntimeError(f"Can't resolve symbol {short_name}")
 
-            try:
-                function = self._functions[function_name]
-                if type(function) is Function:
-                    self.call_procedure(function)
-                else:
-                    arg_list = statement.arguments.args
-                    arguments = list(map(self.evaluate_expression, arg_list))
-                    function(arguments)
-            except KeyError:
-                raise RuntimeError(f"Function {function_name} is not defined")
+            function = self._memory.get_function(function_name)
+            arg_list = statement.arguments.args
+            print(f"Calling {function_name} with arguments {arg_list}")
+            function.call(self, list(map(self.evaluate_expression, arg_list)))
