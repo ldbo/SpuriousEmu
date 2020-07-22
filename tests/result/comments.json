@@ -4,63 +4,63 @@
             "instruction": "",
             "multiline": "' Test for comments removal",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 1
         },
         {
             "instruction": "",
             "multiline": "REM Hi, let's begin",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 2
         },
         {
             "instruction": "'Could you move away from me ?",
             "multiline": "'Could you move away from me ?",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 3
         },
         {
             "instruction": "Set a = 23",
             "multiline": "Set a = 23 ' Let's start with an easy one",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 4
         },
         {
             "instruction": "Dim g as Object' Should not be an issue",
             "multiline": "Dim g as Object' Should not be an issue",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 5
         },
         {
             "instruction": "msgBox \"lpop\"",
             "multiline": "msgBox \"lpop\" REM it's becoming boring",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 6
         },
         {
             "instruction": "print \"helo, worl\"REM",
             "multiline": "print \"helo, worl\"REM",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 7
         },
         {
             "instruction": "Set str1 = \"Hey why are you here REM ?\"",
             "multiline": "Set str1 = \"Hey why are you here REM ?\"",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 8
         },
         {
             "instruction": "Set str2 = \"And you ' ?\"",
             "multiline": "Set str2 = \"And you ' ?\"",
             "single": true,
-            "file_name": "tests/comments.vbs",
+            "file_name": "tests/source/comments.vbs",
             "line_number": 9
         }
     ]

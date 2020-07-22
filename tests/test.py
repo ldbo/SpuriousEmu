@@ -4,15 +4,13 @@ from typing import Callable, Dict, Any
 
 from nose.tools import assert_equals
 
-from emu import syntax
-
 Result = Dict[str, Any]
 SourceFile = str
 
 
 def result_path(test: str) -> str:
     """Path of the JSON file containing the test result"""
-    return f"tests/{test}.json"
+    return f"tests/result/{test}.json"
 
 
 def load_result(test: str) -> Result:
@@ -29,10 +27,11 @@ def export_result(test: str, function: Callable[[SourceFile], Result]) -> None:
 
 def vbs_path(test: str) -> str:
     """Return the path of the VBS source file of the test"""
-    return f"tests/{test}.vbs"
+    return f"tests/source/{test}.vbs"
 
 
-def assert_correct_function(test: str, function: Callable[[SourceFile], Result]) -> None:
+def assert_correct_function(test: str,
+                            function: Callable[[SourceFile], Result]) -> None:
     """Load the expected result from JSON and compare to the function result"""
     result = function(vbs_path(test))
     expected_result = load_result(test)
@@ -40,6 +39,9 @@ def assert_correct_function(test: str, function: Callable[[SourceFile], Result])
 
 
 def run_function(test: str, function: Callable[[SourceFile], Result]) -> None:
-    """Display the result of a function call. Used during development until an expected result has been produced"""
+    """
+    Display the result of a function call. Used during development until an
+    expected result has been produced
+    """
     result = function(vbs_path(test))
     pprint(result)
