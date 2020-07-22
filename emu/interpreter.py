@@ -59,12 +59,15 @@ class Interpreter:
             value = self.evaluate_expression(statement.value)
             self._memory.set_variable(statement.variable.name, value)
         elif t is FunCall:
-            short_name = statement.function.name
-            function_name = self._symbols.resolve(short_name).full_name()
-            if function_name is None:
-                raise RuntimeError(f"Can't resolve symbol {short_name}")
+            self.evaluate_function_call(statement)
 
-            function = self._memory.get_function(function_name)
-            arg_list = statement.arguments.args
-            print(f"Calling {function_name} with arguments {arg_list}")
-            function.call(self, list(map(self.evaluate_expression, arg_list)))
+    def run(self, function_name: str, args: Optional[List[Value]] = None) \
+            -> Value:
+        if args is None:
+            args = []
+
+        functions = self._symbols.find(function_name)
+        for function in functions:
+            self._current_symbol = function
+            self.call_function(self._memory.get_function(function.full_name()),
+                               args)
