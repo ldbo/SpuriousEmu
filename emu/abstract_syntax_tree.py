@@ -190,6 +190,10 @@ class Literal(Expression):
         self.value = value
         self.type = type
 
+    @staticmethod
+    def from_value(value) -> "Literal":
+        return Literal(value.base_type, value.value)
+
 
 # TODO differentiate between ArgList for calls and definitions
 class ArgList(Statement):
