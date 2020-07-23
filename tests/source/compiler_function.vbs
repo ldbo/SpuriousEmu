@@ -6,3 +6,6 @@ Function CalculateSquareRoot(NumberArg)
   Set CalculateSquareRoot = Sqr(NumberArg) ' Return square root.
  End If
 End Function
+
+Sub Proc(arg1, arg2)
+End Sub

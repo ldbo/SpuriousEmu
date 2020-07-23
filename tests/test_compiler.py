@@ -6,26 +6,21 @@ from tests.test_preprocessor import preprocess
 from tests.test_syntax import parsing
 
 
-def compile_module(vbs: SourceFile) -> Result:
+def extract_symbols(vbs: SourceFile) -> Result:
     ast = syntax.parse_file(vbs)
     cpl = compiler.Compiler()
-    symbols = cpl.extract_symbols(ast, "test_module")
-    return list(map(lambda t: str(t), symbols))
+    cpl.analyse_module(ast, "test_module")
+
+    symbols_list = list(map(lambda t: str(t), cpl.symbols))
+    return symbols_list
 
 
 def test_block():
-    # run_function("compiler_block", compile_module)
-    pass
+    run_function("compiler_block", extract_symbols)
 
 
 def test_function():
-    # run_function("compiler_function", compile_module)
-    pass
-
-
-def test_gamaredon():
-    # run_function("first_stage_gamaredon_improved", compile_module)
-    pass
+    run_function("compiler_function", extract_symbols)
 
 
 def test_draft():

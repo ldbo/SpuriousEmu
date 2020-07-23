@@ -94,6 +94,12 @@ class Compiler:
             self.__current_node = fct_symbol
             self.__memory.add_function(fct_symbol.full_name(), fct_object)
 
+            for arg in args:
+                self.__current_node.add_child(arg, Symbol.Type.Variable)
+
+            if type_test(FunDef):
+                self.__current_node.add_child(name, Symbol.Type.Variable)
+
             self.__parse_ast(Block(body))
 
             self.__current_node = previous_node
