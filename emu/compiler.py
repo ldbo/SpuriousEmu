@@ -1,12 +1,14 @@
 """Pseudo-compilation stage: allow to extract symbols and function body."""
 
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from pathlib import Path
+from typing import Optional, Dict, Any, List
 
 from .abstract_syntax_tree import *
 from .function import ExternalFunction, Function, InternalFunction
 from .memory import Memory
 from .symbol import Symbol
+from . import syntax
 
 
 @dataclass
@@ -126,3 +128,19 @@ class Compiler:
         self.__parse_ast(Block(body))
 
         self.__current_node = previous_node
+
+
+def compile_file(path: str) -> Program:
+    """Parse a file and then compile it."""
+    return compile_files([path])
+
+
+def compile_files(paths: List[str]) -> Program:
+    """Parse and compile a list of files."""
+    compiler = Compiler()
+
+    for path in paths:
+        ast = syntax.parse_file(path)
+        compiler.analyse_module(ast, Path(path).name.split('.')[0])
+
+    return compiler.program

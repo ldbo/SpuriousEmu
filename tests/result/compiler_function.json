@@ -1,0 +1,18 @@
+{
+    "symbols": [
+        "<Root>",
+        "<Root>.compiler_function",
+        "<Root>.compiler_function.Proc",
+        "<Root>.compiler_function.Proc.arg2",
+        "<Root>.compiler_function.Proc.arg1",
+        "<Root>.compiler_function.CalculateSquareRoot",
+        "<Root>.compiler_function.CalculateSquareRoot.CalculateSquareRoot",
+        "<Root>.compiler_function.CalculateSquareRoot.NumberArg"
+    ],
+    "memory": {
+        "functions": [
+            "<Root>.compiler_function.CalculateSquareRoot",
+            "<Root>.compiler_function.Proc"
+        ]
+    }
+}
