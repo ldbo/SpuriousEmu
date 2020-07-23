@@ -13,11 +13,11 @@ def interpreting(vbs: SourceFile) -> Result:
         name="msgBox")
 
     print("Symbols:")
-    for symbol in comp.symbols:
+    for symbol in comp.program.symbols:
         print(symbol.full_name())
     print("------\n")
 
-    interp = interpreter.Interpreter(comp.symbols, comp.memory)
+    interp = interpreter.Interpreter(comp.program.symbols, comp.program.memory)
     interp.run("Main")
 
     return []
@@ -43,3 +43,7 @@ def test_literal_expressions():
 
 def test_draf():
     run_function('interpreter_01', interpreting)
+
+
+def test_draft():
+    run_function("draft", interpreting)

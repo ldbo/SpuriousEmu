@@ -1,11 +1,28 @@
 """Pseudo-compilation stage: allow to extract symbols and function body."""
 
-from typing import Optional
+from dataclasses import dataclass
+from typing import Optional, Dict, Any
 
 from .abstract_syntax_tree import *
 from .function import ExternalFunction, Function, InternalFunction
-from .symbol import Symbol
 from .memory import Memory
+from .symbol import Symbol
+
+
+@dataclass
+class Program:
+    """
+    Represent a statically analysed program : a set of symbols, with a memory
+    containing already initialized values.
+    """
+    symbols: Symbol
+    memory: Memory
+
+    def to_dict(self) -> Dict[str, Any]:
+        d = dict()
+        d['symbols'] = list(map(lambda t: t.full_name(), self.symbols))
+        d['memory'] = {'functions': list(self.memory._functions.keys())}
+        return d
 
 
 class Compiler:
@@ -53,14 +70,9 @@ class Compiler:
         self.__memory.add_function(symbol.full_name(), typed_function)
 
     @property
-    def symbols(self) -> Symbol:
-        """Return the root symbol of the analysed program."""
-        return self.__root_symbol
-
-    @property
-    def memory(self) -> Memory:
-        """Return the initialized memory of the program."""
-        return self.__memory
+    def program(self):
+        """Return the compiled program."""
+        return Program(self.__root_symbol, self.__memory)
 
     def __parse_ast(self, ast: AST) -> None:
         """Recursively parse an AST, used by analyse_module."""
