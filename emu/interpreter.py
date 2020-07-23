@@ -5,6 +5,7 @@ from typing import List
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
 from .memory import Memory
+from .operator import OPERATORS_MAP
 from .symbol import Symbol
 from .value import Value
 
@@ -86,6 +87,37 @@ class Interpreter:
             msg = f"{type(function)} is not handled yet by the interpreter"
             raise NotImplemented(msg)
 
+    def execute_for(self, loop: For) -> None:
+        # Evaluation of parameters
+        # TODO check if Let-coercible to Double, raise E13 if not
+        start_value = self.evaluate_expression(loop.start)
+        end_value = self.evaluate_expression(loop.end)
+        if loop.step is None:
+            step_value = Integer(1)
+        else:
+            step_value = self.evaluate_expression(loop.step)
+        step_literal = Literal.from_value(step_value)
+        counter_name = loop.counter.name
+
+        # Comparison function
+        if step_value.value >= 0:
+            def keep_going():
+                counter_value = self._memory.get_variable(counter_name)
+                return counter_value.value <= end_value.value
+        else:
+            def keep_going():
+                counter_value = self._memory.get_variable(counter_name)
+                return counter_value.value > end_value.value
+
+        # Loop
+        self._memory.set_variable(counter_name, start_value)
+        while keep_going():
+            self.execute_block(loop.body)
+            add_expression = BinOp(OPERATORS_MAP['+'],
+                                   loop.counter, step_literal)
+            new_counter_value = self.evaluate_expression(add_expression)
+            self._memory.set_variable(counter_name, new_counter_value)
+
     def interprete_statement(self, statement: AST) -> None:
         t = type(statement)
         if t is VarAssign:
@@ -93,6 +125,8 @@ class Interpreter:
             self._memory.set_variable(statement.variable.name, value)
         elif t is FunCall:
             self.evaluate_function_call(statement)
+        elif t is For:
+            self.execute_for(statement)
 
     def run(self, function_name: str, args: Optional[List[Value]] = None) \
             -> None:
