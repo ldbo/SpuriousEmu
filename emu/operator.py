@@ -8,6 +8,7 @@
 from dataclasses import InitVar, dataclass
 from typing import Callable, Any, List
 
+from .error import OperatorError
 from .type import Type
 from .value import ConversionError, Value
 

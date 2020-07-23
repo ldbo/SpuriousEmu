@@ -1,4 +1,6 @@
-from typing import List, Dict
+"""Provide the Interpreter class, that is used to execute VBA programs."""
+
+from typing import List
 
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
@@ -8,9 +10,10 @@ from .value import Value
 
 
 class Interpreter:
+    """Class used to interprete a program which has already been compiled."""
     _symbols: Symbol
     _current_symbol: Symbol
-    _memory: Dict[str, Function]
+    _memory: Memory
 
     def __init__(self, symbols=None, memory=None):
         self._symbols = symbols if symbols is not None else Symbol.build_root()
@@ -23,7 +26,11 @@ class Interpreter:
         elif isinstance(expression, Identifier):
             return self._memory.get_variable(expression.name)
         elif isinstance(expression, FunCall):
-            return self.evaluate_function_call(expression)
+            value = self.evaluate_function_call(expression)
+            if value is None:
+                raise RuntimeError("Procedure called inside an expression")
+            else:
+                return value
         elif isinstance(expression, BinOp):
             left = self.evaluate_expression(expression.left)
             right = self.evaluate_expression(expression.right)
@@ -32,8 +39,10 @@ class Interpreter:
         elif isinstance(expression, UnOp):
             raise NotImplementedError(
                 "Don't use unary operators, you stupid s**t")
+        else:
+            raise NotImplemented("Don't know what you've thrown at me dude")
 
-    def evaluate_function_call(self, call: FunCall) -> Value:
+    def evaluate_function_call(self, call: FunCall) -> Optional[Value]:
         # Resolution
         function_symbol = self._current_symbol.resolve(call.function.name)
         function_name = function_symbol.full_name()
@@ -66,12 +75,16 @@ class Interpreter:
 
             self.execute_block(function.body)
 
+            return_value: Optional[Value]
             try:
                 return_value = self._memory.get_variable(function.name)
             except KeyError:
                 return_value = None
 
             return return_value
+        else:
+            msg = f"{type(function)} is not handled yet by the interpreter"
+            raise NotImplemented(msg)
 
     def interprete_statement(self, statement: AST) -> None:
         t = type(statement)
@@ -82,7 +95,11 @@ class Interpreter:
             self.evaluate_function_call(statement)
 
     def run(self, function_name: str, args: Optional[List[Value]] = None) \
-            -> Value:
+            -> None:
+        """
+        Search for a function entry point in the program symbol, and execute
+        it. You should use it most of the time.
+        """
         if args is None:
             args = []
 

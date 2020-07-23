@@ -7,7 +7,7 @@ from .error import CompilationError, ResolutionError
 class Symbol:
     """
     A symbol extracted during compilation, representing a named programming
-    element.
+    element, and its hierarchical children.
     """
     Type = Enum("Type", "Namespace Module Function Variable")
 
@@ -24,8 +24,8 @@ class Symbol:
         name = "<Root>"
         symbol_type = Symbol.Type.Namespace
         parent = None
-        children = []
-        position = tuple()
+        children: List['Symbol'] = []
+        position: Tuple[int, ...] = tuple()
         return Symbol(name, symbol_type, parent, children, position)
 
     def __init__(self, name, symbol_type, parent=None, children=None,
@@ -67,7 +67,7 @@ class Symbol:
     def add_child(self, name, child_type) -> "Symbol":
         """Initialize a child, add it and return it."""
         parent = None
-        children = []
+        children: List['Symbol'] = []
         position = None
         child = Symbol(
             name, child_type, parent, children, position)
@@ -91,6 +91,10 @@ class Symbol:
             raise CompilationError(msg)
 
     def find(self, name: str) -> List["Symbol"]:
+        """
+        Search for a direct or indirect child with the given name, using
+        find_child recursively.
+        """
         own_child = self.find_child(name)
         if own_child is None:
             ret = []
@@ -113,7 +117,10 @@ class Symbol:
             if len(name) == 0:
                 return self
             else:
-                return self._parent.__resolve(name)
+                if self._parent is None:
+                    return None
+                else:
+                    return self._parent.__resolve(name)
         else:
             child = self.find_child(name[0])
             if child is None:
@@ -138,6 +145,10 @@ class Symbol:
         return f"{self.full_name()}({self._symbol_type.name})"
 
     def __iter__(self):
+        """
+        Return an iterator to all the direct and indirect children of the
+        symbol.
+        """
         self.__search_nodes = [self]
         return self
 
@@ -150,4 +161,5 @@ class Symbol:
             raise StopIteration
 
     def __contains__(self, name):
+        """Check if name is a direct child of the symbol."""
         return name in map(lambda s: s._name, self._children)

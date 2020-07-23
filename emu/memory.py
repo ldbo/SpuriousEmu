@@ -14,7 +14,11 @@ class Variable:
 
 
 class Memory:
-    _local_variables: List[Dict[str, Variable]]
+    """
+    Represent the memory used for running a program, including static elements
+    like functions and dynamic ones like local variables.
+    """
+    _local_variables: List[Dict[str, Value]]
     _functions: Dict[str, Function]
 
     def __init__(self) -> None:

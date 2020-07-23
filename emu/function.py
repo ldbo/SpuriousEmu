@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from inspect import getfullargspec
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Union
 
 from .value import Value
 from .abstract_syntax_tree import Block
@@ -27,7 +27,9 @@ class ExternalFunction(Function):
     @staticmethod
     def from_function(
             python_function: Optional["ExternalFunction.Signature"] = None,
-            name: Optional[str] = None) -> "ExternalFunction.Signature":
+            name: Optional[str] = None) -> \
+        Union["ExternalFunction.Signature",
+              Callable[["ExternalFunction.Signature"], "ExternalFunction"]]:
         """
         Create an ExternalFunction from a Python function, optionally changing
         its name.
@@ -44,7 +46,7 @@ class ExternalFunction(Function):
             return decorator(python_function)
 
 
-@dataclass
+@ dataclass
 class InternalFunction(Function):
     """VBA function."""
     body: Block

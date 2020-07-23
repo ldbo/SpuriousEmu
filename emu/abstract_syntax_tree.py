@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any, Union
 
+from .operator import BinaryOperator
 from .type import Type
 
 
@@ -225,12 +226,12 @@ class UnOp(Expression):
 
 class BinOp(Expression):
     """Binary operator"""
-    operator: str
+    operator: BinaryOperator
     left: Expression
     right: Expression
 
-    def __init__(self, operator: str, left: Expression, right: Expression,
-                 **kwargs) -> None:
+    def __init__(self, operator: BinaryOperator, left: Expression,
+                 right: Expression, **kwargs) -> None:
         super().__init__(**kwargs)
         self.operator = operator
         self.left = left

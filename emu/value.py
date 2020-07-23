@@ -45,7 +45,7 @@ class Value(ABC):
         pass
 
     @staticmethod
-    def from_value(value, to_type):
+    def from_value(value, to_type: Type) -> "Value":
         """
         Use a couple value/type to build a Value subclass object.
 
@@ -57,57 +57,59 @@ class Value(ABC):
         try:
             return TYPES_MAP[to_type](value)
         except KeyError:
-            return NotImplementedError(f"Type {to_type} is not already "
-                                       "implemented")
+            raise NotImplementedError(f"Type {to_type} is not already "
+                                      "implemented")
 
     @staticmethod
-    def from_literal(literal):
+    def from_literal(literal) -> "Value":
         """
         Build the value corresponding to a literal, using Value.from_value.
         """
         return Value.from_value(literal.value, literal.type)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.base_type.name}({self.value})"
 
 
 class Integer(Value):
     base_type = Type.Integer
 
-    def __init__(self, integer: Union[str, int]):
+    def __init__(self, integer: Union[str, int]) -> None:
         if isinstance(integer, int):
             self.value = integer
         else:
             self.value = int(integer, 10)
 
-    def convert_to_different_type(self, to_type):
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
         if to_type == Type.Boolean:
             return Boolean(self.value != 0)
+        return None
 
 
 class Boolean(Value):
     base_type = Type.Boolean
 
-    def __init__(self, boolean: Union[str, bool]):
+    def __init__(self, boolean: Union[str, bool]) -> None:
         if isinstance(boolean, bool):
             self.value = boolean
         else:
             self.value = boolean == "True"
 
-    def convert_to_different_type(self, to_type):
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
         if to_type == Type.Integer:
             return Integer(1) if self.value else Integer(0)
+        return None
 
 
 class String(Value):
     base_type = Type.String
 
-    def __init__(self, string: str):
+    def __init__(self, string: str) -> None:
         self.value = string
 
-    def convert_to_different_type(self, to_type):
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
         # TODO
-        pass
+        return None
 
 
 TYPES_MAP = {
