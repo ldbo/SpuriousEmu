@@ -78,28 +78,39 @@ class Compiler:
                 self.__current_node.add_child(ast.variable.name,
                                               Symbol.Type.Variable)
         elif type_test(FunDef) or type_test(ProcDef):
-            name = ast.name.name
+            self.__parse_callable(ast)
+        elif type_test(For):
+            if ast.counter.name not in self.__current_node:
+                self.__current_node.add_child(ast.counter.name,
+                                              Symbol.Type.Variable)
+            self.__parse_ast(ast.body)
 
-            if ast.arguments is None:
-                args = []
-            else:
-                args = list(map(lambda t: t.name, ast.arguments.args))
+    def __parse_callable(self, ast: Union[FunDef, ProcDef]) -> None:
+        # Extract information
+        name = ast.name.name
+        if ast.arguments is None:
+            args = []
+        else:
+            args = list(map(lambda t: t.name, ast.arguments.args))
+        body = ast.body
 
-            body = ast.body
-            fct_symbol = self.__current_node.add_child(name,
-                                                       Symbol.Type.Function)
-            fct_object = InternalFunction(name, args, body)
+        # Build symbol and memory representation
+        fct_symbol = self.__current_node.add_child(name,
+                                                   Symbol.Type.Function)
+        fct_object = InternalFunction(name, args, body)
 
-            previous_node = self.__current_node
-            self.__current_node = fct_symbol
-            self.__memory.add_function(fct_symbol.full_name(), fct_object)
+        # Add them
+        previous_node = self.__current_node
+        self.__current_node = fct_symbol
+        self.__memory.add_function(fct_symbol.full_name(), fct_object)
 
-            for arg in args:
-                self.__current_node.add_child(arg, Symbol.Type.Variable)
+        for arg in args:
+            self.__current_node.add_child(arg, Symbol.Type.Variable)
 
-            if type_test(FunDef):
-                self.__current_node.add_child(name, Symbol.Type.Variable)
+        if type(ast) is FunDef:
+            self.__current_node.add_child(name, Symbol.Type.Variable)
 
-            self.__parse_ast(Block(body))
+        # Continue
+        self.__parse_ast(Block(body))
 
-            self.__current_node = previous_node
+        self.__current_node = previous_node
