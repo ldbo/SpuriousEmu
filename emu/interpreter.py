@@ -4,6 +4,7 @@ from typing import List
 
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
+from .compiler import compile_files
 from .memory import Memory
 from .operator import OPERATORS_MAP
 from .symbol import Symbol
@@ -146,3 +147,13 @@ class Interpreter:
                                args)
             print("-------")
             print()
+
+
+def run_program(file_paths: List[str]) -> None:
+    program = compile_files(file_paths)
+    interpreter = Interpreter(program.symbols, program.memory)
+    interpreter.run('Main')
+
+
+def run_single_file(file_path: str) -> None:
+    run_program([file_path])
