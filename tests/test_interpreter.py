@@ -28,7 +28,7 @@ def evaluate_expressions(vbs: SourceFile) -> Result:
     interp = interpreter.Interpreter()
     expressions = []
     for expression in ast.body:
-        expressions.append(str(interp.evaluate_expression(expression)))
+        expressions.append(str(interp.evaluate(expression)))
     return {'expressions': expressions}
 
 

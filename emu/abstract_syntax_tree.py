@@ -5,13 +5,14 @@ from typing import List, Optional, Dict, Any, Union
 
 from .operator import BinaryOperator
 from .type import Type
+from .visitor import Visitable
 
 
 ##################
 #  Base classes  #
 ##################
 
-class AST(ABC):
+class AST(Visitable, ABC):
     """Base class of all the nodes of the tree."""
 
     @abstractmethod

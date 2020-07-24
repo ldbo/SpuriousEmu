@@ -8,6 +8,7 @@ from .abstract_syntax_tree import *
 from .function import ExternalFunction, Function, InternalFunction
 from .memory import Memory
 from .symbol import Symbol
+from .visitor import Visitor
 from . import syntax
 
 
@@ -27,7 +28,7 @@ class Program:
         return d
 
 
-class Compiler:
+class Compiler(Visitor):
     """
     Class used for symbols extraction. You can analyse several modules in a row
     by using analyse_module multiple times, and can then retrieve the built
@@ -52,7 +53,8 @@ class Compiler:
         self.__current_node = self.__root_symbol.add_child(
             module_name, Symbol.Type.Module)
 
-        self.__parse_ast(ast)
+        # self.__parse_ast(ast)
+        self.visit(ast)
 
     def add_builtin(self,
                     function: Union[InternalFunction,
@@ -75,29 +77,6 @@ class Compiler:
     def program(self):
         """Return the compiled program."""
         return Program(self.__root_symbol, self.__memory)
-
-    def __parse_ast(self, ast: AST) -> None:
-        """Recursively parse an AST, used by analyse_module."""
-        def type_test(node_type) -> bool:
-            return type(ast) is node_type
-
-        if type_test(Block):
-            for statement in ast.body:
-                self.__parse_ast(statement)
-        elif type_test(VarDec):
-            self.__current_node.add_child(ast.identifier.name,
-                                          Symbol.Type.Variable)
-        elif type_test(VarAssign):
-            if ast.variable.name not in self.__current_node:
-                self.__current_node.add_child(ast.variable.name,
-                                              Symbol.Type.Variable)
-        elif type_test(FunDef) or type_test(ProcDef):
-            self.__parse_callable(ast)
-        elif type_test(For):
-            if ast.counter.name not in self.__current_node:
-                self.__current_node.add_child(ast.counter.name,
-                                              Symbol.Type.Variable)
-            self.__parse_ast(ast.body)
 
     def __parse_callable(self, ast: Union[FunDef, ProcDef]) -> None:
         # Extract information
@@ -125,9 +104,41 @@ class Compiler:
             self.__current_node.add_child(name, Symbol.Type.Variable)
 
         # Continue
-        self.__parse_ast(Block(body))
+        self.visit_Block(ast)
 
         self.__current_node = previous_node
+
+    def visit_Block(self, block: Block) -> None:
+        for statement in block.body:
+            self.visit(statement)
+
+    def visit_VarDec(self, var_dec: VarDec) -> None:
+        self.__current_node.add_child(var_dec.identifier.name,
+                                      Symbol.Type.Variable)
+
+    def visit_VarAssign(self, var_assign: VarAssign) -> None:
+        if var_assign.variable.name not in self.__current_node:
+            self.__current_node.add_child(var_assign.variable.name,
+                                          Symbol.Type.Variable)
+
+    def visit_FunDef(self, fun_def: FunDef) -> None:
+        self.__parse_callable(fun_def)
+
+    def visit_ProcDef(self, proc_def: ProcDef) -> None:
+        self.__parse_callable(proc_def)
+
+    def visit_FunCall(self, fun_call: FunCall) -> None:
+        pass
+
+    def visit_If(self, if_block: If) -> None:
+        # TODO
+        pass
+
+    def visit_For(self, for_loop: For) -> None:
+        if for_loop.counter.name not in self.__current_node:
+            self.__current_node.add_child(for_loop.counter.name,
+                                          Symbol.Type.Variable)
+        self.visit_Block(for_loop)
 
 
 def compile_file(path: str) -> Program:
