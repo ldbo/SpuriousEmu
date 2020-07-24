@@ -12,11 +12,6 @@ def interpreting(vbs: SourceFile) -> Result:
         lambda interp, args: print(f"msgBox {args[0].value}"),
         name="msgBox")
 
-    print("Symbols:")
-    for symbol in comp.program.symbols:
-        print(symbol.full_name())
-    print("------\n")
-
     interp = interpreter.Interpreter(comp.program.symbols, comp.program.memory)
     interp.run("Main")
 
