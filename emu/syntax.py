@@ -4,15 +4,189 @@ from typing import List, Union
 
 from pyparsing import (Forward, ParseException, ParserElement, QuotedString,
                        Regex, Suppress, StringEnd, StringStart, Word,
-                       delimitedList, infixNotation, nums, oneOf, Keyword)
+                       delimitedList, infixNotation, nums, Or, Keyword)
 from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
+from .error import ParsingError
+from .operator import *
 from .partial_block import *
 from .preprocessor import Instruction, Preprocessor
-from .type import types
-from .operator import *
-from .error import ParsingError
+from .type import Type, types
+
+############
+#  Tokens  #
+############
+
+# SEPARATOR
+
+lparen = Suppress('(').setName('(')
+rparen = Suppress(')').setName(')')
+
+# STATEMENT KEYWORD
+
+call_kw = Suppress(Keyword('Call')).setName('call')
+case_kw = Suppress(Keyword('Case')).setName('case')
+close_kw = Suppress(Keyword('Close')).setName('close')
+const_kw = Suppress(Keyword('Const')).setName('const')
+declare_kw = Suppress(Keyword('Declare')).setName('declare')
+defbool_kw = Suppress(Keyword('DefBool')).setName('defbool')
+defbyte_kw = Suppress(Keyword('DefByte')).setName('defbyte')
+defcur_kw = Suppress(Keyword('DefCur')).setName('defcur')
+defdate_kw = Suppress(Keyword('DefDate')).setName('defdate')
+defdbl_kw = Suppress(Keyword('DefDbl')).setName('defdbl')
+defint_kw = Suppress(Keyword('DefInt')).setName('defint')
+deflng_kw = Suppress(Keyword('DefLng')).setName('deflng')
+deflnglng_kw = Suppress(Keyword('DefLngLng')).setName('deflnglng')
+deflngptr_kw = Suppress(Keyword('DefLngPtr')).setName('deflngptr')
+defobj_kw = Suppress(Keyword('DefObj')).setName('defobj')
+defsng_kw = Suppress(Keyword('DefSng')).setName('defsng')
+defstr_kw = Suppress(Keyword('DefStr')).setName('defstr')
+defvar_kw = Suppress(Keyword('DefVar')).setName('defvar')
+dim_kw = Suppress(Keyword('Dim')).setName('dim')
+do_kw = Suppress(Keyword('Do')).setName('do')
+else_kw = Suppress(Keyword('Else')).setName('else')
+elseif_kw = Suppress(Keyword('ElseIf')).setName('elseif')
+end_kw = Suppress(Keyword('End')).setName('end')
+endif_kw = Suppress(Keyword('EndIf')).setName('endif')
+enum_kw = Suppress(Keyword('Enum')).setName('enum')
+erase_kw = Suppress(Keyword('Erase')).setName('erase')
+event_kw = Suppress(Keyword('Event')).setName('event')
+exit_kw = Suppress(Keyword('Exit')).setName('exit')
+for_kw = Suppress(Keyword('For')).setName('for')
+friend_kw = Suppress(Keyword('Friend')).setName('friend')
+function_kw = Suppress(Keyword('Function')).setName('function')
+get_kw = Suppress(Keyword('Get')).setName('get')
+global_kw = Suppress(Keyword('Global')).setName('global')
+gosub_kw = Suppress(Keyword('GoSub')).setName('gosub')
+goto_kw = Suppress(Keyword('GoTo')).setName('goto')
+if_kw = Suppress(Keyword('If')).setName('if')
+implements_kw = Suppress(Keyword('Implements')).setName('implements')
+input_kw = Suppress(Keyword('Input')).setName('input')
+let_kw = Suppress(Keyword('Let')).setName('let')
+lock_kw = Suppress(Keyword('Lock')).setName('lock')
+loop_kw = Suppress(Keyword('Loop')).setName('loop')
+lset_kw = Suppress(Keyword('LSet')).setName('lset')
+next_kw = Suppress(Keyword('Next')).setName('next')
+on_kw = Suppress(Keyword('On')).setName('on')
+open_kw = Suppress(Keyword('Open')).setName('open')
+option_kw = Suppress(Keyword('Option')).setName('option')
+print_kw = Suppress(Keyword('Print')).setName('print')
+private_kw = Suppress(Keyword('Private')).setName('private')
+public_kw = Suppress(Keyword('Public')).setName('public')
+put_kw = Suppress(Keyword('Put')).setName('put')
+raiseevent_kw = Suppress(Keyword('RaiseEvent')).setName('raiseevent')
+redim_kw = Suppress(Keyword('ReDim')).setName('redim')
+resume_kw = Suppress(Keyword('Resume')).setName('resume')
+return_kw = Suppress(Keyword('Return')).setName('return')
+rset_kw = Suppress(Keyword('RSet')).setName('rset')
+seek_kw = Suppress(Keyword('Seek')).setName('seek')
+select_kw = Suppress(Keyword('Select')).setName('select')
+set_kw = Suppress(Keyword('Set')).setName('set')
+static_kw = Suppress(Keyword('Static')).setName('static')
+stop_kw = Suppress(Keyword('Stop')).setName('stop')
+sub_kw = Suppress(Keyword('Sub')).setName('sub')
+type_kw = Suppress(Keyword('Type')).setName('type')
+unlock_kw = Suppress(Keyword('Unlock')).setName('unlock')
+wend_kw = Suppress(Keyword('Wend')).setName('wend')
+while_kw = Suppress(Keyword('While')).setName('while')
+with_kw = Suppress(Keyword('With')).setName('with')
+write_kw = Suppress(Keyword('Write')).setName('write')
+
+any_kw = Suppress(Keyword("Any")).setName('any')
+as_kw = Suppress(Keyword("As")).setName('as')
+byref_kw = Suppress(Keyword("ByRef")).setName('byref')
+byval_kw = Suppress(Keyword("ByVal")).setName('byval')
+case_kw = Suppress(Keyword("Case")).setName('case')
+each_kw = Suppress(Keyword("Each")).setName('each')
+else_kw = Suppress(Keyword("Else")).setName('else')
+in_kw = Suppress(Keyword("In")).setName('in')
+new_kw = Suppress(Keyword("New")).setName('new')
+shared_kw = Suppress(Keyword("Shared")).setName('shared')
+until_kw = Suppress(Keyword("Until")).setName('until')
+withevents_kw = Suppress(Keyword("WithEvents")).setName('withevents')
+write_kw = Suppress(Keyword("Write")).setName('write')
+optional_kw = Suppress(Keyword("Optional")).setName('optional')
+paramarray_kw = Suppress(Keyword("ParamArray")).setName('paramarray')
+preserve_kw = Suppress(Keyword("Preserve")).setName('preserve')
+spc_kw = Suppress(Keyword("Spc")).setName('spc')
+step_kw = Suppress(Keyword('Step')).setName('step')
+tab_kw = Suppress(Keyword("Tab")).setName('tab')
+then_kw = Suppress(Keyword("Then")).setName('then')
+to_kw = Suppress(Keyword("To")).setName('to')
+
+statement_keyword = call_kw | case_kw | close_kw | const_kw | declare_kw \
+    | defbool_kw | defbyte_kw | defcur_kw | defdate_kw | defdbl_kw \
+    | defint_kw | deflng_kw | deflnglng_kw | deflngptr_kw | defobj_kw \
+    | defsng_kw | defstr_kw | defvar_kw | dim_kw | do_kw | else_kw \
+    | elseif_kw | end_kw | endif_kw | enum_kw | erase_kw | event_kw \
+    | exit_kw | for_kw | friend_kw | function_kw | get_kw | global_kw \
+    | gosub_kw | goto_kw | if_kw | implements_kw | input_kw | let_kw \
+    | lock_kw | loop_kw | lset_kw | next_kw | on_kw | open_kw | option_kw \
+    | print_kw | private_kw | public_kw | put_kw | raiseevent_kw | redim_kw \
+    | resume_kw | return_kw | rset_kw | seek_kw | select_kw | set_kw \
+    | static_kw | stop_kw | sub_kw | type_kw | unlock_kw | wend_kw | while_kw \
+    | with_kw | write_kw
+
+marker_keyword = any_kw | as_kw | byref_kw | byval_kw | case_kw | each_kw \
+    | else_kw | in_kw | new_kw | shared_kw | until_kw | withevents_kw \
+    | write_kw | optional_kw | paramarray_kw | preserve_kw | spc_kw | step_kw \
+    | tab_kw | then_kw | to_kw
+
+# OPERATOR
+
+addressof_kw = Keyword('AddressOf').setName('addressof')
+and_kw = Keyword('And').setName('and')
+eqv_kw = Keyword('Eqv').setName('eqv')
+imp_kw = Keyword('Imp').setName('imp')
+is_kw = Keyword('Is').setName('is')
+like_kw = Keyword('Like').setName('like')
+new_kw = Keyword('New').setName('new')
+mod_kw = Keyword('Mod').setName('mod')
+not_kw = Keyword('Not').setName('not')
+or_kw = Keyword('Or').setName('or')
+typeof_kw = Keyword('TypeOf').setName('typeof')
+xor_kw = Keyword('Xor').setName('xor')
+
+operator_keyword = addressof_kw | and_kw | eqv_kw | imp_kw | is_kw | like_kw \
+    | new_kw | mod_kw | not_kw | or_kw | typeof_kw | xor_kw
+
+# TYPES
+
+# Numbers
+integer = Word(nums).setName("integer") \
+    .setParseAction(lambda r: Literal(Type.Integer, r[0]))
+
+# Boolean
+true_kw = Keyword('True')
+false_kw = Keyword('False')
+
+boolean = (true_kw | false_kw).setName("boolean") \
+    .setParseAction(lambda r: Literal(Type.Boolean, r[0]))
+
+# String
+string = QuotedString(quoteChar='"', escQuote='""').setName("string") \
+    .setParseAction(lambda r: Literal(Type.String, r[0]))
+
+
+literal = (integer | boolean | string).setName("literal")
+literal_kw = true_kw | false_kw
+
+# Types
+variable_type = Or(types)
+
+
+# RESERVED
+
+reserved = statement_keyword | marker_keyword | operator_keyword | literal_kw
+
+# IDENTIFIER
+
+element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
+identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
+identifier = (~reserved + Regex(identifier_regex)).setName("identifier") \
+    .setParseAction(lambda r: Identifier(r[0]))
+
 
 #############
 #  Grammar  #
@@ -20,50 +194,6 @@ from .error import ParsingError
 
 expression = Forward().setName("expression")
 statement = Forward().setName("statement")
-
-# Punctuation
-lparen = Suppress("(")
-rparen = Suppress(")")
-
-# Keywords
-as_kw = Suppress('As').setName('as')
-dim_kw = Suppress('Dim').setName('dim')
-else_kw = Suppress('Else').setName('else')
-elseif_kw = Suppress('ElseIf').setName('elseif')
-end_kw = Suppress('End').setName('end')
-for_kw = Suppress('For').setName('for')
-if_kw = Suppress('If').setName('if')
-next_kw = Suppress('Next').setName('next')
-set_kw = Suppress('Set').setName('set')
-step_kw = Suppress('Step').setName('step')
-sub_kw = Suppress('Sub').setName('sub')
-then_kw = Suppress('Then').setName('then')
-to_kw = Suppress('To').setName('to')
-function_kw = Suppress('Function').setName('function')
-true_kw = Keyword('True')
-false_kw = Keyword('False')
-
-reserved = as_kw | dim_kw | else_kw | elseif_kw | end_kw | for_kw | if_kw \
-    | next_kw | set_kw | step_kw | sub_kw | then_kw | to_kw | function_kw \
-    | true_kw | false_kw
-
-# Literal
-integer = Word(nums).setName("integer") \
-    .setParseAction(lambda r: Literal(Type.Integer, r[0]))
-boolean = (true_kw | false_kw).setName("boolean") \
-    .setParseAction(lambda r: Literal(Type.Boolean, r[0]))
-string = QuotedString(quoteChar='"', escQuote='""').setName("string") \
-    .setParseAction(lambda r: Literal(Type.String, r[0]))
-literal = (integer | boolean | string).setName("literal")
-
-# Identifier
-element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
-identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
-identifier = (~reserved + Regex(identifier_regex)).setName("identifier") \
-    .setParseAction(lambda r: Identifier(r[0]))
-
-# Types
-variable_type = oneOf(types)
 
 
 #################
@@ -121,7 +251,6 @@ variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
     .setName("var assign")
 
 # Function
-
 procedure_header = (sub_kw + identifier
                     + pOptional(lparen + arguments_list + rparen)) \
     .setParseAction(lambda r: ProcDefHeader(*r)) \
