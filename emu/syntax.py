@@ -44,6 +44,9 @@ function_kw = Suppress('Function').setName('function')
 true_kw = Keyword('True')
 false_kw = Keyword('False')
 
+reserved = as_kw | dim_kw | else_kw | elseif_kw | end_kw | for_kw | if_kw \
+    | next_kw | set_kw | step_kw | sub_kw | then_kw | to_kw | function_kw \
+    | true_kw | false_kw
 
 # Literal
 integer = Word(nums).setName("integer") \
@@ -55,10 +58,9 @@ string = QuotedString(quoteChar='"', escQuote='""').setName("string") \
 literal = (integer | boolean | string).setName("literal")
 
 # Identifier
-# TODO prevent from using keywords in identifier
 element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
-identifier = Regex(identifier_regex).setName("identifier") \
+identifier = (~reserved + Regex(identifier_regex)).setName("identifier") \
     .setParseAction(lambda r: Identifier(r[0]))
 
 # Types
@@ -110,7 +112,7 @@ terminal = (literal | function_call_paren | identifier)
 expression << infixNotation(
     terminal, binary_operators, lpar=lparen, rpar=rparen) \
     .setName('expression')
-expression_statement = (boolean | function_call_no_paren | expression) \
+expression_statement = (function_call_no_paren | expression) \
     .setName("expression_statement")
 
 ##################
