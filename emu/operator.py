@@ -4,6 +4,11 @@
 #  - ensure the types it works with are implemented, see type.py
 #  - add a new entry to OPERATORS_MAP
 
+# TODO:
+#  - Take Let-coercion into account, improve conversion process
+#  - Extends supported types
+#  - Implement Like and Is
+
 from dataclasses import InitVar, dataclass
 from inspect import signature
 from typing import Callable, Any, List, Dict, Optional, Tuple
@@ -178,7 +183,7 @@ class OperatorsMap:
 
 OPERATORS_MAP = OperatorsMap()
 
-# Arithmetic and concatenation
+# Arithmetic operators
 OPERATORS_MAP << ('^', lambda l, r: l.value ** r.value, Type.Integer)
 
 OPERATORS_MAP.start_precedence_group()
@@ -195,8 +200,37 @@ OPERATORS_MAP << ('+', lambda l, r: l.value + r.value, Type.String)
 OPERATORS_MAP << ('-', lambda l, r: l.value - r.value, Type.Integer)
 OPERATORS_MAP.end_precedence_group()
 
-# Logical and bitwise
+# Concatenation operator
 OPERATORS_MAP << ('&', lambda l, r: l.value + r.value, Type.String)
+
+# Relational operators
+OPERATORS_MAP.start_precedence_group()
+OPERATORS_MAP << ('=', lambda l, r: l.value == r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << ('=', lambda l, r: l.value == r.value,
+                  Type.String, Type.Boolean)
+OPERATORS_MAP << ('<>', lambda l, r: l.value != r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << ('<>', lambda l, r: l.value != r.value,
+                  Type.String, Type.Boolean)
+OPERATORS_MAP << ('><', lambda l, r: l.value != r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << ('><', lambda l, r: l.value != r.value,
+                  Type.String, Type.Boolean)
+OPERATORS_MAP << ('<', lambda l, r: l.value < r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << ('>', lambda l, r: l.value > r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << ('<=', lambda l, r: l.value <= r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << ('>=', lambda l, r: l.value >= r.value,
+                  Type.Integer, Type.Boolean)
+OPERATORS_MAP.end_precedence_group()
+
+
+# Logical and bitwise operators
 OPERATORS_MAP << ('And', lambda l, r: l.value and r.value, Type.Boolean)
 OPERATORS_MAP << ('Or', lambda l, r: l.value or r.value, Type.Boolean)
 OPERATORS_MAP << ('Xor', lambda l, r: l.value != r.value, Type.Boolean)
+OPERATORS_MAP << ('Eqv', lambda l, r: l.value == r.value, Type.Boolean)
+OPERATORS_MAP << ('Imp', lambda l, r: (not l.value) or r.value, Type.Boolean)

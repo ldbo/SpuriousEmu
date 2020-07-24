@@ -141,13 +141,9 @@ class Interpreter(Visitor):
 
         functions = self._symbols.find(function_name)
         for function in functions:
-            print(f"Executing {function.full_name()}...")
-            print("-------")
             self._current_symbol = function
             self.call_function(self._memory.get_function(function.full_name()),
                                args)
-            print("-------")
-            print()
 
 
 def run_program(file_paths: List[str]) -> None:
