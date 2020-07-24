@@ -4,8 +4,7 @@ from typing import List, Union
 
 from pyparsing import (Forward, ParseException, ParserElement, QuotedString,
                        Regex, Suppress, StringEnd, StringStart, Word,
-                       delimitedList, infixNotation, nums, oneOf, opAssoc,
-                       Keyword)
+                       delimitedList, infixNotation, nums, oneOf, Keyword)
 from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
@@ -72,8 +71,6 @@ variable_type = oneOf(types)
 #################
 
 # Operator
-
-
 def __build_binary_operator(expr, pos, result):
     tokens = result[0].asList()
     operator_symbols = tokens[1::2]
@@ -87,17 +84,7 @@ def __build_binary_operator(expr, pos, result):
     return tree
 
 
-binary_operators = [
-    ("^", 2, opAssoc.LEFT, __build_binary_operator),
-    (oneOf("* /"), 2, opAssoc.LEFT, __build_binary_operator),
-    ("\\", 2, opAssoc.LEFT, __build_binary_operator),
-    ("Mod", 2, opAssoc.LEFT, __build_binary_operator),
-    (oneOf("+ -"), 2, opAssoc.LEFT, __build_binary_operator),
-    ("&", 2, opAssoc.LEFT, __build_binary_operator),
-    ('And', 2, opAssoc.LEFT, __build_binary_operator),
-    ('Or', 2, opAssoc.LEFT, __build_binary_operator),
-    ('Xor', 2, opAssoc.LEFT, __build_binary_operator)
-]
+binary_operators = OPERATORS_MAP.get_precedence_list(__build_binary_operator)
 
 # Function call
 arguments_list = pOptional(delimitedList(expression)) \
