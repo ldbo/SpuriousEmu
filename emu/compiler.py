@@ -140,6 +140,15 @@ class Compiler(Visitor):
                                           Symbol.Type.Variable)
         self.visit_Block(for_loop)
 
+    def visit_OnError(self, on_error: OnError) -> None:
+        pass
+
+    def visit_Resume(self, resume: Resume) -> None:
+        pass
+
+    def visit_ErrorStatement(self, error: ErrorStatement) -> None:
+        pass
+
 
 def compile_file(path: str) -> Program:
     """Parse a file and then compile it."""

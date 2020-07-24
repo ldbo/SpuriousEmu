@@ -243,9 +243,9 @@ class BinOp(Expression):
         self.right = right
 
 
-###########
-#  Blocs  #
-###########
+##########################
+#  Loop and conditional  #
+##########################
 
 class ElseIf(Block):
     """Single condition/action block, used internally by If"""
@@ -285,3 +285,42 @@ class For(Block):
         self.start = start
         self.end = end
         self.step = step
+
+####################
+#  Error handling  #
+####################
+
+
+class OnError(Statement):
+    """
+    On Error statement. If goto is None, corresponds to a Resume Next policy,
+    else to a GoTo policy.
+    """
+    goto: Optional[Union[Literal, Identifier]]
+
+    def __init__(self, goto: Optional[Union[int, Identifier]] = None,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.goto = goto
+
+
+class Resume(Statement):
+    """
+    Resume statement. If goto is None, corresponds to Resume or Resume Next,
+    else to a GoTo form.
+    """
+    goto: Optional[Union[Literal, Identifier]]
+
+    def __init__(self, goto: Optional[Union[int, Identifier]] = None,
+                 **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.goto = goto
+
+
+class ErrorStatement(Statement):
+    """Error statement."""
+    number: Literal
+
+    def __init__(self, number: Literal) -> None:
+        super().__init__(**kwargs)
+        self.number = number

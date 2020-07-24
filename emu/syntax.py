@@ -99,6 +99,7 @@ byref_kw = Suppress(Keyword("ByRef")).setName('byref')
 byval_kw = Suppress(Keyword("ByVal")).setName('byval')
 case_kw = Suppress(Keyword("Case")).setName('case')
 each_kw = Suppress(Keyword("Each")).setName('each')
+error_kw = Suppress(Keyword("Error")).setName('error')
 else_kw = Suppress(Keyword("Else")).setName('else')
 in_kw = Suppress(Keyword("In")).setName('in')
 new_kw = Suppress(Keyword("New")).setName('new')
@@ -297,9 +298,23 @@ if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
 
 conditional_statement = if_header | elseif_header | else_header | if_footer
 
+
+####################
+#  Error handling  #
+####################
+
+on_error = (on_kw + error_kw + ((goto_kw + (integer | identifier))
+                                | (resume_kw + next_kw))) \
+    .setParseAction(lambda r: OnError(r[0]) if len(r) > 0 else OnError())
+resume = resume_kw + pOptional(next_kw | (integer | identifier)) \
+    .setParseAction(lambda r: Resume(r[0] if len(r) > 0 else None))
+error = (error_kw + integer).setParseAction(lambda r: ErrorStatement(r[0]))
+
+error_statement = on_error | resume | error
+
 # Wrap up
 statement <<= declarative_statement | loop_statement | conditional_statement \
-    | expression_statement
+    | expression_statement | error_statement
 
 ############
 #  Parser  #

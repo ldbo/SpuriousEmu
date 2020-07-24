@@ -108,6 +108,18 @@ class Interpreter(Visitor):
             new_counter_value = self.evaluate(add_expression)
             self._memory.set_variable(counter_name, new_counter_value)
 
+    def visit_OnError(self, on_error: OnError) -> None:
+        # TODO
+        pass
+
+    def visit_Resume(self, resume: Resume) -> None:
+        # TODO
+        pass
+
+    def visit_ErrorStatement(self, error: ErrorStatement) -> None:
+        # TODO
+        pass
+
     def call_function(self, function: Function,
                       arguments_values: List[Value]) -> Optional[Value]:
         if type(function) is ExternalFunction:
