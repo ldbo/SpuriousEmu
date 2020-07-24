@@ -93,7 +93,10 @@ binary_operators = [
     ("\\", 2, opAssoc.LEFT, __build_binary_operator),
     ("Mod", 2, opAssoc.LEFT, __build_binary_operator),
     (oneOf("+ -"), 2, opAssoc.LEFT, __build_binary_operator),
-    ("&", 2, opAssoc.LEFT, __build_binary_operator)
+    ("&", 2, opAssoc.LEFT, __build_binary_operator),
+    ('And', 2, opAssoc.LEFT, __build_binary_operator),
+    ('Or', 2, opAssoc.LEFT, __build_binary_operator),
+    ('Xor', 2, opAssoc.LEFT, __build_binary_operator)
 ]
 
 # Function call

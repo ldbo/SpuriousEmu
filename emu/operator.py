@@ -102,5 +102,14 @@ OPERATORS_MAP = {
     '&': BinaryOperator('&', [
         BinaryOperation(lambda l, r: l.value + r.value,
                         Type.String, Type.String, Type.String)
-    ])
+    ]),
+    'And': BinaryOperator('And', [
+        BinaryOperation(lambda l, r: l.value and r.value,
+                        Type.Boolean, Type.Boolean, Type.Boolean)]),
+    'Or': BinaryOperator('Or', [
+        BinaryOperation(lambda l, r: l.value or r.value,
+                        Type.Boolean, Type.Boolean, Type.Boolean)]),
+    'Xor': BinaryOperator('Xor', [
+        BinaryOperation(lambda l, r: l.value != r.value,
+                        Type.Boolean, Type.Boolean, Type.Boolean)])
 }
