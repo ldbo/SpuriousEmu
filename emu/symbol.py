@@ -17,6 +17,7 @@ class Symbol:
     _children: List["Symbol"]
     _position: Tuple[int]
     __search_nodes: List["Symbol"]
+    __full_name: str
 
     @staticmethod
     def build_root() -> "Symbol":
@@ -26,7 +27,9 @@ class Symbol:
         parent = None
         children: List['Symbol'] = []
         position: Tuple[int, ...] = tuple()
-        return Symbol(name, symbol_type, parent, children, position)
+        root = Symbol(name, symbol_type, parent, children, position)
+        root.__full_name = "<Root>"
+        return root
 
     def __init__(self, name, symbol_type, parent=None, children=None,
                  position=None) -> None:
@@ -39,6 +42,7 @@ class Symbol:
         self._parent = parent
         self._children = children
         self._position = position
+        self.__full_name = ""
 
     @property
     def name(self):
@@ -57,6 +61,7 @@ class Symbol:
         if self.find_child(child._name) is None:
             child._parent = self
             child._position = self._position + (len(self._children), )
+            child.__full_name = f"{self.__full_name}.{child._name}"
             self._children.append(child)
             return child
         else:
@@ -135,11 +140,8 @@ class Symbol:
         return self._parent is None
 
     def full_name(self) -> str:
-        """Build the absolute name of the symbol, starting with <Root>."""
-        if self.is_root():
-            return self._name
-        else:
-            return self._parent.full_name() + '.' + self._name
+        """Return the absolute name of the symbol, starting from the root"""
+        return self.__full_name
 
     def __str__(self) -> str:
         return f"{self.full_name()}({self._symbol_type.name})"
