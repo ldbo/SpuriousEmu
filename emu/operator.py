@@ -3,6 +3,7 @@
 # To implement support for a new operator, you must:
 #  - ensure the types it works with are implemented, see type.py
 #  - add a new entry to OPERATORS_MAP
+#  - add it to the list of operator tokens
 
 # TODO:
 #  - Take Let-coercion into account, improve conversion process
@@ -13,7 +14,7 @@ from dataclasses import InitVar, dataclass
 from inspect import signature
 from typing import Callable, Any, List, Dict, Optional, Tuple
 
-from pyparsing import oneOf, opAssoc
+from pyparsing import Or, opAssoc
 
 from .error import OperatorError
 from .type import Type
@@ -69,7 +70,8 @@ class BinaryOperator:
         try:
             return OPERATORS_MAP[symbol]
         except KeyError:
-            raise NotImplementedError(f"Operator {symbol} is not suppored yet")
+            msg = f"Operator {symbol} is not supported yet"
+            raise NotImplementedError(msg)
 
     def __str__(self):
         return self.symbol
@@ -113,7 +115,7 @@ class OperatorsMap:
         """Build a precedence list to be used with pyparsing.infixNotation."""
         precedence_list = []
         for symbol_list in self.__ordered_operators:
-            expression = oneOf(' '.join(symbol_list))
+            expression = Or(symbol_list)
             entry = (expression, 2, opAssoc.LEFT, parsing_function)
             precedence_list.append(entry)
 
