@@ -5,6 +5,13 @@
         "Integer(15)",
         "Integer(10)",
         "String(don't panic)",
-        "String(mostly harmless)"
+        "String(mostly harmless)",
+        "Boolean(False)",
+        "Boolean(False)",
+        "Boolean(False)",
+        "Boolean(False)",
+        "Boolean(True)",
+        "Boolean(False)",
+        "Boolean(True)"
     ]
 }

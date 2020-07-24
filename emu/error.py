@@ -30,6 +30,10 @@ class ParsingError(Exception):
         return f"{self.file_name}:{self.line_number}: {self.message}"
 
 
+class InterpretationError(Exception):
+    pass
+
+
 class CompilationError(Exception):
     pass
 

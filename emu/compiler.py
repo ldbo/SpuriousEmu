@@ -131,7 +131,6 @@ class Compiler(Visitor):
         pass
 
     def visit_If(self, if_block: If) -> None:
-        # TODO
         pass
 
     def visit_For(self, for_loop: For) -> None:

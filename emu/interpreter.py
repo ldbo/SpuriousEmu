@@ -77,6 +77,27 @@ class Interpreter(Visitor):
 
         self._evaluation = return_value
 
+    def visit_If(self, conditional: If) -> None:
+        done = False
+
+        # If
+        condition_value = self.evaluate(conditional.condition)
+        if condition_value.convert_to(Type.Boolean).value:
+            self.visit_Block(conditional)
+            done = True
+
+        # Else ifs
+        if not done:
+            for elseif in conditional.elsifs:
+                condition_value = elseif.evaluate(elseif.condition)
+                if condition_value.convert_to(Type.Boolean).value:
+                    self.visit_Block(elseif)
+                    done = True
+
+        # Else
+        if not done:
+            self.visit_Block(conditional.else_block)
+
     def visit_For(self, loop: For) -> None:
         # Evaluation of parameters
         # TODO check if Let-coercible to Double, raise E13 if not
