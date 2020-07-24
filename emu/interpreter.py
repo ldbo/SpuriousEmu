@@ -8,7 +8,7 @@ from .compiler import compile_files
 from .memory import Memory
 from .operator import OPERATORS_MAP
 from .symbol import Symbol
-from .value import Value
+from .value import Value, Integer
 from .visitor import Visitor
 
 
@@ -136,6 +136,8 @@ class Interpreter(Visitor):
                 return_value = self._memory.get_variable(function.name)
             except KeyError:
                 return_value = None
+
+            self._memory.discard_locals()
 
             return return_value
         else:

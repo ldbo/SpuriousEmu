@@ -39,3 +39,6 @@ class Memory:
 
     def new_locals(self) -> None:
         self._local_variables.append(dict())
+
+    def discard_locals(self) -> None:
+        self._local_variables.pop()
