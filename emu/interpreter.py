@@ -5,7 +5,7 @@ from typing import List, Optional
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
 from .compiler import compile_files
-from .memory import Memory
+from .side_effect import Memory, OutsideWorld
 from .operator import OPERATORS_MAP
 from .symbol import Symbol
 from .value import Value, Integer
@@ -17,13 +17,43 @@ class Interpreter(Visitor):
     _symbols: Symbol
     _current_symbol: Symbol
     _memory: Memory
+    _outside_world: OutsideWorld
     _evaluation: Optional[Value]
 
+    # Main API
     def __init__(self, symbols=None, memory=None):
         self._symbols = symbols if symbols is not None else Symbol.build_root()
         self._current_symbol = self._symbols
         self._memory = memory if memory is not None else Memory()
+        self._outside_world = OutsideWorld()
         self._evaluation = None
+
+    def run(self, function_name: str, args: Optional[List[Value]] = None) \
+            -> None:
+        """
+        Search for a function entry point in the program symbol, and execute
+        it. You should use it most of the time.
+        """
+        if args is None:
+            args = []
+
+        functions = self._symbols.find(function_name)
+        for function in functions:
+            self._current_symbol = function
+            self.call_function(self._memory.get_function(function.full_name()),
+                               args)
+
+    def print_stdout(self, state: bool) -> None:
+        """Enable or disable stdout forwarding"""
+        if state:
+            hook = print
+        else:
+            def hook(*args, **kwargs):
+                pass
+
+        self._outside_world.add_hook(OutsideWorld.EventType.STDOUT, hook)
+
+    # Internal interface
 
     def evaluate(self, expression: Expression) -> Value:
         """Return the value of an expression"""
@@ -165,20 +195,17 @@ class Interpreter(Visitor):
             msg = f"{type(function)} is not handled yet by the interpreter"
             raise NotImplemented(msg)
 
-    def run(self, function_name: str, args: Optional[List[Value]] = None) \
-            -> None:
-        """
-        Search for a function entry point in the program symbol, and execute
-        it. You should use it most of the time.
-        """
-        if args is None:
-            args = []
+    # External functions interface
+    def add_stdout(self, content: str) -> None:
+        self._outside_world.add_event(OutsideWorld.EventType.STDOUT, content)
 
-        functions = self._symbols.find(function_name)
-        for function in functions:
-            self._current_symbol = function
-            self.call_function(self._memory.get_function(function.full_name()),
-                               args)
+    def add_file_event(self, *args, **kwargs) -> None:
+        # TODO
+        pass
+
+    def add_network_event(self, *args, **kwargs) -> None:
+        # TODO
+        pass
 
 
 def run_program(file_paths: List[str]) -> None:

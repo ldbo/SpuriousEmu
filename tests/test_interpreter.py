@@ -13,7 +13,7 @@ def interpreting(vbs: SourceFile) -> Result:
     interp = interpreter.Interpreter(comp.program.symbols, comp.program.memory)
     interp.run("Main")
 
-    return []
+    return interp._outside_world.to_dict()
 
 
 def evaluate_expressions(vbs: SourceFile) -> Result:

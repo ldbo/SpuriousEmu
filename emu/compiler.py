@@ -9,7 +9,7 @@ from typing import Optional, Dict, Any, List
 
 from .abstract_syntax_tree import *
 from .function import ExternalFunction, Function, InternalFunction
-from .memory import Memory
+from .side_effect import Memory
 from .symbol import Symbol
 from .visitor import Visitor
 from . import syntax
