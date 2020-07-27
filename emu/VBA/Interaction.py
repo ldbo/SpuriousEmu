@@ -1,2 +1,2 @@
 def msgBox(interpreter, arguments):
-    print(arguments[0].value)
+    interpreter.add_stdout(f"msgBox {arguments[0].value}")
