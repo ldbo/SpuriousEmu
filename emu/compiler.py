@@ -1,7 +1,10 @@
 """Pseudo-compilation stage: allow to extract symbols and function body."""
 
 from dataclasses import dataclass
+from importlib.util import spec_from_file_location, module_from_spec
+from inspect import getmembers, isfunction
 from pathlib import Path
+from types import ModuleType
 from typing import Optional, Dict, Any, List
 
 from .abstract_syntax_tree import *
@@ -72,6 +75,36 @@ class Compiler(Visitor):
 
         symbol = self.__root_symbol.add_child(name, Symbol.Type.Function)
         self.__memory.add_function(symbol.full_name(), typed_function)
+
+    def load_host_project(self, project_path: str) -> None:
+        """Load a Python package as a VBA host project."""
+        path = Path(project_path)
+        assert(path.is_dir())
+        project_name = path.name
+
+        for module_path in path.glob("*.py"):
+            module_name = f"{project_name}.{module_path.name[:-3]}"
+            module_spec = spec_from_file_location(module_name,
+                                                  module_path.absolute())
+            module = module_from_spec(module_spec)
+            module_spec.loader.exec_module(module)
+
+            self.__load_host_module(module)
+
+    def __load_host_module(self, module: ModuleType) -> None:
+        """
+        Extract objects defined in an already loaded Python module and add them
+        to the current program.
+        """
+        def locally_defined(predicate):
+            def decorated_predicate(member):
+                return predicate(member) \
+                    and member.__module__ == module.__name__
+
+            return decorated_predicate
+
+        for name, function in getmembers(module, locally_defined(isfunction)):
+            self.add_builtin(function)
 
     @property
     def program(self):

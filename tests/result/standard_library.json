@@ -1,0 +1,17 @@
+{
+    "symbols": [
+        "<Root>",
+        "<Root>.main_module",
+        "<Root>.main_module.Main",
+        "<Root>.main_module.Main.Main",
+        "<Root>.msgBox",
+        "<Root>.Asc"
+    ],
+    "memory": {
+        "functions": [
+            "<Root>.Asc",
+            "<Root>.msgBox",
+            "<Root>.main_module.Main"
+        ]
+    }
+}

@@ -8,9 +8,7 @@ def interpreting(vbs: SourceFile) -> Result:
     ast = syntax.parse_file(vbs)
     comp = compiler.Compiler()
     comp.analyse_module(ast, "main_module")
-    comp.add_builtin(
-        lambda interp, args: print(f"msgBox {args[0].value}"),
-        name="msgBox")
+    comp.load_host_project("./emu/VBA")
 
     interp = interpreter.Interpreter(comp.program.symbols, comp.program.memory)
     interp.run("Main")
