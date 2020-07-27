@@ -12,8 +12,20 @@ Sub Main()
         msgBox "--------"
     Next i
     msgBox ReturnArg(hello)
+
+    For i = 0 To 12
+        msgBox Oddity(i)
+    Next i
 End Sub
 
 Function ReturnArg(arg)
     Set ReturnArg = arg
+End Function
+
+Function Oddity(n)
+    If n Mod 2 = 0 Then
+        Set Oddity = "Not that odd"
+    Else
+        Set Oddity= "High level of oddity"
+    End If
 End Function
