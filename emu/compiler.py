@@ -111,14 +111,14 @@ class Compiler(Visitor):
         """Return the compiled program."""
         return Program(self.__root_symbol, self.__memory)
 
-    def __parse_callable(self, ast: Union[FunDef, ProcDef]) -> None:
+    def __parse_callable(self, definition: Union[FunDef, ProcDef]) -> None:
         # Extract information
-        name = ast.name.name
-        if ast.arguments is None:
+        name = definition.name.name
+        if definition.arguments is None:
             args = []
         else:
-            args = list(map(lambda t: t.name, ast.arguments.args))
-        body = ast.body
+            args = list(map(lambda t: t.name, definition.arguments.args))
+        body = definition.body
 
         # Build symbol and memory representation
         fct_symbol = self.__current_node.add_child(name,
@@ -133,11 +133,8 @@ class Compiler(Visitor):
         for arg in args:
             self.__current_node.add_child(arg, Symbol.Type.Variable)
 
-        if type(ast) is FunDef:
+        if type(definition) is FunDef:
             self.__current_node.add_child(name, Symbol.Type.Variable)
-
-        # Continue
-        self.visit_Block(ast)
 
         self.__current_node = previous_node
 
@@ -146,13 +143,10 @@ class Compiler(Visitor):
             self.visit(statement)
 
     def visit_VarDec(self, var_dec: VarDec) -> None:
-        self.__current_node.add_child(var_dec.identifier.name,
-                                      Symbol.Type.Variable)
+        pass
 
     def visit_VarAssign(self, var_assign: VarAssign) -> None:
-        if var_assign.variable.name not in self.__current_node:
-            self.__current_node.add_child(var_assign.variable.name,
-                                          Symbol.Type.Variable)
+        pass
 
     def visit_FunDef(self, fun_def: FunDef) -> None:
         self.__parse_callable(fun_def)
@@ -167,10 +161,7 @@ class Compiler(Visitor):
         pass
 
     def visit_For(self, for_loop: For) -> None:
-        if for_loop.counter.name not in self.__current_node:
-            self.__current_node.add_child(for_loop.counter.name,
-                                          Symbol.Type.Variable)
-        self.visit_Block(for_loop)
+        pass
 
     def visit_OnError(self, on_error: OnError) -> None:
         pass

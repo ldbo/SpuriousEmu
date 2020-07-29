@@ -24,4 +24,5 @@ def test_function():
 
 
 def test_standard_library():
-    assert_correct_function("standard_library", compile_with_standard_library)
+    assert_correct_function("compiler_standard_library",
+                            compile_with_standard_library)
