@@ -1,10 +1,7 @@
 {
     "symbols": [
         "<Root>",
-        "<Root>.compiler_block",
-        "<Root>.compiler_block.var3",
-        "<Root>.compiler_block.var2",
-        "<Root>.compiler_block.var1"
+        "<Root>.compiler_block"
     ],
     "memory": {
         "functions": []
