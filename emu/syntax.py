@@ -20,8 +20,9 @@ from .type import Type, types
 
 # SEPARATOR
 
-lparen = Suppress('(').setName('(')
-rparen = Suppress(')').setName(')')
+lparen = Suppress('(').setName('lparen')
+rparen = Suppress(')').setName('rparen')
+dot = Suppress('.').setName('dot')
 
 # STATEMENT KEYWORD
 
@@ -183,8 +184,7 @@ reserved = statement_keyword | marker_keyword | operator_keyword | literal_kw
 
 # IDENTIFIER
 
-element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
-identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
+identifier_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier = (~reserved + Regex(identifier_regex)).setName("identifier") \
     .setParseAction(lambda r: Identifier(r[0]))
 
@@ -200,6 +200,13 @@ statement = Forward().setName("statement")
 #################
 #  Expressions  #
 #################
+
+# Member access
+orphan_function_call_paren = Forward().setName("orphan_function_call_paren")
+member_access = (((orphan_function_call_paren | identifier) + dot)[0, ...]
+                 + identifier) \
+    .setParseAction(lambda r: MemberAccess(list(r)))
+
 
 # Operator
 def __build_binary_operator(expr, pos, result):
@@ -221,15 +228,18 @@ binary_operators = OPERATORS_MAP.get_precedence_list(__build_binary_operator)
 arguments_list = pOptional(delimitedList(expression)) \
     .setName("arguments_list") \
     .setParseAction(lambda r: ArgList(list(r)))
-function_call_paren = (identifier + lparen + arguments_list + rparen) \
+orphan_function_call_paren << (identifier + lparen + arguments_list + rparen) \
+    .setName("orphan_function_call_paren") \
+    .setParseAction(lambda r: FunCall(MemberAccess([r[0]]), r[1]))
+function_call_paren = (member_access + lparen + arguments_list + rparen) \
     .setName("function_call_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
-function_call_no_paren = (StringStart() + identifier + arguments_list
+function_call_no_paren = (StringStart() + member_access + arguments_list
                           + StringEnd()) \
     .setName("function_call_no_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
 
-terminal = (literal | function_call_paren | identifier)
+terminal = (literal | function_call_paren | member_access)
 expression << infixNotation(
     terminal, binary_operators, lpar=lparen, rpar=rparen) \
     .setName('expression')

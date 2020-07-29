@@ -6,7 +6,7 @@ import matplotlib
 
 from emu import syntax
 from tests.test import (assert_correct_function, SourceFile, Result)
-from tests.test import run_function
+from tests.test import run_function, export_result
 
 
 def parsing(vbs: SourceFile) -> Result:
@@ -56,23 +56,19 @@ def display_digraph(graph: nx.DiGraph, labels: Dict[Any, str]) -> None:
 
 
 def test_expressions():
-    run_function("syntax_expressions", parsing_show)
+    export_result("syntax_expression", parsing)
 
 
-# def test_inline_declarations():
-#     run_function("basic_02", parsing)
+def test_inline_declarations():
+    export_result("syntax_inline_declaration", parsing)
 
 
-# def test_loops():
-#     run_function("basic_03", parsing)
+def test_loops_conditionals():
+    export_result("syntax_loop_conditional", parsing)
 
 
-# def test_conditionals():
-#     run_function("basic_04", parsing)
-
-
-# def test_function_definitions():
-#     run_function("basic_05", parsing)
+def test_function_definitions():
+    run_function("syntax_function_definition", parsing_show)
 
 
 # def test_types():

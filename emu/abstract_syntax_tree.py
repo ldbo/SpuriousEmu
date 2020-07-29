@@ -100,11 +100,11 @@ class VarDec(Statement):
     Single variable declaration, corresponding to a Dim or Const statement
     with a one-member variable list.
     """
-    identifier: "Identifier"
+    identifier: "MemberAccess"
     type: Optional[Type]
     value: Optional["Expression"]
 
-    def __init__(self, identifier: "Identifier", type: Optional[Type] = None,
+    def __init__(self, identifier: "MemberAccess", type: Optional[Type] = None,
                  value: Optional["Expression"] = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.identifier = identifier
@@ -127,11 +127,11 @@ class MultipleVarDec(Statement):
 
 class VarAssign(Statement):
     """Variable assignment."""
-    variable: "Identifier"
+    variable: "MemberAccess"
     value: "Expression"
 
-    def __init__(self, variable: "Identifier", value: "Expression", **kwargs) \
-            -> None:
+    def __init__(self, variable: "MemberAccess", value: "Expression",
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.variable = variable
         self.value = value
@@ -186,6 +186,15 @@ class Identifier(Expression):
         self.name = name
 
 
+class MemberAccess(Expression):
+    parts: List[Union[Identifier, "FunCall"]]
+
+    def __init__(self, parts: List[Union[Identifier, "FunCall"]], **kwargs) \
+            -> None:
+        super().__init__(**kwargs)
+        self.parts = parts
+
+
 class Literal(Expression):
     """Literal value : integer, double, boolean, string, ..."""
     type: Type
@@ -214,10 +223,10 @@ class ArgList(Statement):
 
 class FunCall(Expression):
     """Function call"""
-    function: Identifier
+    function: MemberAccess
     arguments: ArgList
 
-    def __init__(self, function: Identifier, arguments: ArgList, **kwargs) \
+    def __init__(self, function: MemberAccess, arguments: ArgList, **kwargs) \
             -> None:
         super().__init__(**kwargs)
         self.function = function

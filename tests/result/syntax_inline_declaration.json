@@ -156,10 +156,17 @@
                 },
                 "file": "",
                 "function": {
-                    "_type": "Identifier",
+                    "_type": "MemberAccess",
                     "file": "",
                     "line_number": "0",
-                    "name": "f"
+                    "parts": [
+                        {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "f"
+                        }
+                    ]
                 },
                 "line_number": "0"
             },
