@@ -14,10 +14,13 @@ from .visitor import Visitable
 
 class AST(Visitable, ABC):
     """Base class of all the nodes of the tree."""
+    __ast_nodes_number: int = 0
+    __hash: int
 
     @abstractmethod
     def __init__(self) -> None:
-        pass
+        self.__hash = AST.__ast_nodes_number
+        AST.__ast_nodes_number += 1
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -47,6 +50,9 @@ class AST(Visitable, ABC):
                 d[attr_name] = str(attr)
 
         return d
+
+    def __hash__(self) -> int:
+        return self.__hash
 
 
 class Statement(AST):
