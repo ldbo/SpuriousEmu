@@ -140,9 +140,9 @@ class VarAssign(Statement):
 class FunDef(Block):
     """Function definition, corresponding to the Function keyword."""
     name: "Identifier"
-    arguments: "ArgList"
+    arguments: "ArgListDef"
 
-    def __init__(self, name: "Identifier", arguments: "ArgList", **kwargs) \
+    def __init__(self, name: "Identifier", arguments: "ArgListDef", **kwargs) \
             -> None:
         super().__init__(**kwargs)
         self.name = name
@@ -152,9 +152,9 @@ class FunDef(Block):
 class ProcDef(Block):
     """Procedure definition, corresponding to the Sub keyword."""
     name: "Identifier"
-    arguments: "ArgList"
+    arguments: "ArgListDef"
 
-    def __init__(self, name: "Identifier", arguments: "ArgList", **kwargs) \
+    def __init__(self, name: "Identifier", arguments: "ArgListDef", **kwargs) \
             -> None:
         super().__init__(**kwargs)
         self.name = name
@@ -211,9 +211,8 @@ class Literal(Expression):
         return Literal(value.base_type, value.value)
 
 
-# TODO differentiate between ArgList for calls and definitions
-class ArgList(Statement):
-    """List of arguments, used by function calls and declarations"""
+class ArgListCall(Statement):
+    """List of arguments, used by function calls"""
     args: List["Expression"]
 
     def __init__(self, args: List["Expression"], **kwargs) -> None:
@@ -221,13 +220,22 @@ class ArgList(Statement):
         self.args = args
 
 
+class ArgListDef(Statement):
+    """List of arguments, used by function declarations"""
+    args: List[Identifier]
+
+    def __init__(self, args: List["Identifier"], **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.args = args
+
+
 class FunCall(Expression):
     """Function call"""
     function: MemberAccess
-    arguments: ArgList
+    arguments: ArgListCall
 
-    def __init__(self, function: MemberAccess, arguments: ArgList, **kwargs) \
-            -> None:
+    def __init__(self, function: MemberAccess, arguments: ArgListCall,
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.function = function
         self.arguments = arguments
@@ -336,6 +344,6 @@ class ErrorStatement(Statement):
     """Error statement."""
     number: Literal
 
-    def __init__(self, number: Literal) -> None:
+    def __init__(self, number: Literal, **kwargs) -> None:
         super().__init__(**kwargs)
         self.number = number

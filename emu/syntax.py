@@ -225,16 +225,20 @@ def __build_binary_operator(expr, pos, result):
 binary_operators = OPERATORS_MAP.get_precedence_list(__build_binary_operator)
 
 # Function call
-arguments_list = pOptional(delimitedList(expression)) \
-    .setName("arguments_list") \
-    .setParseAction(lambda r: ArgList(list(r)))
-orphan_function_call_paren << (identifier + lparen + arguments_list + rparen) \
+arguments_list_call = pOptional(delimitedList(expression)) \
+    .setName("arguments_list_call") \
+    .setParseAction(lambda r: ArgListCall(list(r)))
+arguments_list_def = pOptional(delimitedList(identifier)) \
+    .setName("arguments_list_def") \
+    .setParseAction(lambda r: ArgListDef(list(r)))
+orphan_function_call_paren << (identifier + lparen + arguments_list_call
+                               + rparen) \
     .setName("orphan_function_call_paren") \
     .setParseAction(lambda r: FunCall(MemberAccess([r[0]]), r[1]))
-function_call_paren = (member_access + lparen + arguments_list + rparen) \
+function_call_paren = (member_access + lparen + arguments_list_call + rparen) \
     .setName("function_call_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
-function_call_no_paren = (StringStart() + member_access + arguments_list
+function_call_no_paren = (StringStart() + member_access + arguments_list_call
                           + StringEnd()) \
     .setName("function_call_no_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
@@ -263,7 +267,7 @@ variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
 
 # Function
 procedure_header = (sub_kw + identifier
-                    + pOptional(lparen + arguments_list + rparen)) \
+                    + pOptional(lparen + arguments_list_def + rparen)) \
     .setParseAction(lambda r: ProcDefHeader(*r)) \
     .setName("proc header")
 procedure_footer = (end_kw + sub_kw) \
@@ -271,7 +275,7 @@ procedure_footer = (end_kw + sub_kw) \
     .setName("proc footer")
 
 function_header = (function_kw + identifier
-                   + pOptional(lparen + arguments_list + rparen)) \
+                   + pOptional(lparen + arguments_list_def + rparen)) \
     .setParseAction(lambda r: FunDefHeader(*r)) \
     .setName("function header")
 function_footer = (end_kw + function_kw) \

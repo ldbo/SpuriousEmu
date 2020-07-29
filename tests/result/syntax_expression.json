@@ -182,7 +182,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [
                     {
                         "_type": "MemberAccess",
@@ -220,7 +220,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [
                     {
                         "_type": "Literal",
@@ -258,7 +258,7 @@
                     {
                         "_type": "FunCall",
                         "arguments": {
-                            "_type": "ArgList",
+                            "_type": "ArgListCall",
                             "args": [
                                 {
                                     "_type": "Literal",
@@ -319,7 +319,7 @@
                     "left": {
                         "_type": "FunCall",
                         "arguments": {
-                            "_type": "ArgList",
+                            "_type": "ArgListCall",
                             "args": [],
                             "file": "",
                             "line_number": "0"
@@ -345,7 +345,7 @@
                     "right": {
                         "_type": "FunCall",
                         "arguments": {
-                            "_type": "ArgList",
+                            "_type": "ArgListCall",
                             "args": [],
                             "file": "",
                             "line_number": "0"
@@ -434,7 +434,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [
                     {
                         "_type": "Literal",
@@ -486,7 +486,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [],
                 "file": "",
                 "line_number": "0"

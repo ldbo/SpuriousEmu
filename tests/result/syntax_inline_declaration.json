@@ -141,7 +141,7 @@
             "value": {
                 "_type": "FunCall",
                 "arguments": {
-                    "_type": "ArgList",
+                    "_type": "ArgListCall",
                     "args": [
                         {
                             "_type": "Literal",
