@@ -1,17 +1,53 @@
 {
-    "symbols": [
-        "<Root>",
-        "<Root>.main_module",
-        "<Root>.main_module.Main",
-        "<Root>.main_module.Main.Main",
-        "<Root>.msgBox",
-        "<Root>.Asc"
-    ],
     "memory": {
         "functions": [
-            "<Root>.Asc",
-            "<Root>.msgBox",
-            "<Root>.main_module.Main"
+            "VBAEnv.VBA.Strings.Asc",
+            "VBAEnv.VBA.Interaction.msgBox",
+            "VBAEnv.Default.main_module.Main"
+        ]
+    },
+    "environment": {
+        "name": "VBAEnv",
+        "Project": [
+            {
+                "name": "VBA",
+                "ProceduralModule": [
+                    {
+                        "name": "Strings",
+                        "FunctionReference": [
+                            {
+                                "name": "Asc"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Interaction",
+                        "FunctionReference": [
+                            {
+                                "name": "msgBox"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Default",
+                "ProceduralModule": [
+                    {
+                        "name": "main_module",
+                        "FunctionReference": [
+                            {
+                                "name": "Main",
+                                "Variable": [
+                                    {
+                                        "name": "Main"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     }
 }

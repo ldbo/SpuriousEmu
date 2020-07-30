@@ -10,7 +10,7 @@ def compile_with_standard_library(vbs: SourceFile) -> Result:
     cpl = compiler.Compiler()
     cpl.load_host_project("./emu/VBA")
     ast = syntax.parse_file(vbs)
-    cpl.analyse_module(ast, "main_module")
+    cpl.add_module(ast, "main_module")
 
     return cpl.program.to_dict()
 

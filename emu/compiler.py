@@ -1,86 +1,98 @@
-"""Pseudo-compilation stage: allow to extract symbols and function body."""
+"""Pseudo-compilation stage: allow to extract references and function body."""
 
 from dataclasses import dataclass
 from importlib.util import spec_from_file_location, module_from_spec
 from inspect import getmembers, isfunction
 from pathlib import Path
 from types import ModuleType
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 
-from .abstract_syntax_tree import *
-from .function import ExternalFunction, Function, InternalFunction
-from .side_effect import Memory
-from .symbol import Symbol
-from .visitor import Visitor
 from . import syntax
+from . import reference
+from .abstract_syntax_tree import *
+from .error import ResolutionError
+from .function import ExternalFunction, InternalFunction
+from .side_effect import Memory
+from .visitor import Visitor
 
 
 @dataclass
 class Program:
     """
-    Represent a statically analysed program : a set of symbols, with a memory
-    containing already initialized values.
+    Represent a statically analysed program : a set of references, with a
+    memory containing already initialized values.
     """
-    symbols: Symbol
     memory: Memory
+    environment: reference.Environment
 
     def to_dict(self) -> Dict[str, Any]:
         d = dict()
-        d['symbols'] = list(map(lambda t: t.full_name(), self.symbols))
         d['memory'] = {'functions': list(self.memory._functions.keys())}
+        d['environment'] = self.environment.to_dict()
         return d
 
 
 class Compiler(Visitor):
     """
-    Class used for symbols extraction. You can analyse several modules in a row
-    by using analyse_module multiple times, and can then retrieve the built
-    symbols and memory by accessing the corresponding properties. To start a
+    Class used for references extraction. You can analyse several modules in a
+    row by using add_module multiple times, and can then retrieve the built
+    references and memory by accessing the corresponding properties. To start a
     new analysis, use reset.
     """
-    __root_symbol: Symbol
-    __current_node: Symbol
+    __environment: reference.Environment
+    __current_reference: reference.Reference
     __memory: Memory
 
     def __init__(self) -> None:
         self.reset()
 
     def reset(self) -> None:
-        """Reset the state of the compiler, erasing symbols and memory."""
-        self.__root_symbol = Symbol.build_root()
-        self.__current_node = self.__root_symbol
+        """Reset the state of the compiler, erasing references and memory."""
+        self.__environment = reference.Environment("VBAEnv")
+        self.__current_reference = self.__environment
         self.__memory = Memory()
 
-    def analyse_module(self, ast: AST, module_name: str = None) -> None:
-        """Analyse a single module, given his AST."""
-        self.__current_node = self.__root_symbol.add_child(
-            module_name, Symbol.Type.Module)
+    def add_project(self, project_name: str) -> None:
+        """
+        Add a project to the current program and use it as the parent project
+        for the following operations.
+        """
+        project = self.__environment.build_child(reference.Project,
+                                                 name=project_name)
+        self.__current_reference = project
 
-        # self.__parse_ast(ast)
+    def add_module(self, ast: AST, module_name: str = None) -> None:
+        """
+        Add a module to the current project, analysing the AST of the module.
+        """
+        if isinstance(self.__current_reference, reference.Module):
+            self.__current_reference = self.__current_reference.parent
+        elif type(self.__current_reference) is reference.Project:
+            pass
+        elif type(self.__current_reference) is reference.Environment:
+            try:
+                project = self.__environment.get_child("Default")
+            except ResolutionError:
+                project = self.__environment.build_child(
+                    reference.Project,
+                    name="Default")
+
+            self.__current_reference = project
+
+        module = self.__current_reference.build_child(
+            reference.ProceduralModule, name=module_name)
+        self.__current_reference = module
         self.visit(ast)
-
-    def add_builtin(self,
-                    function: Union[InternalFunction,
-                                    ExternalFunction.Signature],
-                    name: Optional[str] = None) -> None:
-        """Link a builtin function to the program."""
-        typed_function: Function
-        if type(function) is InternalFunction:
-            typed_function = function
-        else:
-            typed_function = ExternalFunction.from_function(function)
-
-        if name is None:
-            name = typed_function.name
-
-        symbol = self.__root_symbol.add_child(name, Symbol.Type.Function)
-        self.__memory.add_function(symbol.full_name(), typed_function)
 
     def load_host_project(self, project_path: str) -> None:
         """Load a Python package as a VBA host project."""
         path = Path(project_path)
         assert(path.is_dir())
         project_name = path.name
+
+        project = reference.Project(project_name)
+        self.__environment.add_child(project)
+        self.__current_reference = project
 
         for module_path in path.glob("*.py"):
             module_name = f"{project_name}.{module_path.name[:-3]}"
@@ -89,9 +101,11 @@ class Compiler(Visitor):
             module = module_from_spec(module_spec)
             module_spec.loader.exec_module(module)
 
-            self.__load_host_module(module)
+            self.load_host_module(module)
 
-    def __load_host_module(self, module: ModuleType) -> None:
+        self.__current_reference = self.__current_reference.parent
+
+    def load_host_module(self, module: ModuleType) -> None:
         """
         Extract objects defined in an already loaded Python module and add them
         to the current program.
@@ -103,13 +117,27 @@ class Compiler(Visitor):
 
             return decorated_predicate
 
+        self.__current_reference = self.__current_reference.build_child(
+            reference.ProceduralModule,
+            name=module.__name__.split('.')[-1]
+        )
         for name, function in getmembers(module, locally_defined(isfunction)):
-            self.add_builtin(function)
+            self.load_host_function(function)
+        self.__current_reference = self.__current_reference.parent
+
+    def load_host_function(self, function: ExternalFunction.Signature) \
+            -> None:
+        typed_function = ExternalFunction.from_function(function)
+        name = typed_function.name
+
+        function = self.__current_reference.build_child(
+            reference.FunctionReference, name=name)
+        self.__memory.add_function(str(function), typed_function)
 
     @property
     def program(self):
         """Return the compiled program."""
-        return Program(self.__root_symbol, self.__memory)
+        return Program(self.__memory, self.__environment)
 
     def __parse_callable(self, definition: Union[FunDef, ProcDef]) -> None:
         # Extract information
@@ -120,33 +148,57 @@ class Compiler(Visitor):
             args = list(map(lambda t: t.name, definition.arguments.args))
         body = definition.body
 
-        # Build symbol and memory representation
-        fct_symbol = self.__current_node.add_child(name,
-                                                   Symbol.Type.Function)
-        fct_object = InternalFunction(name, args, body)
+        # Build reference and memory representation
+        function_ref = reference.FunctionReference(name)
+        self.__current_reference.add_child(function_ref)
+        function_object = InternalFunction(name, args, body)
 
         # Add them
-        previous_node = self.__current_node
-        self.__current_node = fct_symbol
-        self.__memory.add_function(fct_symbol.full_name(), fct_object)
+        self.__memory.add_function(str(function_ref), function_object)
+
+        self.__current_reference = function_ref
 
         for arg in args:
-            self.__current_node.add_child(arg, Symbol.Type.Variable)
+            self.__try_add_variable(arg)
 
         if type(definition) is FunDef:
-            self.__current_node.add_child(name, Symbol.Type.Variable)
+            self.__try_add_variable(name)
 
-        self.__current_node = previous_node
+        self.__try_add_variable(name)
+        self.visit_Block(definition)
+        self.__current_reference = self.__current_reference.parent
+
+    def __try_add_variable(self, name: str) -> None:
+        assert(isinstance(self.__current_reference,
+                          (reference.Module, reference.FunctionReference)))
+
+        try:
+            self.__current_reference.get_child(name)
+            return
+        except ResolutionError:
+            pass
+
+        if isinstance(self.__current_reference, reference.Module):
+            extent = reference.Variable.Extent.Module
+        elif isinstance(self.__current_reference, reference.FunctionReference):
+            extent = reference.Variable.Extent.Procedure
+
+        self.__current_reference.build_child(
+            reference.Variable,
+            name=name,
+            extent=extent)
 
     def visit_Block(self, block: Block) -> None:
         for statement in block.body:
             self.visit(statement)
 
     def visit_VarDec(self, var_dec: VarDec) -> None:
-        pass
+        self.__try_add_variable(var_dec.identifier.name)
 
     def visit_VarAssign(self, var_assign: VarAssign) -> None:
-        pass
+        if type(var_assign.variable) is Identifier:
+            name = var_assign.variable.name
+            self.__try_add_variable(name)
 
     def visit_FunDef(self, fun_def: FunDef) -> None:
         self.__parse_callable(fun_def)
@@ -158,10 +210,15 @@ class Compiler(Visitor):
         pass
 
     def visit_If(self, if_block: If) -> None:
-        pass
+        self.visit_Block(if_block)
+        for elseif in if_block.elsifs:
+            self.visit_Block(elseif)
+        if if_block.else_block is not None:
+            self.visit_Block(if_block.else_block)
 
     def visit_For(self, for_loop: For) -> None:
-        pass
+        self.__try_add_variable(for_loop.counter.name)
+        self.visit_Block(for_loop)
 
     def visit_OnError(self, on_error: OnError) -> None:
         pass
@@ -184,6 +241,6 @@ def compile_files(paths: List[str]) -> Program:
 
     for path in paths:
         ast = syntax.parse_file(path)
-        compiler.analyse_module(ast, Path(path).name.split('.')[0])
+        compiler.add_module(ast, Path(path).name.split('.')[0])
 
     return compiler.program
