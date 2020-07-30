@@ -94,7 +94,12 @@ class Reference(ABC):
 class Environment(Reference):
     category = Reference.Category.Structural
 
-    def __init__(self, name: str) -> None:
+    DEFAULT_NAME = "VBAEnv"
+
+    def __init__(self, name: Optional[str] = None) -> None:
+        if name is None:
+            name = Environment.DEFAULT_NAME
+
         super().__init__(name=name)
 
 

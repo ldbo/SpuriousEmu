@@ -48,7 +48,7 @@ class Compiler(Visitor):
 
     def reset(self) -> None:
         """Reset the state of the compiler, erasing references and memory."""
-        self.__environment = reference.Environment("VBAEnv")
+        self.__environment = reference.Environment()
         self.__current_reference = self.__environment
         self.__memory = Memory()
 
