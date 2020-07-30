@@ -100,11 +100,11 @@ class VarDec(Statement):
     Single variable declaration, corresponding to a Dim or Const statement
     with a one-member variable list.
     """
-    identifier: "MemberAccess"
+    identifier: "Identifier"
     type: Optional[Type]
     value: Optional["Expression"]
 
-    def __init__(self, identifier: "MemberAccess", type: Optional[Type] = None,
+    def __init__(self, identifier: "Identifier", type: Optional[Type] = None,
                  value: Optional["Expression"] = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.identifier = identifier
@@ -127,7 +127,7 @@ class MultipleVarDec(Statement):
 
 class VarAssign(Statement):
     """Variable assignment."""
-    variable: "MemberAccess"
+    variable: Union["MemberAccess", "Identifier"]
     value: "Expression"
 
     def __init__(self, variable: "MemberAccess", value: "Expression",
