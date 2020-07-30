@@ -4,44 +4,101 @@ from typing import List, Optional
 
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
-from .compiler import compile_files
+from .compiler import compile_files, Program
+from .error import InterpretationError, ResolutionError
+from .reference import Reference, Environment
 from .side_effect import Memory, OutsideWorld
 from .operator import OPERATORS_MAP
-from .symbol import Symbol
 from .value import Value, Integer
 from .visitor import Visitor
 
 
+class Resolver(Visitor):
+    """Used to tell the interpreter what each name referes to"""
+    _interpreter: "Interpreter"
+    _program: Program
+    _current_reference: Reference
+    _previous_references: List[Reference]
+
+    def __init__(self, interpreter, program=None) -> None:
+        self._interpreter = interpreter
+        self._program = program if program is not None \
+            else Program(Memory(), Environment())
+        self._current_reference = self._program.environment
+        self._previous_references = []
+
+    def visit_Identifier(self, identifier) -> Reference:
+        return self._program.environment.search_child(identifier.name)
+
+    def visit_MemberAccess(self, member_access: MemberAccess) \
+            -> Reference:
+        root_element = member_access.parts[0]
+        print(f"rootttt {type(root_element)}")
+        root = self.visit(root_element)
+        print(f"root : {root}")
+        return 12
+
+    def resolve(self, name: str) -> Reference:
+        reference = self._current_reference.parent
+        while reference is not None:
+            try:
+                return reference.search_child(name)
+            except ResolutionError:
+                pass
+
+            reference = reference.parent
+
+        msg = f"Can't resolve {name} from {self._current_reference}"
+        raise ResolutionError(msg)
+
+    def find_function(self, function_name) -> List[Function]:
+        functions = []
+        for project in self._program.environment.children:
+            for module in project.children:
+                try:
+                    functions.append(module.get_function(function_name))
+                except ResolutionError:
+                    pass
+
+        return functions
+
+    def jump(self, reference) -> None:
+        """Change  to a new scope"""
+        self._previous_references.append(self._current_reference)
+        self._current_reference = reference
+
+    def jump_back(self) -> None:
+        """Go back to the last scope"""
+        self._current_reference = self._previous_references.pop()
+
+
 class Interpreter(Visitor):
     """Class used to interprete a program which has already been compiled."""
-    _symbols: Symbol
-    _current_symbol: Symbol
     _memory: Memory
+    _resolver: Resolver
     _outside_world: OutsideWorld
     _evaluation: Optional[Value]
 
     # Main API
-    def __init__(self, symbols=None, memory=None):
-        self._symbols = symbols if symbols is not None else Symbol.build_root()
-        self._current_symbol = self._symbols
-        self._memory = memory if memory is not None else Memory()
+    def __init__(self, program):
+        self._memory = program.memory
+        self._resolver = Resolver(self, program)
         self._outside_world = OutsideWorld()
         self._evaluation = None
 
     def run(self, function_name: str, args: Optional[List[Value]] = None) \
             -> None:
         """
-        Search for a function entry point in the program symbol, and execute
-        it. You should use it most of the time.
+        Search for a function entry point in the program references, and
+        execute it. You should use it most of the time.
         """
         if args is None:
             args = []
 
-        functions = self._symbols.find(function_name)
+        functions = self._resolver.find_function(function_name)
         for function in functions:
-            self._current_symbol = function
-            self.call_function(self._memory.get_function(function.full_name()),
-                               args)
+            self._resolver._current_reference = function
+            self.call_function(self._memory.get_function(str(function)), args)
 
     def print_stdout(self, state: bool) -> None:
         """Enable or disable stdout forwarding"""
@@ -89,6 +146,9 @@ class Interpreter(Visitor):
     def visit_Identifier(self, identifier: Identifier) -> None:
         self._evaluation = self._memory.get_variable(identifier.name)
 
+    def visit_MemberAccess(self, member_access: MemberAccess) -> None:
+        pass
+
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)
         right_value = self.evaluate(bin_op.right)
@@ -98,8 +158,12 @@ class Interpreter(Visitor):
 
     def visit_FunCall(self, fun_call: FunCall) -> None:
         # Resolution
-        function_symbol = self._current_symbol.resolve(fun_call.function.name)
-        function_name = function_symbol.full_name()
+        # function_symbol = self._current_symbol.resolve(fun_call.function.name)
+        # function_name = function_symbol.full_name()
+        # function_object = self._memory.get_function(function_name)
+
+        function_reference = self._resolver.visit(fun_call.function)
+        function_name = str(function_reference)
         function_object = self._memory.get_function(function_name)
 
         # Arguments handling
@@ -107,10 +171,11 @@ class Interpreter(Visitor):
         arg_values = list(map(self.evaluate, arg_list))
 
         # Move to the function
-        previous_symbol = self._current_symbol
-        self._current_symbol = function_symbol
+        # previous_symbol = self._current_symbol
+        # self._current_symbol = function_symbol
+        self._resolver.jump(function_reference)
         return_value = self.call_function(function_object, arg_values)
-        self._current_symbol = previous_symbol
+        self._resolver.jump_back()
 
         self._evaluation = return_value
 
@@ -183,18 +248,22 @@ class Interpreter(Visitor):
         if type(function) is ExternalFunction:
             return function.external_function(self, arguments_values)
         elif type(function) is InternalFunction:
+            # Init memory and load arguments
             self._memory.new_locals()
             for name, value in zip(function.arguments_names, arguments_values):
-                self._memory.set_variable(name, value)
+                self._memory.variables(name, value)
 
+            # Execute function
             self.visit_Block(function)
 
+            # Get return value
             return_value: Optional[Value]
             try:
                 return_value = self._memory.get_variable(function.name)
             except KeyError:
                 return_value = None
 
+            # Clean memory
             self._memory.discard_locals()
 
             return return_value
@@ -217,7 +286,7 @@ class Interpreter(Visitor):
 
 def run_program(file_paths: List[str]) -> None:
     program = compile_files(file_paths)
-    interpreter = Interpreter(program.symbols, program.memory)
+    interpreter = Interpreter(program)
     interpreter.run('Main')
 
 

@@ -7,10 +7,10 @@ from tests.test import run_function
 def interpreting(vbs: SourceFile) -> Result:
     ast = syntax.parse_file(vbs)
     comp = compiler.Compiler()
-    comp.analyse_module(ast, "main_module")
+    comp.add_module(ast, "main_module")
     comp.load_host_project("./emu/VBA")
 
-    interp = interpreter.Interpreter(comp.program.memory, comp.program.symbols)
+    interp = interpreter.Interpreter(comp.program)
     interp.run("Main")
 
     return interp._outside_world.to_dict()
