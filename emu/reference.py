@@ -77,6 +77,24 @@ class Reference(ABC):
         self.add_child(child)
         return child
 
+    def search_child(self, name: str,
+                     exclude_child: Optional["Reference"] = None) \
+            -> "Reference":
+        try:
+            return self.get_child(name)
+        except ResolutionError:
+            for child in self.children:
+                if child is exclude_child:
+                    pass
+
+                try:
+                    return child.search_child(name)
+                except ResolutionError:
+                    pass
+
+        msg = f"Can't find a reference named {name} in {self} children"
+        raise ResolutionError(msg)
+
     def to_dict(self) -> Dict[str, Any]:
         d = {'name': self.name}
         for child in self.children:
