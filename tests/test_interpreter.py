@@ -38,5 +38,5 @@ def test_draf():
     run_function('interpreter_01', interpreting)
 
 
-# def test_draft():
-#     run_function("draft", interpreting)
+def test_draft():
+    run_function("draft", interpreting)

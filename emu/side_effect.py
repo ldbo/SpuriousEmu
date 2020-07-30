@@ -39,6 +39,14 @@ class Memory:
     def get_variable(self, local_name: str) -> Value:
         return self._local_variables[-1][local_name]
 
+    @property
+    def locals(self):
+        return self._local_variables[-1]
+
+    @property
+    def functions(self):
+        return self._functions
+
     def new_locals(self) -> None:
         self._local_variables.append(dict())
 

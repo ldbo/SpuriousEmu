@@ -6,7 +6,7 @@ from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
 from .compiler import compile_files, Program
 from .error import InterpretationError, ResolutionError
-from .reference import Reference, Environment
+from .reference import Reference, Environment, Variable
 from .side_effect import Memory, OutsideWorld
 from .operator import OPERATORS_MAP
 from .value import Value, Integer
@@ -19,6 +19,7 @@ class Resolver(Visitor):
     _program: Program
     _current_reference: Reference
     _previous_references: List[Reference]
+    _resolution: Optional[Reference]
 
     def __init__(self, interpreter, program=None) -> None:
         self._interpreter = interpreter
@@ -26,30 +27,42 @@ class Resolver(Visitor):
             else Program(Memory(), Environment())
         self._current_reference = self._program.environment
         self._previous_references = []
+        self._resolution = None
 
-    def visit_Identifier(self, identifier) -> Reference:
-        return self._program.environment.search_child(identifier.name)
+    def visit_Identifier(self, identifier) -> None:
+        self._resolution = Resolver.resolve_from(self._current_reference,
+                                                 identifier.name)
 
-    def visit_MemberAccess(self, member_access: MemberAccess) \
-            -> Reference:
+    def visit_MemberAccess(self, member_access: MemberAccess) -> None:
         root_element = member_access.parts[0]
-        print(f"rootttt {type(root_element)}")
-        root = self.visit(root_element)
-        print(f"root : {root}")
-        return 12
+        self.visit(root_element)
+        root = self._resolution
+        self._resolution = None
 
-    def resolve(self, name: str) -> Reference:
-        reference = self._current_reference.parent
-        while reference is not None:
-            try:
-                return reference.search_child(name)
-            except ResolutionError:
-                pass
+        # TODO handle all the different elements
 
-            reference = reference.parent
+        self._resolution = root
 
-        msg = f"Can't resolve {name} from {self._current_reference}"
-        raise ResolutionError(msg)
+    def resolve(self, name: Union[Identifier, MemberAccess]) -> Reference:
+        """
+        Translate a given simple or complexe identifier into the corresponding
+        reference.
+
+        :raises ResolutionError: If the resolution can't be done
+        """
+        self.visit(name)
+        return self._resolution
+
+    @staticmethod
+    def resolve_from(reference: Reference, name: str, go_down: bool = False,
+                     exclude: Reference = None) -> Reference:
+        try:
+            return reference.search_child(name)
+        except ResolutionError:
+            pass
+
+        return Resolver.resolve_from(reference.parent, name,
+                                     go_down=True, exclude=reference)
 
     def find_function(self, function_name) -> List[Function]:
         functions = []
@@ -147,7 +160,10 @@ class Interpreter(Visitor):
         self._evaluation = self._memory.get_variable(identifier.name)
 
     def visit_MemberAccess(self, member_access: MemberAccess) -> None:
-        pass
+        reference = self._resolver.resolve(member_access)
+        assert(isinstance(reference, Variable))
+
+        self._evaluation = self._memory.get_variable(reference.name)
 
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)
@@ -158,11 +174,7 @@ class Interpreter(Visitor):
 
     def visit_FunCall(self, fun_call: FunCall) -> None:
         # Resolution
-        # function_symbol = self._current_symbol.resolve(fun_call.function.name)
-        # function_name = function_symbol.full_name()
-        # function_object = self._memory.get_function(function_name)
-
-        function_reference = self._resolver.visit(fun_call.function)
+        function_reference = self._resolver.resolve(fun_call.function)
         function_name = str(function_reference)
         function_object = self._memory.get_function(function_name)
 
@@ -171,8 +183,6 @@ class Interpreter(Visitor):
         arg_values = list(map(self.evaluate, arg_list))
 
         # Move to the function
-        # previous_symbol = self._current_symbol
-        # self._current_symbol = function_symbol
         self._resolver.jump(function_reference)
         return_value = self.call_function(function_object, arg_values)
         self._resolver.jump_back()
@@ -251,7 +261,7 @@ class Interpreter(Visitor):
             # Init memory and load arguments
             self._memory.new_locals()
             for name, value in zip(function.arguments_names, arguments_values):
-                self._memory.variables(name, value)
+                self._memory.set_variable(name, value)
 
             # Execute function
             self.visit_Block(function)
