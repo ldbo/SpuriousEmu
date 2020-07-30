@@ -66,10 +66,17 @@ class Interpreter(Visitor):
 
     def visit_Block(self, block: Block) -> None:
         for statement in block.body:
-            self.visit(statement)
+            try:
+                self.visit(statement)
+            except InterpretationError as e:
+                raise e
+            except Exception as e:
+                msg = f"{statement.file}:{statement.line_number}: {e}"
+                raise InterpretationError(msg)
 
     def visit_VarDec(self, var_dec: VarDec) -> None:
         # TODO
+        # Add initial value
         pass
 
     def visit_VarAssign(self, var_assign: VarAssign) -> None:
