@@ -117,6 +117,16 @@ class Module(Reference):
     def __init__(self, name: str) -> None:
         super().__init__(name=name)
 
+    @property
+    def functions(self):
+        return list(filter(lambda child: type(child) is FunctionReference,
+                           self.children))
+
+    @property
+    def variables(self):
+        return list(filter(lambda child: type(child) is Variable,
+                           self.children))
+
     def get_function(self, name: str) -> "FunctionReference":
         function = self.get_child(name)
         assert(type(function) is FunctionReference)
