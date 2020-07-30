@@ -10,7 +10,7 @@ def interpreting(vbs: SourceFile) -> Result:
     comp.analyse_module(ast, "main_module")
     comp.load_host_project("./emu/VBA")
 
-    interp = interpreter.Interpreter(comp.program.symbols, comp.program.memory)
+    interp = interpreter.Interpreter(comp.program.memory, comp.program.symbols)
     interp.run("Main")
 
     return interp._outside_world.to_dict()
@@ -25,12 +25,12 @@ def evaluate_expressions(vbs: SourceFile) -> Result:
     return {'expressions': expressions}
 
 
-def test_types():
-    assert_correct_function("types_evaluation", evaluate_expressions)
+def test_type():
+    assert_correct_function("interpreter_type", evaluate_expressions)
 
 
-def test_literal_expressions():
-    assert_correct_function('literal_expressions_interpreter',
+def test_literal_expression():
+    assert_correct_function('interpreter_literal_expression',
                             evaluate_expressions)
 
 
@@ -38,5 +38,5 @@ def test_draf():
     run_function('interpreter_01', interpreting)
 
 
-def test_draft():
-    run_function("draft", interpreting)
+# def test_draft():
+#     run_function("draft", interpreting)
