@@ -56,10 +56,14 @@ class Resolver(Visitor):
     @staticmethod
     def resolve_from(reference: Reference, name: str, go_down: bool = False,
                      exclude: Reference = None) -> Reference:
+        # TODO efficient search
         try:
             return reference.search_child(name)
         except ResolutionError:
             pass
+
+        if reference.name == name:
+            return reference
 
         return Resolver.resolve_from(reference.parent, name,
                                      go_down=True, exclude=reference)
@@ -93,7 +97,14 @@ class Interpreter(Visitor):
     _evaluation: Optional[Value]
 
     # Main API
-    def __init__(self, program):
+    def __init__(self, program: Optional[Program] = None):
+        """
+        Create an interpreter used to run a precompiled program, or simply to
+        run an AST starting without a state.
+        """
+        if program is None:
+            program = Program(Memory(), Environment())
+
         self._memory = program.memory
         self._resolver = Resolver(self, program)
         self._outside_world = OutsideWorld()
