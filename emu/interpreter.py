@@ -6,7 +6,7 @@ from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
 from .compiler import compile_files, Program
 from .error import InterpretationError, ResolutionError
-from .reference import Reference, Environment, Variable
+from .reference import Reference, Environment, Variable, FunctionReference
 from .side_effect import Memory, OutsideWorld
 from .operator import OPERATORS_MAP
 from .value import Value, Integer
@@ -39,7 +39,33 @@ class Resolver(Visitor):
         root = self._resolution
         self._resolution = None
 
-        # TODO handle all the different elements
+        identifiers = list(map(lambda part: part if type(part) is Identifier
+                               else part.function.part[0],
+                               member_access.parts))
+
+        position = 0
+        identifier = identifiers[position]
+        reference = self.resolve(identifier)
+
+        # First part of a MemberAccess : only structural elements, until a
+        # variable of function call
+        while True:
+            if isinstance(reference, FunctionReference):
+                if position == len(member_access.parts) - 1:
+                    self._resolution = reference
+                    return
+                else:
+                    assert(isinstance(member_access.parts[position], FunCall))
+                    # TODO reference = self._interpreter.call_with_ref
+                    # (reference, FunCall)
+            elif isinstance(reference, Variable):
+                break
+            else:
+                position += 1
+                identifier = identifiers[position]
+                reference = reference.get_child(identifier.name)
+
+        # Now we're only dealing with objects
 
         self._resolution = root
 

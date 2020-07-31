@@ -1,5 +1,6 @@
 ' Draft file
 Sub Main()
+    VBAEnv.VBA.Interaction.msgBox "Hey"
     Dim hello
     Set hello = "hello, "
     For i = 0 To 12 Step 5
