@@ -43,6 +43,20 @@ class Compiler(Visitor):
     __current_reference: reference.Reference
     __memory: Memory
 
+    @staticmethod
+    def module_type_from_name(file_name: str):
+        """
+        Determine the module type from the extension of the file, default to a
+        procedural module.
+        """
+        extension = file_name.split('.')[-1]
+        if extension == 'cls':
+            return reference.ClassModule
+        elif extension == 'bas':
+            return reference.ProceduralModule
+        else:
+            return reference.ProceduralModule
+
     def __init__(self) -> None:
         self.reset()
 
@@ -242,7 +256,8 @@ def compile_files(paths: List[str]) -> Program:
 
     for path in paths:
         ast = syntax.parse_file(path)
-        compiler.add_module(ast, reference.ProceduralModule,
+        module_type = Compiler.module_type_from_name(path)
+        compiler.add_module(ast, module_type,
                             Path(path).name.split('.')[0])
 
     return compiler.program
