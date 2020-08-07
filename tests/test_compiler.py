@@ -1,4 +1,4 @@
-from emu import compiler, syntax
+from emu import compiler, syntax, reference
 from tests.test import (assert_correct_function, SourceFile, Result)
 
 
@@ -10,7 +10,7 @@ def compile_with_standard_library(vbs: SourceFile) -> Result:
     cpl = compiler.Compiler()
     cpl.load_host_project("./emu/VBA")
     ast = syntax.parse_file(vbs)
-    cpl.add_module(ast, "main_module")
+    cpl.add_module(ast, reference.ProceduralModule, "main_module")
 
     return cpl.program.to_dict()
 

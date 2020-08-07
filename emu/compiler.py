@@ -61,7 +61,8 @@ class Compiler(Visitor):
                                                  name=project_name)
         self.__current_reference = project
 
-    def add_module(self, ast: AST, module_name: str = None) -> None:
+    def add_module(self, ast: AST, module_type,
+                   module_name: str = None) -> None:
         """
         Add a module to the current project, analysing the AST of the module.
         """
@@ -80,7 +81,7 @@ class Compiler(Visitor):
             self.__current_reference = project
 
         module = self.__current_reference.build_child(
-            reference.ProceduralModule, name=module_name)
+            module_type, name=module_name)
         self.__current_reference = module
         self.visit(ast)
 
@@ -241,6 +242,7 @@ def compile_files(paths: List[str]) -> Program:
 
     for path in paths:
         ast = syntax.parse_file(path)
-        compiler.add_module(ast, Path(path).name.split('.')[0])
+        compiler.add_module(ast, reference.ProceduralModule,
+                            Path(path).name.split('.')[0])
 
     return compiler.program

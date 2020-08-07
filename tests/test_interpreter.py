@@ -1,4 +1,4 @@
-from emu import syntax, interpreter, compiler
+from emu import syntax, interpreter, compiler, reference
 from tests.test import (assert_correct_function, SourceFile, Result)
 
 from tests.test import run_function
@@ -7,7 +7,7 @@ from tests.test import run_function
 def interpreting(vbs: SourceFile) -> Result:
     ast = syntax.parse_file(vbs)
     comp = compiler.Compiler()
-    comp.add_module(ast, "main_module")
+    comp.add_module(ast, reference.ProceduralModule, "main_module")
     comp.load_host_project("./emu/VBA")
 
     interp = interpreter.Interpreter(comp.program)
