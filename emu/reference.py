@@ -156,7 +156,7 @@ class Module(Reference):
         return variable
 
 
-class Class(Module):
+class ClassModule(Module):
     category = Reference.Category.Structural
 
     def __init__(self, name: str) -> None:
