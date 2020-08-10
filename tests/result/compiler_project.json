@@ -1,0 +1,47 @@
+{
+    "memory": {
+        "functions": [
+            "VBAEnv.Default.Class.method1",
+            "VBAEnv.Default.Module.Main"
+        ],
+        "classes": []
+    },
+    "environment": {
+        "name": "VBAEnv",
+        "Project": [
+            {
+                "name": "Default",
+                "ClassModule": [
+                    {
+                        "name": "Class",
+                        "FunctionReference": [
+                            {
+                                "name": "method1",
+                                "Variable": [
+                                    {
+                                        "name": "method1"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "ProceduralModule": [
+                    {
+                        "name": "Module",
+                        "FunctionReference": [
+                            {
+                                "name": "Main",
+                                "Variable": [
+                                    {
+                                        "name": "Main"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
