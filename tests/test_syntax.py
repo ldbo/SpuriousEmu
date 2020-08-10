@@ -4,17 +4,17 @@ from typing import Tuple, Dict, Any
 import networkx as nx
 import matplotlib
 
-from emu import syntax
+from emu import Parser, syntax
 from tests.test import (assert_correct_function, SourceFile, Result)
 
 
 def parsing(vbs: SourceFile) -> Result:
-    ast = syntax.parse_file(vbs)
+    ast = Parser.parse_file(vbs)
     return ast.to_dict()
 
 
 def parsing_show(vbs: SourceFile) -> Result:
-    ast = syntax.parse_file(vbs)
+    ast = Parser.parse_file(vbs)
     display_digraph(*build_digraph_from_ast(ast))
 
 

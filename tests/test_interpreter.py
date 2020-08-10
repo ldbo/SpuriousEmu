@@ -1,12 +1,12 @@
-from emu import syntax, interpreter, compiler, reference
+from emu import Parser, interpreter, Compiler, reference
 from tests.test import (assert_correct_function, SourceFile, Result)
 
 from tests.test import run_function
 
 
 def interpreting(vbs: SourceFile) -> Result:
-    ast = syntax.parse_file(vbs)
-    comp = compiler.Compiler()
+    ast = Parser.parse_file(vbs)
+    comp = Compiler()
     comp.add_module(ast, reference.ProceduralModule, "main_module")
     comp.load_host_project("./emu/VBA")
 
@@ -17,7 +17,7 @@ def interpreting(vbs: SourceFile) -> Result:
 
 
 def evaluate_expressions(vbs: SourceFile) -> Result:
-    ast = syntax.parse_file(vbs)
+    ast = Parser.parse_file(vbs)
     interp = interpreter.Interpreter()
     expressions = []
     for expression in ast.body:

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
-from .compiler import compile_files, Program
+from .compiler import Compiler, Program
 from .error import InterpretationError, ResolutionError
 from .reference import Reference, Environment, Variable, FunctionReference
 from .side_effect import Memory, OutsideWorld
@@ -330,12 +330,7 @@ class Interpreter(Visitor):
         # TODO
         pass
 
-
-def run_program(file_paths: List[str]) -> None:
-    program = compile_files(file_paths)
-    interpreter = Interpreter(program)
-    interpreter.run('Main')
-
-
-def run_single_file(file_path: str) -> None:
-    run_program([file_path])
+    @staticmethod
+    def run_program(program: Program) -> None:
+        interpreter = Interpreter(program)
+        interpreter.run('Main')

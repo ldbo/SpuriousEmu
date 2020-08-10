@@ -409,18 +409,18 @@ class Parser:
             parent_block = self.__nested_blocks[-1]
             parent_block.statements_blocks[-1].append(complete_block)
 
+    @staticmethod
+    def parse_file(path: str) -> AST:
+        """
+        Parse a file into an abstract syntax tree.
 
-def parse_file(path: str) -> AST:
-    """
-    Parse a file into an abstract syntax tree.
+        :arg path: Path of the file
+        :return: An AST representing the syntax of the file
+        """
+        preprocessor = Preprocessor()
+        parser = Parser()
 
-    :arg path: Path of the file
-    :return: An AST representing the syntax of the file
-    """
-    preprocessor = Preprocessor()
-    parser = Parser()
+        instructions = preprocessor.extract_instructions_from_file(path)
+        tree = parser.build_ast(instructions)
 
-    instructions = preprocessor.extract_instructions_from_file(path)
-    tree = parser.build_ast(instructions)
-
-    return tree
+        return tree

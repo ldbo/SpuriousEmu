@@ -3,16 +3,17 @@
 from dataclasses import dataclass
 from importlib.util import spec_from_file_location, module_from_spec
 from inspect import getmembers, isfunction
+from itertools import chain
 from pathlib import Path
 from types import ModuleType
 from typing import Dict, Any, List
 
-from . import syntax
 from . import reference
 from .abstract_syntax_tree import *
 from .error import ResolutionError
 from .function import ExternalFunction, InternalFunction
 from .side_effect import Memory
+from .syntax import Parser
 from .visitor import Visitor
 
 
@@ -52,10 +53,10 @@ class Compiler(Visitor):
         extension = file_name.split('.')[-1]
         if extension == 'cls':
             return reference.ClassModule
-        elif extension == 'bas':
+        elif extension == 'bas' or extension == 'vbs':
             return reference.ProceduralModule
         else:
-            return reference.ProceduralModule
+            raise RuntimeError('File {file_name} has unkown extension')
 
     def __init__(self) -> None:
         self.reset()
@@ -244,20 +245,44 @@ class Compiler(Visitor):
     def visit_ErrorStatement(self, error: ErrorStatement) -> None:
         pass
 
+    @staticmethod
+    def compile_file(path: str) -> Program:
+        """Parse a file and then compile it, using Office extension."""
+        return Compiler.compile_files([path])
 
-def compile_file(path: str) -> Program:
-    """Parse a file and then compile it."""
-    return compile_files([path])
+    @staticmethod
+    def compile_files(paths: List[str]) -> Program:
+        """
+        Parse and compile a list of files with Office extensions (cls and bas).
+        """
+        compiler = Compiler()
 
+        for path in paths:
+            ast = Parser.parse_file(path)
+            module_type = Compiler.module_type_from_name(path)
+            compiler.add_module(ast, module_type,
+                                Path(path).name.split('.')[0])
 
-def compile_files(paths: List[str]) -> Program:
-    """Parse and compile a list of files."""
-    compiler = Compiler()
+        return compiler.program
 
-    for path in paths:
-        ast = syntax.parse_file(path)
-        module_type = Compiler.module_type_from_name(path)
-        compiler.add_module(ast, module_type,
-                            Path(path).name.split('.')[0])
+    @staticmethod
+    def compile_script(path: str) -> Program:
+        """Compile a single file script, with vbs extension."""
+        compiler = Compiler()
+        ast = Parser.parse_file(path)
+        module_type = reference.ProceduralModule
+        compiler.add_module(ast, module_type, Path(path).name.split('.')[0])
 
-    return compiler.program
+        return compiler.program
+
+    @staticmethod
+    def compile_project(project_path: str) -> Program:
+        """
+        Recursively compile a directory, only taking into accound cls and bas
+        files.
+        """
+        path = Path(project_path)
+        assert(path.is_dir())
+        paths = list(chain(path.rglob(f'*.{ext}') for ext in ('cls', 'bas')))
+
+        return Compiler.compile_files(paths)
