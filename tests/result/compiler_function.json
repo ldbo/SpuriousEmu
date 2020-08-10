@@ -3,7 +3,8 @@
         "functions": [
             "VBAEnv.Default.compiler_function.CalculateSquareRoot",
             "VBAEnv.Default.compiler_function.Proc"
-        ]
+        ],
+        "classes": []
     },
     "environment": {
         "name": "VBAEnv",

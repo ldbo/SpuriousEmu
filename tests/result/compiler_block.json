@@ -1,6 +1,7 @@
 {
     "memory": {
-        "functions": []
+        "functions": [],
+        "classes": []
     },
     "environment": {
         "name": "VBAEnv",

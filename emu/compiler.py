@@ -232,7 +232,6 @@ class Compiler(Visitor):
         elif isinstance(self.__current_reference, reference.FunctionReference):
             extent = reference.Variable.Extent.Procedure
 
-        print(f"Add {name} ex {extent}")
         self.__current_reference.build_child(
             reference.Variable,
             name=name,
