@@ -212,6 +212,7 @@ class Interpreter(Visitor):
     def visit_FunCall(self, fun_call: FunCall) -> None:
         # Resolution
         function_reference = self._resolver.resolve(fun_call.function)
+        assert(isinstance(function_reference, FunctionReference))
         function_name = str(function_reference)
         function_object = self._memory.get_function(function_name)
 
