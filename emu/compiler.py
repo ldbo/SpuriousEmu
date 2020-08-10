@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from importlib.util import spec_from_file_location, module_from_spec
-from inspect import getmembers, isfunction
+from inspect import getmembers, isclass, isfunction
 from itertools import chain
 from pathlib import Path
 from types import ModuleType
@@ -14,6 +14,7 @@ from .error import ResolutionError
 from .function import ExternalFunction, InternalFunction
 from .side_effect import Memory
 from .syntax import Parser
+from .vba_class import Class
 from .visitor import Visitor
 
 
@@ -28,7 +29,8 @@ class Program:
 
     def to_dict(self) -> Dict[str, Any]:
         d = dict()
-        d['memory'] = {'functions': list(self.memory._functions.keys())}
+        d['memory'] = {'functions': list(self.memory._functions.keys()),
+                       'classes': list(self.memory._classes.keys())}
         d['environment'] = self.environment.to_dict()
         return d
 
@@ -97,6 +99,10 @@ class Compiler(Visitor):
 
         module = self.__current_reference.build_child(
             module_type, name=module_name)
+
+        if module_type is reference.ClassModule:
+            self.__memory.classes[str(module)] = Class([])
+
         self.__current_reference = module
         self.visit(ast)
 
@@ -133,12 +139,35 @@ class Compiler(Visitor):
 
             return decorated_predicate
 
-        self.__current_reference = self.__current_reference.build_child(
-            reference.ProceduralModule,
-            name=module.__name__.split('.')[-1]
-        )
-        for name, function in getmembers(module, locally_defined(isfunction)):
+        module_name = module.__name__.split('.')[-1]
+
+        classes = getmembers(module, locally_defined(isclass))
+        assert(len(classes) in (0, 1))
+        if len(classes) == 0:
+            self.__current_reference = self.__current_reference.build_child(
+                reference.ProceduralModule, module_name)
+            functions_holder = module
+        else:
+            self.__current_reference = self.__current_reference.build_child(
+                reference.ClassModule, module_name)
+            class_name = classes[0][0]
+            py_class = getattr(module, class_name)
+            functions_holder = py_class
+
+            for variable in py_class.variables:
+                self.__current_reference.build_child(
+                    reference.Variable,
+                    variable,
+                    extent=reference.Variable.Extent.Object
+                )
+
+            vba_class = Class(py_class.variables)
+            self.__memory.classes[str(self.__current_reference)] = vba_class
+
+        for name, function in getmembers(
+                functions_holder, locally_defined(isfunction)):
             self.load_host_function(function)
+
         self.__current_reference = self.__current_reference.parent
 
     def load_host_function(self, function: ExternalFunction.Signature) \
@@ -194,11 +223,16 @@ class Compiler(Visitor):
         except ResolutionError:
             pass
 
-        if isinstance(self.__current_reference, reference.Module):
+        if isinstance(self.__current_reference, reference.ProceduralModule):
             extent = reference.Variable.Extent.Module
+        elif isinstance(self.__current_reference, reference.ClassModule):
+            extent = reference.Variable.Extent.Object
+            vba_class = self.__memory.classes[str(self.__current_reference)]
+            vba_class.variables.append(name)
         elif isinstance(self.__current_reference, reference.FunctionReference):
             extent = reference.Variable.Extent.Procedure
 
+        print(f"Add {name} ex {extent}")
         self.__current_reference.build_child(
             reference.Variable,
             name=name,
@@ -283,6 +317,10 @@ class Compiler(Visitor):
         """
         path = Path(project_path)
         assert(path.is_dir())
-        paths = list(chain(path.rglob(f'*.{ext}') for ext in ('cls', 'bas')))
+        paths = list(chain(list(path.rglob(f'*.{ext}'))
+                           for ext in ('cls', 'bas')))
+        paths = [str(file.absolute()) for glob in
+                 (path.rglob(f"*.{ext}") for ext in ('cls', 'bas'))
+                 for file in glob]
 
         return Compiler.compile_files(paths)

@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List
 
 from .function import Function
 from .value import Value
+from .vba_class import Class
 
 
 @dataclass
@@ -22,10 +23,12 @@ class Memory:
     """
     _local_variables: List[Dict[str, Value]]
     _functions: Dict[str, Function]
+    _classes: Dict[str, Class]
 
     def __init__(self) -> None:
         self._local_variables = []
         self._functions = dict()
+        self._classes = dict()
 
     def add_function(self, full_name: str, function: Function) -> None:
         self._functions[full_name] = function
@@ -46,6 +49,10 @@ class Memory:
     @property
     def functions(self):
         return self._functions
+
+    @property
+    def classes(self):
+        return self._classes
 
     def new_locals(self) -> None:
         self._local_variables.append(dict())

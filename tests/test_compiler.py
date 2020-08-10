@@ -1,6 +1,7 @@
 from emu import Parser, Compiler, reference
 from tests.test import (assert_correct_function, SourceFile, Result)
 
+from tests.test import run_function
 
 def compile_single_file(vbs: SourceFile) -> Result:
     return Compiler.compile_file(vbs).to_dict()
@@ -15,14 +16,22 @@ def compile_with_standard_library(vbs: SourceFile) -> Result:
     return cpl.program.to_dict()
 
 
+def compile_project(project: SourceFile) -> Result:
+    return Compiler.compile_project(project).to_dict()
+
+
 def test_block():
-    assert_correct_function("compiler_block", compile_single_file)
+    run_function("compiler_block", compile_single_file)
 
 
 def test_function():
-    assert_correct_function("compiler_function", compile_single_file)
+    run_function("compiler_function", compile_single_file)
 
 
 def test_standard_library():
-    assert_correct_function("compiler_standard_library",
+    run_function("compiler_standard_library",
                             compile_with_standard_library)
+
+
+def test_project():
+    run_function("compiler_project", compile_project)
