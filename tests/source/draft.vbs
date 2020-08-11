@@ -18,6 +18,8 @@ Sub Main()
     For i = 0 To 12
         msgBox Oddity(i)
     Next i
+
+    Exexexexe
 End Sub
 
 Function ReturnArg(arg)
@@ -31,3 +33,11 @@ Function Oddity(n)
         Set Oddity= "High level of oddity"
     End If
 End Function
+
+Sub Exexexexe()
+    Dim command
+    Set command = "plop plop plop /"
+    Dim shell As Object
+    Set shell = WScript.CreateObject("WScript.Shell")
+    shell.Run(command)
+End Sub

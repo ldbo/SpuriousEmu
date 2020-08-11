@@ -9,6 +9,7 @@ def interpreting(vbs: SourceFile) -> Result:
     comp = Compiler()
     comp.add_module(ast, reference.ProceduralModule, "main_module")
     comp.load_host_project("./lib/VBA")
+    comp.load_host_project("./lib/WSH")
 
     interp = interpreter.Interpreter(comp.program)
     interp.run("Main")
