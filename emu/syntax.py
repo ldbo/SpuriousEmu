@@ -199,10 +199,24 @@ statement = Forward().setName("statement")
 #################
 
 # Member access
+def __build_recursive_member_access(expr, pos, result):
+    tokens = list(result)
+    node = tokens[0]
+
+    for token in tokens[1:]:
+        if isinstance(token, Identifier):
+            node = Get(node, token)
+        elif isinstance(token, FunCall):
+            assert(isinstance(token.function, Identifier))
+            node = FunCall(Get(node, token.function), token.arguments)
+
+    return node
+
+
 orphan_function_call_paren = Forward().setName("orphan_function_call_paren")
 member_access = (((orphan_function_call_paren | identifier) + dot)[0, ...]
                  + identifier) \
-    .setParseAction(lambda r: MemberAccess(list(r)))
+    .setParseAction(__build_recursive_member_access)
 
 
 # Operator
@@ -231,7 +245,7 @@ arguments_list_def = pOptional(delimitedList(identifier)) \
 orphan_function_call_paren << (identifier + lparen + arguments_list_call
                                + rparen) \
     .setName("orphan_function_call_paren") \
-    .setParseAction(lambda r: FunCall(MemberAccess([r[0]]), r[1]))
+    .setParseAction(lambda r: FunCall(*r))
 function_call_paren = (member_access + lparen + arguments_list_call + rparen) \
     .setName("function_call_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))

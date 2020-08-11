@@ -132,10 +132,10 @@ class MultipleVarDec(Statement):
 
 class VarAssign(Statement):
     """Variable assignment."""
-    variable: Union["MemberAccess", "Identifier"]
+    variable: Union["Get", "Identifier"]
     value: "Expression"
 
-    def __init__(self, variable: "MemberAccess", value: "Expression",
+    def __init__(self, variable: "Get", value: "Expression",
                  **kwargs) -> None:
         super().__init__(**kwargs)
         self.variable = variable
@@ -191,13 +191,16 @@ class Identifier(Expression):
         self.name = name
 
 
-class MemberAccess(Expression):
-    parts: List[Union[Identifier, "FunCall"]]
+class Get(Expression):
+    """Recursive node corresponding to the . operator."""
+    parent: Union[Identifier, "FunCall"]
+    child: Union["Get", Identifier]
 
-    def __init__(self, parts: List[Union[Identifier, "FunCall"]], **kwargs) \
-            -> None:
+    def __init__(self, parent: Union[Identifier, "FunCall"],
+                 child: Union["Get", Identifier], **kwargs) -> None:
         super().__init__(**kwargs)
-        self.parts = parts
+        self.parent = parent
+        self.child = child
 
 
 class Literal(Expression):
@@ -236,11 +239,11 @@ class ArgListDef(Statement):
 
 class FunCall(Expression):
     """Function call"""
-    function: MemberAccess
+    function: Union[Get, Identifier]
     arguments: ArgListCall
 
-    def __init__(self, function: MemberAccess, arguments: ArgListCall,
-                 **kwargs) -> None:
+    def __init__(self, function: Union[Get, Identifier],
+                 arguments: ArgListCall, **kwargs) -> None:
         super().__init__(**kwargs)
         self.function = function
         self.arguments = arguments
