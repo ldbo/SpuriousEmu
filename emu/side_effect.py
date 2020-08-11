@@ -66,6 +66,7 @@ class OutsideWorld:
         STDOUT = "stdout"
         FILE = "file"
         NETWORK = "network"
+        EXECUTION = "execution"
 
     @dataclass
     class Event:

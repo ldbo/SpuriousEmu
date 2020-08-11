@@ -4,12 +4,12 @@ from typing import List, Optional
 
 from .function import Function, InternalFunction, ExternalFunction
 from .abstract_syntax_tree import *
-from .compiler import Compiler, Program
+from .compiler import Program
 from .error import InterpretationError, ResolutionError
 from .reference import Reference, Environment, Variable, FunctionReference
 from .side_effect import Memory, OutsideWorld
 from .operator import OPERATORS_MAP
-from .value import Value, Integer
+from .value import Value, Integer, Object
 from .visitor import Visitor
 
 
@@ -319,9 +319,27 @@ class Interpreter(Visitor):
             msg = f"{type(function)} is not handled yet by the interpreter"
             raise NotImplemented(msg)
 
+    def create_object(self, class_name: str) -> Object:
+        """
+        Instanciate a new object with None values for each of its
+        attributes.
+
+        :param class_name: Absolute name of the VBA class
+        """
+        vba_class = self._memory.classes[class_name]
+        variables = {name: None for name in vba_class.variables}
+        obj = Object(vba_class.class_reference, variables)
+        return obj
+
     # External functions interface
     def add_stdout(self, content: str) -> None:
         self._outside_world.add_event(OutsideWorld.EventType.STDOUT, content)
+
+    def add_command_execution(self, command: str) -> None:
+        self._outside_world.add_event(
+            OutsideWorld.EventType.EXECUTION,
+            command
+        )
 
     def add_file_event(self, *args, **kwargs) -> None:
         # TODO

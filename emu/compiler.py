@@ -101,7 +101,7 @@ class Compiler(Visitor):
             module_type, name=module_name)
 
         if module_type is reference.ClassModule:
-            self.__memory.classes[str(module)] = Class([])
+            self.__memory.classes[str(module)] = Class([], module)
 
         self.__current_reference = module
         self.visit(ast)
@@ -161,7 +161,7 @@ class Compiler(Visitor):
                     extent=reference.Variable.Extent.Object
                 )
 
-            vba_class = Class(py_class.variables)
+            vba_class = Class(py_class.variables, self.__current_reference)
             self.__memory.classes[str(self.__current_reference)] = vba_class
 
         for name, function in getmembers(

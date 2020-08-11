@@ -128,6 +128,10 @@ class Object(Value):
     def variables(self) -> Dict[str, Variable]:
         return self.value
 
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
+        # TODO
+        return None
+
 
 TYPES_MAP = {
     Type.Integer: Integer,
