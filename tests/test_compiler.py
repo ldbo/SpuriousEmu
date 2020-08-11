@@ -8,7 +8,7 @@ def compile_single_file(vbs: SourceFile) -> Result:
 
 def compile_with_standard_library(vbs: SourceFile) -> Result:
     cpl = Compiler()
-    cpl.load_host_project("./emu/VBA")
+    cpl.load_host_project("./lib/VBA")
     ast = Parser.parse_file(vbs)
     cpl.add_module(ast, reference.ProceduralModule, "main_module")
 

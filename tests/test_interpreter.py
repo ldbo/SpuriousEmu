@@ -8,7 +8,7 @@ def interpreting(vbs: SourceFile) -> Result:
     ast = Parser.parse_file(vbs)
     comp = Compiler()
     comp.add_module(ast, reference.ProceduralModule, "main_module")
-    comp.load_host_project("./emu/VBA")
+    comp.load_host_project("./lib/VBA")
 
     interp = interpreter.Interpreter(comp.program)
     interp.run("Main")
