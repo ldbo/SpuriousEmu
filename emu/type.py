@@ -25,5 +25,5 @@
 
 from enum import Enum
 
-Type = Enum("Type", "Integer Boolean String")
+Type = Enum("Type", "Integer Boolean String Object")
 types = tuple(Type.__members__.keys())

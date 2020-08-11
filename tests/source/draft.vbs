@@ -2,6 +2,7 @@
 Sub Main()
     VBAEnv.VBA.Interaction.msgBox "Hey"
     Dim hello
+    Dim plop As New Integer
     Set hello = "hello, "
     For i = 0 To 12 Step 5
         msgBox "i"

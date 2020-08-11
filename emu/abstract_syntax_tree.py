@@ -101,15 +101,20 @@ class VarDec(Statement):
     with a one-member variable list.
     """
     identifier: "Identifier"
-    type: Optional[Type]
+    type: Optional[Union[Type, "Identifier"]]
     value: Optional["Expression"]
+    new: bool
 
-    def __init__(self, identifier: "Identifier", type: Optional[Type] = None,
-                 value: Optional["Expression"] = None, **kwargs) -> None:
+    def __init__(self, identifier: "Identifier",
+                 type: Optional[Union[Type, "Identifier"]] = None,
+                 value: Optional["Expression"] = None,
+                 new: bool = False,
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.identifier = identifier
         self.type = type
         self.value = value
+        self.new = new
 
 
 # TODO implement
