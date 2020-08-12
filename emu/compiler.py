@@ -8,7 +8,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Dict, Any, List
 
-from . import reference
+from .reference import *
 from .abstract_syntax_tree import *
 from .error import ResolutionError
 from .function import ExternalFunction, InternalFunction
@@ -25,7 +25,7 @@ class Program:
     memory containing already initialized values.
     """
     memory: Memory
-    environment: reference.Environment
+    environment: Environment
 
     def to_dict(self) -> Dict[str, Any]:
         d = dict()
@@ -42,8 +42,8 @@ class Compiler(Visitor):
     references and memory by accessing the corresponding properties. To start a
     new analysis, use reset.
     """
-    __environment: reference.Environment
-    __current_reference: reference.Reference
+    __environment: Environment
+    __current_reference: Reference
     __memory: Memory
 
     @staticmethod
@@ -54,9 +54,9 @@ class Compiler(Visitor):
         """
         extension = file_name.split('.')[-1]
         if extension == 'cls':
-            return reference.ClassModule
+            return ClassModule
         elif extension == 'bas' or extension == 'vbs':
-            return reference.ProceduralModule
+            return ProceduralModule
         else:
             raise RuntimeError('File {file_name} has unkown extension')
 
@@ -65,7 +65,7 @@ class Compiler(Visitor):
 
     def reset(self) -> None:
         """Reset the state of the compiler, erasing references and memory."""
-        self.__environment = reference.Environment()
+        self.__environment = Environment()
         self.__current_reference = self.__environment
         self.__memory = Memory()
 
@@ -74,7 +74,7 @@ class Compiler(Visitor):
         Add a project to the current program and use it as the parent project
         for the following operations.
         """
-        project = self.__environment.build_child(reference.Project,
+        project = self.__environment.build_child(Project,
                                                  name=project_name)
         self.__current_reference = project
 
@@ -83,16 +83,16 @@ class Compiler(Visitor):
         """
         Add a module to the current project, analysing the AST of the module.
         """
-        if isinstance(self.__current_reference, reference.Module):
+        if isinstance(self.__current_reference, Module):
             self.__current_reference = self.__current_reference.parent
-        elif type(self.__current_reference) is reference.Project:
+        elif type(self.__current_reference) is Project:
             pass
-        elif type(self.__current_reference) is reference.Environment:
+        elif type(self.__current_reference) is Environment:
             try:
                 project = self.__environment.get_child("Default")
             except ResolutionError:
                 project = self.__environment.build_child(
-                    reference.Project,
+                    Project,
                     name="Default")
 
             self.__current_reference = project
@@ -100,7 +100,7 @@ class Compiler(Visitor):
         module = self.__current_reference.build_child(
             module_type, name=module_name)
 
-        if module_type is reference.ClassModule:
+        if module_type is ClassModule:
             self.__memory.classes[str(module)] = Class([], module)
 
         self.__current_reference = module
@@ -112,7 +112,7 @@ class Compiler(Visitor):
         assert(path.is_dir())
         project_name = path.name
 
-        project = reference.Project(project_name)
+        project = Project(project_name)
         self.__environment.add_child(project)
         self.__current_reference = project
 
@@ -145,20 +145,20 @@ class Compiler(Visitor):
         assert(len(classes) in (0, 1))
         if len(classes) == 0:
             self.__current_reference = self.__current_reference.build_child(
-                reference.ProceduralModule, module_name)
+                ProceduralModule, module_name)
             functions_holder = module
         else:
             self.__current_reference = self.__current_reference.build_child(
-                reference.ClassModule, module_name)
+                ClassModule, module_name)
             class_name = classes[0][0]
             py_class = getattr(module, class_name)
             functions_holder = py_class
 
             for variable in py_class.variables:
                 self.__current_reference.build_child(
-                    reference.Variable,
+                    Variable,
                     variable,
-                    extent=reference.Variable.Extent.Object
+                    extent=Variable.Extent.Object
                 )
 
             vba_class = Class(py_class.variables, self.__current_reference)
@@ -176,7 +176,7 @@ class Compiler(Visitor):
         name = typed_function.name
 
         function = self.__current_reference.build_child(
-            reference.FunctionReference, name=name)
+            FunctionReference, name=name)
         self.__memory.add_function(str(function), typed_function)
 
     @property
@@ -194,7 +194,7 @@ class Compiler(Visitor):
         body = definition.body
 
         # Build reference and memory representation
-        function_ref = reference.FunctionReference(name)
+        function_ref = FunctionReference(name)
         self.__current_reference.add_child(function_ref)
         function_object = InternalFunction(name, args, body)
 
@@ -215,7 +215,7 @@ class Compiler(Visitor):
 
     def __try_add_variable(self, name: str) -> None:
         assert(isinstance(self.__current_reference,
-                          (reference.Module, reference.FunctionReference)))
+                          (Module, FunctionReference)))
 
         try:
             self.__current_reference.get_child(name)
@@ -223,17 +223,17 @@ class Compiler(Visitor):
         except ResolutionError:
             pass
 
-        if isinstance(self.__current_reference, reference.ProceduralModule):
-            extent = reference.Variable.Extent.Module
-        elif isinstance(self.__current_reference, reference.ClassModule):
-            extent = reference.Variable.Extent.Object
+        if isinstance(self.__current_reference, ProceduralModule):
+            extent = Variable.Extent.Module
+        elif isinstance(self.__current_reference, ClassModule):
+            extent = Variable.Extent.Object
             vba_class = self.__memory.classes[str(self.__current_reference)]
             vba_class.variables.append(name)
-        elif isinstance(self.__current_reference, reference.FunctionReference):
-            extent = reference.Variable.Extent.Procedure
+        elif isinstance(self.__current_reference, FunctionReference):
+            extent = Variable.Extent.Procedure
 
         self.__current_reference.build_child(
-            reference.Variable,
+            Variable,
             name=name,
             extent=extent)
 
@@ -303,7 +303,7 @@ class Compiler(Visitor):
         """Compile a single file script, with vbs extension."""
         compiler = Compiler()
         ast = Parser.parse_file(path)
-        module_type = reference.ProceduralModule
+        module_type = ProceduralModule
         compiler.add_module(ast, module_type, Path(path).name.split('.')[0])
 
         return compiler.program

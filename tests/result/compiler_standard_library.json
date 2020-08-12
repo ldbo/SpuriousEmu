@@ -3,12 +3,9 @@
         "functions": [
             "VBAEnv.VBA.Strings.Asc",
             "VBAEnv.VBA.Interaction.msgBox",
-            "VBAEnv.VBA.Plop.hey",
             "VBAEnv.Default.main_module.Main"
         ],
-        "classes": [
-            "VBAEnv.VBA.Plop"
-        ]
+        "classes": []
     },
     "environment": {
         "name": "VBAEnv",
@@ -29,21 +26,6 @@
                         "FunctionReference": [
                             {
                                 "name": "msgBox"
-                            }
-                        ]
-                    }
-                ],
-                "ClassModule": [
-                    {
-                        "name": "Plop",
-                        "Variable": [
-                            {
-                                "name": "heyo"
-                            }
-                        ],
-                        "FunctionReference": [
-                            {
-                                "name": "hey"
                             }
                         ]
                     }
