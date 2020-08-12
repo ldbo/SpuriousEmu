@@ -10,7 +10,7 @@ from abc import abstractmethod, ABC
 from typing import Any, Dict, Optional, Union
 
 from .error import ConversionError
-from .reference import ClassModule, Variable
+from .reference import ClassModule
 from .type import Type
 
 
@@ -117,15 +117,15 @@ class Object(Value):
     base_type = Type.Object
 
     class_reference: ClassModule
-    value: Dict[str, Variable]  # Holds the state of the object
+    value: Dict[str, Value]  # Holds the state of the object
 
     def __init__(self, class_reference=ClassModule,
-                 variables: Dict[str, Variable] = None) -> None:
+                 variables: Dict[str, Value] = None) -> None:
         self.class_reference = class_reference
         self.value = variables if variables is not None else dict()
 
     @property
-    def variables(self) -> Dict[str, Variable]:
+    def variables(self) -> Dict[str, Value]:
         return self.value
 
     def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
