@@ -12,6 +12,7 @@ from .vba_class import Class
 
 @dataclass
 class Variable:
+    # TODO remove
     name: str
     value: Value
 
@@ -40,6 +41,7 @@ class Memory:
         self._local_variables[-1][local_name] = value
 
     def get_variable(self, local_name: str) -> Value:
+        # TODO use full name for variable storage
         return self._local_variables[-1][local_name]
 
     @property

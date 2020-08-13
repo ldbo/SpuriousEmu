@@ -29,54 +29,21 @@ class Resolver(Visitor):
         self._previous_references = []
         self._resolution = None
 
-    def visit_Identifier(self, identifier) -> None:
-        self._resolution = Resolver.resolve_from(self._current_reference,
-                                                 identifier.name)
+    def visit_Identifier(self, identifier: Identifier) -> None:
+        self._resolution = Resolver.resolve_from(
+            self._current_reference, identifier.name)
 
-    def visit_MemberAccess(self, member_access: MemberAccess) -> None:
-        root_element = member_access.parts[0]
-        self.visit(root_element)
-        root = self._resolution
-        self._resolution = None
+    def visit_Get(self, get: Get) -> None:
+        """Used to resolve LSH get expression or function name."""
+        pass
 
-        identifiers = list(map(lambda part: part if type(part) is Identifier
-                               else part.function.part[0],
-                               member_access.parts))
-
-        position = 0
-        identifier = identifiers[position]
-        reference = self.resolve(identifier)
-
-        # First part of a MemberAccess : only structural elements, until a
-        # variable of function call
-        while True:
-            if isinstance(reference, FunctionReference):
-                if position == len(member_access.parts) - 1:
-                    self._resolution = reference
-                    return
-                else:
-                    assert(isinstance(member_access.parts[position], FunCall))
-                    # TODO reference = self._interpreter.call_with_ref
-                    # (reference, FunCall)
-            elif isinstance(reference, Variable):
-                break
-            else:
-                position += 1
-                identifier = identifiers[position]
-                reference = reference.get_child(identifier.name)
-
-        # Now we're only dealing with objects
-
-        self._resolution = root
-
-    def resolve(self, name: Union[Identifier, MemberAccess]) -> Reference:
+    def resolve(self, symbol: Union[Identifier, Get]) -> Reference:
         """
-        Translate a given simple or complexe identifier into the corresponding
-        reference.
+        Translate a given simple identifier into the corresponding reference.
 
         :raises ResolutionError: If the resolution can't be done
         """
-        self.visit(name)
+        self.visit(symbol)
         return self._resolution
 
     @staticmethod
@@ -177,6 +144,8 @@ class Interpreter(Visitor):
                 self.visit(statement)
             except InterpretationError as e:
                 raise e
+            except AssertionError as e:
+                raise e
             except Exception as e:
                 msg = f"{statement.file}:{statement.line_number}: {e}"
                 raise InterpretationError(msg)
@@ -196,11 +165,50 @@ class Interpreter(Visitor):
     def visit_Identifier(self, identifier: Identifier) -> None:
         self._evaluation = self._memory.get_variable(identifier.name)
 
-    def visit_MemberAccess(self, member_access: MemberAccess) -> None:
+    def visit_MemberAccess(self, member_access) -> None:
         reference = self._resolver.resolve(member_access)
         assert(isinstance(reference, Variable))
 
         self._evaluation = self._memory.get_variable(reference.name)
+
+    def visit_Get(self, get: Get) -> None:
+        """
+        Compute the value of a Get expression, to resolve it use the Resolver
+        class.
+        """
+        child_name = get.child.name
+
+        # Get parent value
+        if isinstance(get.parent, Get):
+            try:
+                parent = self.visit_Get(parent)
+            except InterpretationError:
+                parent = self._resolver.visit(parent)
+        elif isinstance(get.parent, Identifier):
+            parent = self._resolver.resolve(get.parent)
+        elif isinstance(get.parent, FunCall):
+            parent = self.evaluate(get.parent)
+        else:
+            msg = f"Get node with {type(parent)} parent is not supported"
+            raise InterpretationError(msg)
+
+        # Access child
+        if isinstance(parent, Value):
+            assert(isinstance(parent, Object))
+            self._evaluation = parent.variables[child_name]
+        elif isinstance(parent, Reference):
+            if isinstance(parent, Variable):
+                parent_value = self._memory.get_variable(str(parent))
+                self._evaluation = parent_value.variables[child_name]
+            elif parent.category is Reference.Category.Structural:
+                # The child must be a variable
+                variable = parent.get_child(child_name)
+                assert(isinstance(variable, Variable))
+                self._evaluation = self._memory.get_variable(str(variable))
+
+        msg = f"Evaluation error, with parent {get.parent} and " \
+            + f"child {get.child}"
+        raise InterpretationError(msg)
 
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)

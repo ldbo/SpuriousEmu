@@ -7,3 +7,4 @@ f(1, var1 + 2, g(1))
 f 1, 12, abcd
 f
 obj1.member1 + obj1.member2
+o1.o2.m3().v4.m5(1, 2, 3) + f1().v2.v3

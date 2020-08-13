@@ -193,11 +193,11 @@ class Identifier(Expression):
 
 class Get(Expression):
     """Recursive node corresponding to the . operator."""
-    parent: Union[Identifier, "FunCall"]
-    child: Union["Get", Identifier]
+    parent: Union["Get", Identifier, "FunCall"]
+    child: Identifier
 
-    def __init__(self, parent: Union[Identifier, "FunCall"],
-                 child: Union["Get", Identifier], **kwargs) -> None:
+    def __init__(self, parent: Union["Get", Identifier, "FunCall"],
+                 child: Identifier, **kwargs) -> None:
         super().__init__(**kwargs)
         self.parent = parent
         self.child = child
