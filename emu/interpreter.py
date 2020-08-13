@@ -34,7 +34,7 @@ class Resolver(Visitor):
             self._current_reference, identifier.name)
 
     def visit_Get(self, get: Get) -> None:
-        """Used to resolve LSH get expression or function name."""
+        """Used to resolve function name."""
         pass
 
     def resolve(self, symbol: Union[Identifier, Get]) -> Reference:
@@ -167,12 +167,6 @@ class Interpreter(Visitor):
     def visit_Identifier(self, identifier: Identifier) -> None:
         self._evaluation = self._memory.get_variable(identifier.name)
 
-    def visit_MemberAccess(self, member_access) -> None:
-        reference = self._resolver.resolve(member_access)
-        assert(isinstance(reference, Variable))
-
-        self._evaluation = self._memory.get_variable(reference.name)
-
     def visit_Get(self, get: Get) -> None:
         """
         Compute the value of a Get expression, to resolve it use the Resolver
@@ -183,9 +177,9 @@ class Interpreter(Visitor):
         # Get parent value
         if isinstance(get.parent, Get):
             try:
-                parent = self.visit_Get(parent)
+                parent = self.evaluate(parent)
             except InterpretationError:
-                parent = self._resolver.visit(parent)
+                parent = self._resolver.resolve(parent)
         elif isinstance(get.parent, Identifier):
             parent = self._resolver.resolve(get.parent)
         elif isinstance(get.parent, FunCall):
