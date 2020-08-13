@@ -2,18 +2,29 @@ from dataclasses import dataclass
 from inspect import getfullargspec
 from typing import Callable, List, Optional, Union
 
-from .value import Value
 from .abstract_syntax_tree import Block
+from .value import Value
+from .type import Type
 
 
 @dataclass
-class Function:
+class Function(Value):
     """An abstract function, be it implemented in VBA or Python."""
+    base_type = Type.Function
+
     name: str
     arguments_names: List[str]
 
+    def __init__(self, name: str, arguments_names: List[str],
+                 function: Union["ExternalFunction.Signature", Block]) -> None:
+        self.name = name
+        self.arguments_names = arguments_names
+        self.value = function
 
-@dataclass
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
+        return None
+
+
 class ExternalFunction(Function):
     """
     Python function wrapper, the function will be called with two arguments:
@@ -22,7 +33,10 @@ class ExternalFunction(Function):
     It has to return a Value object.
     """
     Signature = Callable[["Interpreter", List[Value]], Value]
-    external_function: "ExternalFunction.Signature"
+
+    def __init__(self, name: str, arguments_names: List[str],
+                 external_function: "ExternalFunction.Signature") -> None:
+        super().__init__(name, arguments_names, external_function)
 
     @staticmethod
     def from_function(
@@ -45,8 +59,17 @@ class ExternalFunction(Function):
         else:
             return decorator(python_function)
 
+    @property
+    def external_function(self) -> "ExternalFunction.Signature":
+        return self.value
 
-@ dataclass
+
 class InternalFunction(Function):
     """VBA function."""
-    body: Block
+    def __init__(self, name: str, arguments_names: List[str],
+                 function_body: Block) -> None:
+        super().__init__(name, arguments_names, function_body)
+
+    @property
+    def body(self) -> Block:
+        return self.value
