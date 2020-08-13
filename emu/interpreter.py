@@ -44,7 +44,9 @@ class Resolver(Visitor):
         :raises ResolutionError: If the resolution can't be done
         """
         self.visit(symbol)
-        return self._resolution
+        resolution = self._resolution
+        self._resolution = None
+        return resolution
 
     @staticmethod
     def resolve_from(reference: Reference, name: str, go_down: bool = False,
