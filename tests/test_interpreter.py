@@ -1,8 +1,6 @@
 from emu import Parser, interpreter, Compiler, reference
 from tests.test import (assert_correct_function, SourceFile, Result)
 
-from tests.test import run_function
-
 
 def interpreting(vbs: SourceFile) -> Result:
     ast = Parser.parse_file(vbs)
@@ -39,5 +37,5 @@ def test_01():
     assert_correct_function('interpreter_01', interpreting)
 
 
-def test_draft():
-    run_function("draft", interpreting)
+def test_02():
+    assert_correct_function("interpreter_02", interpreting)
