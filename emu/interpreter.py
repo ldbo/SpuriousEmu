@@ -34,8 +34,9 @@ class Resolver(Visitor):
             self._current_reference, identifier.name)
 
     def visit_Get(self, get: Get) -> None:
-        """Used to resolve function name."""
-        pass
+        """Resolve a composite symbol."""
+        parent_resolution = self.resolve(get.parent)
+        self._resolution = parent_resolution.get_child(get.child.name)
 
     def resolve(self, symbol: Union[Identifier, Get]) -> Reference:
         """
