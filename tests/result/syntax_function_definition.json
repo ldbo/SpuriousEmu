@@ -46,43 +46,22 @@
                         "_type": "ArgListCall",
                         "args": [
                             {
-                                "_type": "MemberAccess",
+                                "_type": "Identifier",
                                 "file": "",
                                 "line_number": "0",
-                                "parts": [
-                                    {
-                                        "_type": "Identifier",
-                                        "file": "",
-                                        "line_number": "0",
-                                        "name": "v1"
-                                    }
-                                ]
+                                "name": "v1"
                             },
                             {
-                                "_type": "MemberAccess",
+                                "_type": "Identifier",
                                 "file": "",
                                 "line_number": "0",
-                                "parts": [
-                                    {
-                                        "_type": "Identifier",
-                                        "file": "",
-                                        "line_number": "0",
-                                        "name": "v2"
-                                    }
-                                ]
+                                "name": "v2"
                             },
                             {
-                                "_type": "MemberAccess",
+                                "_type": "Identifier",
                                 "file": "",
                                 "line_number": "0",
-                                "parts": [
-                                    {
-                                        "_type": "Identifier",
-                                        "file": "",
-                                        "line_number": "0",
-                                        "name": "v3"
-                                    }
-                                ]
+                                "name": "v3"
                             }
                         ],
                         "file": "",
@@ -90,17 +69,10 @@
                     },
                     "file": "",
                     "function": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "print"
-                            }
-                        ]
+                        "name": "print"
                     },
                     "line_number": "0"
                 }
@@ -143,17 +115,10 @@
                                 "_type": "ArgListCall",
                                 "args": [
                                     {
-                                        "_type": "MemberAccess",
+                                        "_type": "Identifier",
                                         "file": "",
                                         "line_number": "0",
-                                        "parts": [
-                                            {
-                                                "_type": "Identifier",
-                                                "file": "",
-                                                "line_number": "0",
-                                                "name": "i"
-                                            }
-                                        ]
+                                        "name": "i"
                                     }
                                 ],
                                 "file": "",
@@ -161,17 +126,10 @@
                             },
                             "file": "",
                             "function": {
-                                "_type": "MemberAccess",
+                                "_type": "Identifier",
                                 "file": "",
                                 "line_number": "0",
-                                "parts": [
-                                    {
-                                        "_type": "Identifier",
-                                        "file": "",
-                                        "line_number": "0",
-                                        "name": "print"
-                                    }
-                                ]
+                                "name": "print"
                             },
                             "line_number": "0"
                         }
@@ -183,30 +141,16 @@
                         "name": "i"
                     },
                     "end": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "end"
-                            }
-                        ]
+                        "name": "end"
                     },
                     "start": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "start"
-                            }
-                        ]
+                        "name": "start"
                     },
                     "step": "None"
                 }
@@ -299,17 +243,10 @@
                                 "line_number": "0",
                                 "operator": "*",
                                 "right": {
-                                    "_type": "MemberAccess",
+                                    "_type": "Identifier",
                                     "file": "",
                                     "line_number": "0",
-                                    "parts": [
-                                        {
-                                            "_type": "Identifier",
-                                            "file": "",
-                                            "line_number": "0",
-                                            "name": "i"
-                                        }
-                                    ]
+                                    "name": "i"
                                 }
                             },
                             "line_number": "0",
@@ -340,34 +277,20 @@
                                 "line_number": "0",
                                 "operator": "*",
                                 "right": {
-                                    "_type": "MemberAccess",
+                                    "_type": "Identifier",
                                     "file": "",
                                     "line_number": "0",
-                                    "parts": [
-                                        {
-                                            "_type": "Identifier",
-                                            "file": "",
-                                            "line_number": "0",
-                                            "name": "j"
-                                        }
-                                    ]
+                                    "name": "j"
                                 }
                             }
                         },
                         "line_number": "0",
                         "operator": "+",
                         "right": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "k"
-                                }
-                            ]
+                            "name": "k"
                         }
                     },
                     "variable": {

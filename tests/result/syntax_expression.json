@@ -8,17 +8,10 @@
                 "_type": "BinOp",
                 "file": "",
                 "left": {
-                    "_type": "MemberAccess",
+                    "_type": "Identifier",
                     "file": "",
                     "line_number": "0",
-                    "parts": [
-                        {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v1"
-                        }
-                    ]
+                    "name": "v1"
                 },
                 "line_number": "0",
                 "operator": "-",
@@ -26,17 +19,10 @@
                     "_type": "BinOp",
                     "file": "",
                     "left": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "v2"
-                            }
-                        ]
+                        "name": "v2"
                     },
                     "line_number": "0",
                     "operator": "*",
@@ -44,32 +30,18 @@
                         "_type": "BinOp",
                         "file": "",
                         "left": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "v3"
-                                }
-                            ]
+                            "name": "v3"
                         },
                         "line_number": "0",
                         "operator": "-",
                         "right": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "v4"
-                                }
-                            ]
+                            "name": "v4"
                         }
                     }
                 }
@@ -77,17 +49,10 @@
             "line_number": "0",
             "operator": "+",
             "right": {
-                "_type": "MemberAccess",
+                "_type": "Identifier",
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "v5"
-                    }
-                ]
+                "name": "v5"
             }
         },
         {
@@ -103,80 +68,45 @@
                         "_type": "BinOp",
                         "file": "",
                         "left": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "v1"
-                                }
-                            ]
+                            "name": "v1"
                         },
                         "line_number": "0",
                         "operator": "/",
                         "right": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "v2"
-                                }
-                            ]
+                            "name": "v2"
                         }
                     },
                     "line_number": "0",
                     "operator": "*",
                     "right": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "v3"
-                            }
-                        ]
+                        "name": "v3"
                     }
                 },
                 "line_number": "0",
                 "operator": "/",
                 "right": {
-                    "_type": "MemberAccess",
+                    "_type": "Identifier",
                     "file": "",
                     "line_number": "0",
-                    "parts": [
-                        {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v4"
-                        }
-                    ]
+                    "name": "v4"
                 }
             },
             "line_number": "0",
             "operator": "*",
             "right": {
-                "_type": "MemberAccess",
+                "_type": "Identifier",
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "v5"
-                    }
-                ]
+                "name": "v5"
             }
         },
         {
@@ -185,17 +115,10 @@
                 "_type": "ArgListCall",
                 "args": [
                     {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "a"
-                            }
-                        ]
+                        "name": "a"
                     }
                 ],
                 "file": "",
@@ -203,17 +126,10 @@
             },
             "file": "",
             "function": {
-                "_type": "MemberAccess",
+                "_type": "Identifier",
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "f"
-                    }
-                ]
+                "name": "f"
             },
             "line_number": "0"
         },
@@ -233,17 +149,10 @@
                         "_type": "BinOp",
                         "file": "",
                         "left": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "var1"
-                                }
-                            ]
+                            "name": "var1"
                         },
                         "line_number": "0",
                         "operator": "+",
@@ -273,17 +182,10 @@
                         },
                         "file": "",
                         "function": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "g"
-                                }
-                            ]
+                            "name": "g"
                         },
                         "line_number": "0"
                     }
@@ -293,17 +195,10 @@
             },
             "file": "",
             "function": {
-                "_type": "MemberAccess",
+                "_type": "Identifier",
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "f"
-                    }
-                ]
+                "name": "f"
             },
             "line_number": "0"
         },
@@ -326,17 +221,10 @@
                         },
                         "file": "",
                         "function": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "g"
-                                }
-                            ]
+                            "name": "g"
                         },
                         "line_number": "0"
                     },
@@ -352,17 +240,10 @@
                         },
                         "file": "",
                         "function": {
-                            "_type": "MemberAccess",
+                            "_type": "Identifier",
                             "file": "",
                             "line_number": "0",
-                            "parts": [
-                                {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "d"
-                                }
-                            ]
+                            "name": "d"
                         },
                         "line_number": "0"
                     }
@@ -370,17 +251,10 @@
                 "line_number": "0",
                 "operator": "/",
                 "right": {
-                    "_type": "MemberAccess",
+                    "_type": "Identifier",
                     "file": "",
                     "line_number": "0",
-                    "parts": [
-                        {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "var2"
-                        }
-                    ]
+                    "name": "var2"
                 }
             },
             "line_number": "0",
@@ -401,32 +275,18 @@
                     "_type": "BinOp",
                     "file": "",
                     "left": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "var1"
-                            }
-                        ]
+                        "name": "var1"
                     },
                     "line_number": "0",
                     "operator": "+",
                     "right": {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "var2"
-                            }
-                        ]
+                        "name": "var2"
                     }
                 }
             }
@@ -451,17 +311,10 @@
                         "value": "12"
                     },
                     {
-                        "_type": "MemberAccess",
+                        "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "parts": [
-                            {
-                                "_type": "Identifier",
-                                "file": "",
-                                "line_number": "0",
-                                "name": "abcd"
-                            }
-                        ]
+                        "name": "abcd"
                     }
                 ],
                 "file": "",
@@ -469,17 +322,10 @@
             },
             "file": "",
             "function": {
-                "_type": "MemberAccess",
+                "_type": "Identifier",
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "f"
-                    }
-                ]
+                "name": "f"
             },
             "line_number": "0"
         },
@@ -493,17 +339,10 @@
             },
             "file": "",
             "function": {
-                "_type": "MemberAccess",
+                "_type": "Identifier",
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "f"
-                    }
-                ]
+                "name": "f"
             },
             "line_number": "0"
         },
@@ -511,44 +350,179 @@
             "_type": "BinOp",
             "file": "",
             "left": {
-                "_type": "MemberAccess",
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "member1"
+                },
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "obj1"
-                    },
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "member1"
-                    }
-                ]
+                "parent": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "obj1"
+                }
             },
             "line_number": "0",
             "operator": "+",
             "right": {
-                "_type": "MemberAccess",
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "member2"
+                },
                 "file": "",
                 "line_number": "0",
-                "parts": [
-                    {
+                "parent": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "obj1"
+                }
+            }
+        },
+        {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+                "_type": "FunCall",
+                "arguments": {
+                    "_type": "ArgListCall",
+                    "args": [
+                        {
+                            "_type": "Literal",
+                            "file": "",
+                            "line_number": "0",
+                            "type": "Type.Integer",
+                            "value": "1"
+                        },
+                        {
+                            "_type": "Literal",
+                            "file": "",
+                            "line_number": "0",
+                            "type": "Type.Integer",
+                            "value": "2"
+                        },
+                        {
+                            "_type": "Literal",
+                            "file": "",
+                            "line_number": "0",
+                            "type": "Type.Integer",
+                            "value": "3"
+                        }
+                    ],
+                    "file": "",
+                    "line_number": "0"
+                },
+                "file": "",
+                "function": {
+                    "_type": "Get",
+                    "child": {
                         "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "name": "obj1"
+                        "name": "m5"
                     },
-                    {
+                    "file": "",
+                    "line_number": "0",
+                    "parent": {
+                        "_type": "Get",
+                        "child": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "v4"
+                        },
+                        "file": "",
+                        "line_number": "0",
+                        "parent": {
+                            "_type": "FunCall",
+                            "arguments": {
+                                "_type": "ArgListCall",
+                                "args": [],
+                                "file": "",
+                                "line_number": "0"
+                            },
+                            "file": "",
+                            "function": {
+                                "_type": "Get",
+                                "child": {
+                                    "_type": "Identifier",
+                                    "file": "",
+                                    "line_number": "0",
+                                    "name": "m3"
+                                },
+                                "file": "",
+                                "line_number": "0",
+                                "parent": {
+                                    "_type": "Get",
+                                    "child": {
+                                        "_type": "Identifier",
+                                        "file": "",
+                                        "line_number": "0",
+                                        "name": "o2"
+                                    },
+                                    "file": "",
+                                    "line_number": "0",
+                                    "parent": {
+                                        "_type": "Identifier",
+                                        "file": "",
+                                        "line_number": "0",
+                                        "name": "o1"
+                                    }
+                                }
+                            },
+                            "line_number": "0"
+                        }
+                    }
+                },
+                "line_number": "0"
+            },
+            "line_number": "0",
+            "operator": "+",
+            "right": {
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "v3"
+                },
+                "file": "",
+                "line_number": "0",
+                "parent": {
+                    "_type": "Get",
+                    "child": {
                         "_type": "Identifier",
                         "file": "",
                         "line_number": "0",
-                        "name": "member2"
+                        "name": "v2"
+                    },
+                    "file": "",
+                    "line_number": "0",
+                    "parent": {
+                        "_type": "FunCall",
+                        "arguments": {
+                            "_type": "ArgListCall",
+                            "args": [],
+                            "file": "",
+                            "line_number": "0"
+                        },
+                        "file": "",
+                        "function": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "f1"
+                        },
+                        "line_number": "0"
                     }
-                ]
+                }
             }
         }
     ]
