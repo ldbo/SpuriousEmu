@@ -166,7 +166,14 @@ class Interpreter(Visitor):
         self._evaluation = Value.from_literal(literal)
 
     def visit_Identifier(self, identifier: Identifier) -> None:
-        self._evaluation = self._memory.get_variable(identifier.name)
+        resolution = self._resolver.resolve(identifier)
+        if isinstance(resolution, Variable):
+            self._evaluation = self._memory.get_variable(identifier.name)
+        elif isinstance(resolution, FunctionReference):
+            self._evaluation = self._memory.functions[str(resolution)]
+        else:
+            msg = f"Can't interprete identifier {identifier.name}"
+            raise InterpretationError(msg)
 
     def visit_Get(self, get: Get) -> None:
         """
