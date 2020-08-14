@@ -169,17 +169,16 @@ class Interpreter(Visitor):
 
     def visit_Get(self, get: Get) -> None:
         """
-        Compute the value of a Get expression, to resolve it use the Resolver
-        class.
+        Compute the value of a Get expression.
         """
         child_name = get.child.name
 
         # Get parent value
         if isinstance(get.parent, Get):
             try:
-                parent = self.evaluate(parent)
+                parent = self.evaluate(get.parent)
             except InterpretationError:
-                parent = self._resolver.resolve(parent)
+                parent = self._resolver.resolve(get.parent)
         elif isinstance(get.parent, Identifier):
             parent = self._resolver.resolve(get.parent)
         elif isinstance(get.parent, FunCall):
