@@ -40,8 +40,9 @@ class Memory:
     def set_variable(self, local_name: str, value: Value) -> None:
         self._local_variables[-1][local_name] = value
 
-    def get_variable(self, local_name: str) -> Value:
+    def get_variable(self, name: str) -> Value:
         # TODO use full name for variable storage
+        local_name = name.split('.')[-1]
         return self._local_variables[-1][local_name]
 
     @property
