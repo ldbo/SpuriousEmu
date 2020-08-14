@@ -35,8 +35,8 @@ def test_literal_expression():
                             evaluate_expressions)
 
 
-def test_draf():
-    run_function('interpreter_01', interpreting)
+def test_01():
+    assert_correct_function('interpreter_01', interpreting)
 
 
 def test_draft():
