@@ -196,7 +196,7 @@ class Compiler(Visitor):
         # Build reference and memory representation
         function_ref = FunctionReference(name)
         self.__current_reference.add_child(function_ref)
-        function_object = InternalFunction(name, args, body)
+        function_object = InternalFunction(name, args, body, function_ref)
 
         # Add them
         self.__memory.add_function(str(function_ref), function_object)

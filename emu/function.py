@@ -3,6 +3,7 @@ from inspect import getfullargspec
 from typing import Callable, List, Optional, Union
 
 from .abstract_syntax_tree import Block
+from .reference import FunctionReference
 from .value import Value
 from .type import Type
 
@@ -66,9 +67,12 @@ class ExternalFunction(Function):
 
 class InternalFunction(Function):
     """VBA function."""
+    reference: FunctionReference
+
     def __init__(self, name: str, arguments_names: List[str],
-                 function_body: Block) -> None:
-        super().__init__(name, arguments_names, function_body)
+                 body: Block, reference: FunctionReference) -> None:
+        super().__init__(name, arguments_names, body)
+        self.reference = reference
 
     @property
     def body(self) -> Block:
