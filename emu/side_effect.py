@@ -76,6 +76,9 @@ class OutsideWorld:
         time: float
         data: Any
 
+        def to_dict(self) -> Dict[str, Any]:
+            return {'data': self.data}
+
     __events: Dict["OutsideWorld.EventType", List[Any]]
     __hooks: Dict["OutsideWorld.EventType", Callable[[Any], None]]
     __start_time: float
@@ -94,7 +97,8 @@ class OutsideWorld:
         self.__events[event_type].append(OutsideWorld.Event(t, data))
 
     def to_dict(self) -> Dict[str, List[Any]]:
-        return {event_type.value: self.__events[event_type]
+        return {event_type.value: [e.to_dict()
+                                   for e in self.__events[event_type]]
                 for event_type in OutsideWorld.EventType}
 
     def add_hook(self, event_type: "OutsideWorld.EventType",

@@ -239,6 +239,7 @@ class Interpreter(Visitor):
         self._evaluation = op.operate(left_value, right_value)
 
     def visit_FunCall(self, fun_call: FunCall) -> None:
+        # TODO handle method call
         # Resolution
         function = self.evaluate(fun_call.function)
         assert(isinstance(function, Function))
