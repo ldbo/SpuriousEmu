@@ -184,9 +184,9 @@ class Interpreter(Visitor):
         # Get parent value
         if isinstance(get.parent, Get):
             try:
-                parent = self.evaluate(get.parent)
-            except InterpretationError:
                 parent = self._resolver.resolve(get.parent)
+            except ResolutionError:
+                parent = self.evaluate(get.parent)
         elif isinstance(get.parent, Identifier):
             parent = self._resolver.resolve(get.parent)
         elif isinstance(get.parent, FunCall):
@@ -197,21 +197,39 @@ class Interpreter(Visitor):
 
         # Access child
         if isinstance(parent, Value):
-            assert(isinstance(parent, Object))
-            self._evaluation = parent.variables[child_name]
+            self.__access_member(parent, child_name)
         elif isinstance(parent, Reference):
             if isinstance(parent, Variable):
                 parent_value = self._memory.get_variable(str(parent))
-                self._evaluation = parent_value.variables[child_name]
+                self.__access_member(parent_value, child_name)
             elif parent.category is Reference.Category.Structural:
-                # The child must be a variable
-                variable = parent.get_child(child_name)
-                assert(isinstance(variable, Variable))
-                self._evaluation = self._memory.get_variable(str(variable))
 
-        msg = f"Evaluation error, with parent {get.parent} and " \
-            + f"child {get.child}"
-        raise InterpretationError(msg)
+                child = parent.get_child(child_name)
+                assert(isinstance(child, (Variable, FunctionReference)))
+                if isinstance(child, Variable):
+                    self._evaluation = self._memory.get_variable(str(child))
+                elif isinstance(child, FunctionReference):
+                    self._evaluation = self._memory.functions[str(child)]
+        else:
+            msg = f"Evaluation error, with parent {get.parent} and " \
+                + f"child {get.child}"
+            raise InterpretationError(msg)
+
+    def __access_member(self, object_value: Value, child_name: str) \
+            -> None:
+        """
+        Helper function to access a variable/method from an object, putting its
+        value in self._evaluation.
+        """
+        assert(isinstance(object_value, Object))
+        try:
+            variable = object_value.variables[child_name]
+            self._evaluation = variable
+        except KeyError:
+            class_ref = object_value.class_reference
+            method_reference = class_ref.get_child(child_name)
+            method = self._memory.functions[str(method_reference)]
+            self._evaluation = method
 
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)
@@ -222,19 +240,15 @@ class Interpreter(Visitor):
 
     def visit_FunCall(self, fun_call: FunCall) -> None:
         # Resolution
-        function_reference = self._resolver.resolve(fun_call.function)
-        assert(isinstance(function_reference, FunctionReference))
-        function_name = str(function_reference)
-        function_object = self._memory.get_function(function_name)
+        function = self.evaluate(fun_call.function)
+        assert(isinstance(function, Function))
 
         # Arguments handling
         arg_list = fun_call.arguments.args
         arg_values = list(map(self.evaluate, arg_list))
 
         # Move to the function
-        self._resolver.jump(function_reference)
-        return_value = self.call_function(function_object, arg_values)
-        self._resolver.jump_back()
+        return_value = self.call_function(function, arg_values)
 
         self._evaluation = return_value
 
@@ -308,6 +322,7 @@ class Interpreter(Visitor):
             return function.external_function(self, arguments_values)
         elif type(function) is InternalFunction:
             # Init memory and load arguments
+            self._resolver.jump(function.reference)
             self._memory.new_locals()
             for name, value in zip(function.arguments_names, arguments_values):
                 self._memory.set_variable(name, value)
@@ -324,6 +339,7 @@ class Interpreter(Visitor):
 
             # Clean memory
             self._memory.discard_locals()
+            self._resolver.jump_back()
 
             return return_value
         else:
