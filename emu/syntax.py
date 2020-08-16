@@ -4,7 +4,8 @@ from typing import List, Union
 
 from pyparsing import (Forward, ParseException, ParserElement, QuotedString,
                        Regex, Suppress, StringEnd, StringStart, Word,
-                       delimitedList, infixNotation, nums, Or, Keyword)
+                       delimitedList, infixNotation, nums, Or, Keyword,
+                       FollowedBy)
 from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
@@ -182,6 +183,8 @@ reserved = statement_keyword | marker_keyword | operator_keyword | literal_kw
 identifier_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier = (~reserved + Regex(identifier_regex)).setName("identifier") \
     .setParseAction(lambda r: Identifier(r[0]))
+identifier_keyword = Regex(identifier_regex).setName("identifier keyword") \
+    .setParseAction(lambda r: Identifier(r[0]))
 
 # Types
 variable_type = Or(types) | identifier
@@ -214,9 +217,13 @@ def __build_recursive_member_access(expr, pos, result):
 
 
 orphan_function_call_paren = Forward().setName("orphan_function_call_paren")
-member_access = (((orphan_function_call_paren | identifier) + dot)[0, ...]
-                 + identifier) \
-    .setParseAction(__build_recursive_member_access)
+member_access_token = dot + (orphan_function_call_paren | identifier_keyword)
+leading_member_access_token = member_access_token \
+    + FollowedBy(member_access_token)
+member_access = (
+    (orphan_function_call_paren + FollowedBy(member_access_token) | identifier)
+    + pOptional((leading_member_access_token)[...] + dot + identifier_keyword)
+).setParseAction(__build_recursive_member_access)
 
 
 # Operator

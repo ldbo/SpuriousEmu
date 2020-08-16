@@ -524,6 +524,52 @@
                     }
                 }
             }
+        },
+        {
+            "_type": "FunCall",
+            "arguments": {
+                "_type": "ArgListCall",
+                "args": [
+                    {
+                        "_type": "Get",
+                        "child": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "Read"
+                        },
+                        "file": "",
+                        "line_number": "0",
+                        "parent": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "plt"
+                        }
+                    }
+                ],
+                "file": "",
+                "line_number": "0"
+            },
+            "file": "",
+            "function": {
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "Write"
+                },
+                "file": "",
+                "line_number": "0",
+                "parent": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "obj"
+                }
+            },
+            "line_number": "0"
         }
     ]
 }

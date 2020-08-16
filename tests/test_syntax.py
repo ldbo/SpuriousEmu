@@ -5,7 +5,7 @@ import networkx as nx
 import matplotlib
 
 from emu import Parser, syntax
-from tests.test import (assert_correct_function, SourceFile, Result)
+from tests.test import assert_correct_function, SourceFile, Result
 
 
 def parsing(vbs: SourceFile) -> Result:
@@ -16,6 +16,7 @@ def parsing(vbs: SourceFile) -> Result:
 def parsing_show(vbs: SourceFile) -> Result:
     ast = Parser.parse_file(vbs)
     display_digraph(*build_digraph_from_ast(ast))
+    return ast
 
 
 def build_digraph_from_ast(ast: syntax.AST) \
