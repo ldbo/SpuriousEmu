@@ -61,6 +61,10 @@ class Resolver(Visitor):
         if reference.name == name:
             return reference
 
+        if reference.parent is None:
+            msg = f"Symbol {name} is not found in {reference}"
+            raise ResolutionError(msg)
+
         return Resolver.resolve_from(reference.parent, name,
                                      go_down=True, exclude=reference)
 
