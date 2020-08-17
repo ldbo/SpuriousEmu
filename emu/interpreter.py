@@ -375,11 +375,12 @@ class Interpreter(Visitor):
             command
         )
 
-    def add_file_event(self, event_type: str, path: str) -> None:
-        self._outside_world.add_event(
-            OutsideWorld.EventType.FILE,
-            {'type': event_type, 'path': path}
-        )
+    def add_file_event(self, event_type: str, path: str,
+                       data: Optional[str] = None) -> None:
+        event = {'type': event_type, 'path': path}
+        if data is not None:
+            event['data'] = data
+        self._outside_world.add_event(OutsideWorld.EventType.FILE, event)
 
     def add_network_event(self, *args, **kwargs) -> None:
         # TODO
