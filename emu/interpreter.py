@@ -375,9 +375,11 @@ class Interpreter(Visitor):
             command
         )
 
-    def add_file_event(self, *args, **kwargs) -> None:
-        # TODO
-        pass
+    def add_file_event(self, event_type: str, path: str) -> None:
+        self._outside_world.add_event(
+            OutsideWorld.EventType.FILE,
+            {'type': event_type, 'path': path}
+        )
 
     def add_network_event(self, *args, **kwargs) -> None:
         # TODO
