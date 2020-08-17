@@ -2,6 +2,7 @@
     "memory": {
         "functions": [
             "VBAEnv.VBA.Strings.Asc",
+            "VBAEnv.VBA.Interaction.Environ",
             "VBAEnv.VBA.Interaction.msgBox",
             "VBAEnv.Default.main_module.Main"
         ],
@@ -25,7 +26,77 @@
                         "name": "Interaction",
                         "FunctionReference": [
                             {
+                                "name": "Environ"
+                            },
+                            {
                                 "name": "msgBox"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Constants",
+                        "Variable": [
+                            {
+                                "name": "vbBack"
+                            },
+                            {
+                                "name": "vbCr"
+                            },
+                            {
+                                "name": "vbCrLf"
+                            },
+                            {
+                                "name": "vbFormFeed"
+                            },
+                            {
+                                "name": "vbLf"
+                            },
+                            {
+                                "name": "vbNewLine"
+                            },
+                            {
+                                "name": "vbNullChar"
+                            },
+                            {
+                                "name": "vbNullString"
+                            },
+                            {
+                                "name": "vbObjectError"
+                            },
+                            {
+                                "name": "vbTab"
+                            },
+                            {
+                                "name": "vbVerticalTab"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ColorConstants",
+                        "Variable": [
+                            {
+                                "name": "vbBlack"
+                            },
+                            {
+                                "name": "vbBlue"
+                            },
+                            {
+                                "name": "vbCyan"
+                            },
+                            {
+                                "name": "vbGreen"
+                            },
+                            {
+                                "name": "vbMagenta"
+                            },
+                            {
+                                "name": "vbRed"
+                            },
+                            {
+                                "name": "vbWhite"
+                            },
+                            {
+                                "name": "vbYellow"
                             }
                         ]
                     }

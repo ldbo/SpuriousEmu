@@ -282,7 +282,9 @@ variable_declaration_with_constructor = \
     (dim_kw + identifier + as_kw + new_kw + variable_type) \
     .setParseAction(lambda r: VarDec(*r, new=True))
 
-variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
+# TODO difference between Set and Let
+variable_assignment = (pOptional(let_kw | set_kw) + identifier
+                       + Suppress('=') + expression) \
     .setParseAction(lambda r: VarAssign(*r)) \
     .setName("var assign")
 

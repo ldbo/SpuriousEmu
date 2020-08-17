@@ -47,7 +47,7 @@ class Memory:
         # TODO use variable reference instead of name to ensure unicity
         local_name = name.split('.')[-1]
         try:
-            return self._local_variables[-1][local_name]
+            return self.locals[local_name]
         except KeyError:
             return self.global_variables[name]
 
