@@ -324,7 +324,8 @@ class Interpreter(Visitor):
     def call_function(self, function: Function,
                       arguments_values: List[Value]) -> Optional[Value]:
         if type(function) is ExternalFunction:
-            return function.external_function(self, arguments_values)
+            python_value = function.external_function(self, arguments_values)
+            return Value.from_python_base_type(python_value)
         elif type(function) is InternalFunction:
             # Init memory and load arguments
             self._resolver.jump(function.reference)

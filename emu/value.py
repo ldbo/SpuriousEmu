@@ -71,6 +71,21 @@ class Value(ABC):
     def __str__(self) -> str:
         return f"{self.base_type.name}({self.value})"
 
+    @staticmethod
+    def from_python_base_type(value: Any) -> "Value":
+        value_type = type(value)
+        if isinstance(value, Value) or value is None:
+            return value
+        elif value_type is int:
+            return Integer(value)
+        elif value_type is bool:
+            return Boolean(value)
+        elif value_type is str:
+            return String(value)
+        else:
+            msg = f"Can't create VBA value for Python type {value_type}"
+            raise ConversionError(msg)
+
 
 class Integer(Value):
     base_type = Type.Integer
