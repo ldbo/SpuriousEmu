@@ -16,6 +16,7 @@ from .side_effect import Memory
 from .syntax import Parser
 from .vba_class import Class
 from .visitor import Visitor
+from .value import Value
 
 
 @dataclass
@@ -168,6 +169,13 @@ class Compiler(Visitor):
                 functions_holder, locally_defined(isfunction)):
             self.load_host_function(function)
 
+        for name, python_value in getmembers(
+                module, lambda obj: not(isfunction(obj) or isclass(obj))):
+            if not name.startswith('__'):
+                reference = self.__try_add_variable(name)
+                vba_value = Value.from_python_base_type(python_value)
+                self.__memory.global_variables[str(reference)] = vba_value
+
         self.__current_reference = self.__current_reference.parent
 
     def load_host_function(self, function: ExternalFunction.Signature) \
@@ -232,7 +240,7 @@ class Compiler(Visitor):
         elif isinstance(self.__current_reference, FunctionReference):
             extent = Variable.Extent.Procedure
 
-        self.__current_reference.build_child(
+        return self.__current_reference.build_child(
             Variable,
             name=name,
             extent=extent)

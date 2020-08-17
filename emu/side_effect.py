@@ -22,11 +22,13 @@ class Memory:
     Represent the memory used for running a program, including static elements
     like functions and dynamic ones like local variables.
     """
+    global_variables: Dict[str, Value]
     _local_variables: List[Dict[str, Value]]
     _functions: Dict[str, Function]
     _classes: Dict[str, Class]
 
     def __init__(self) -> None:
+        self.global_variables = dict()
         self._local_variables = []
         self._functions = dict()
         self._classes = dict()
@@ -42,8 +44,12 @@ class Memory:
 
     def get_variable(self, name: str) -> Value:
         # TODO use full name for variable storage
+        # TODO use variable reference instead of name to ensure unicity
         local_name = name.split('.')[-1]
-        return self._local_variables[-1][local_name]
+        try:
+            return self._local_variables[-1][local_name]
+        except KeyError:
+            return self.global_variables[name]
 
     @property
     def locals(self):

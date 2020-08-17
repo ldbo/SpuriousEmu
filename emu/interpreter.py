@@ -172,7 +172,7 @@ class Interpreter(Visitor):
     def visit_Identifier(self, identifier: Identifier) -> None:
         resolution = self._resolver.resolve(identifier)
         if isinstance(resolution, Variable):
-            self._evaluation = self._memory.get_variable(identifier.name)
+            self._evaluation = self._memory.get_variable(str(resolution))
         elif isinstance(resolution, FunctionReference):
             self._evaluation = self._memory.functions[str(resolution)]
         else:
