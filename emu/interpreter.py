@@ -275,6 +275,7 @@ class Interpreter(Visitor):
                     done = True
 
         # Else
+        done = done or conditional.else_block is None
         if not done:
             self.visit_Block(conditional.else_block)
 
