@@ -6,6 +6,11 @@ authors = ["Louis Dubois <ldbo@protonmail.com>"]
 license = "AGPL-3.0-or-later"
 readme= "Readme.md"
 homepage = "https://github.com/ldbo/SpuriousEmu"
+packages = [{include = "emu"}]
+include = ["lib/*/*"]
+
+[tool.poetry.scripts]
+emu = "emu.__main__:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
