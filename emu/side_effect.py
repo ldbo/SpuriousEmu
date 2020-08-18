@@ -77,7 +77,7 @@ class OutsideWorld:
         data: Any
 
         def to_dict(self) -> Dict[str, Any]:
-            return {'data': self.data}
+            return self.data
 
     __events: Dict["OutsideWorld.EventType", List[Any]]
     __hooks: Dict["OutsideWorld.EventType", Callable[[Any], None]]
