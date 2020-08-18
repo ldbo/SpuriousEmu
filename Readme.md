@@ -47,11 +47,13 @@ You can also de-obfuscate a file by using the `-d` flag, which specifies the de-
 
 You can trigger dynamic analysis with the `dynamic` subcommand.
 
-Once you have found the entry-point you want to use using the `static` subcommand, you can execute a file by specifying it with the `-e` flag. For example, to launch the `Main` function found in `doc.xlsm`, use
+Once you have found the entry-point you want to use with the `static` subcommand, you can execute a file by specifying it with the `-e` flag. For example, to launch the `Main` function found in `doc.xlsm`, use
 
 ```bash
 ./emu.py dynamic -i doc.xlsm -e Main
 ```
+
+This will display a report of the execution of the program. Additionally, if you want to save the files created during execution, you can use the `-o` flag: it specifies a directory to save files to. Each created file is then stored in a file with its md5 sum as title, and a `{hash}.filename.txt` file contains its original name.
 
 ## Tests
 

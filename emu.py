@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 
 from argparse import ArgumentParser
+from hashlib import md5
 from pathlib import Path
 from pickle import dumps, loads
 from pprint import pprint
 from sys import exit
+from typing import Dict
 
 from oletools.olevba import VBA_Parser
 
@@ -59,6 +61,9 @@ def build_argparser():
         help="Entry point of the dynamic analysis. Must be specified if no "
              "Main function is defined. Must use the absolute path of the "
              "symbol.")
+    dynamic_parser.add_argument(
+        "-o", "--output",
+        help="Directory to save the created files to.")
     dynamic_parser.set_defaults(func=dynamic_analysis)
 
     return parser
@@ -143,17 +148,46 @@ def execute_program(program: Program, entry_point: str) -> None:
     return Interpreter.run_program(linked_program, entry_point)
 
 
+def save_files(directory: str, files: Dict[str, str]) -> None:
+    directory_path = Path(directory)
+    directory_path.mkdir()
+
+    for name, content in files.items():
+        hasher = md5()
+        hasher.update(content.encode('utf-8'))
+        digest = hasher.hexdigest()
+        content_path = directory_path.joinpath(digest)
+
+        with open(content_path.absolute(), 'w') as f:
+            f.write(content)
+
+        name_path = directory_path.joinpath(f"{digest}.filename.txt")
+
+        with open(name_path.absolute(), "w") as f:
+            f.write(name)
+
+
 def dynamic_analysis(arguments):
     # Check arguments validity
     if not Path(arguments.input).exists():
         print(f"Error: input file {arguments.input} does not exist.")
         return 1
 
+    if arguments.output is not None and Path(arguments.output).exists():
+        print(f"Error: {arguments.output} exists.")
+        return 1
+
     # Load and execute
     program = compile_input_file(arguments.input)
     report = execute_program(program, arguments.entry)
+    clean_report = {key: value for key, value in report.to_dict().items()
+                    if key != 'file'}
+    clean_report.update({'file': list(report.files.keys())})
 
-    pprint(report.to_dict())
+    pprint(clean_report)
+
+    if arguments.output is not None:
+        save_files(arguments.output, report.files)
 
     return 0
 
