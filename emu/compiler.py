@@ -36,6 +36,51 @@ class Program:
         return d
 
 
+@dataclass
+class Unit:
+    """
+    Compilation unit, representing a single file, with its content and type.
+    """
+    Type = Enum("Type", "Class Procedures Script")
+
+    content: str
+    unit_type: 'Unit.Type'
+    name: Optional[str] = ""
+
+    @staticmethod
+    def from_file(file_path: str) -> 'Unit':
+        """
+        Build a unit from a file path. See Unit.from_content for information
+        about extensions.
+        """
+        with open(file_path) as f:
+            content = f.read()
+
+        return Unit.from_content(content, file_path)
+
+    @staticmethod
+    def from_content(file_content: str, file_path: Optional[str] = None) \
+            -> 'Unit':
+        """
+        Build a unit from a file content. The unit type is determined based on
+        the extension of the file: 'cls' for class module, 'bas' for
+        procedures, 'vbs' for script.
+        """
+        path = Path(file_path)
+        extension = path.suffix[1:]
+        if extension == "cls":
+            unit_type = Unit.Type.Class
+        elif extension == "bas":
+            unit_type = Unit.Type.Procedures
+        elif extension == "vbs":
+            unit_type = Unit.Type.Script
+        else:
+            msg = f"File {path} has unrecognized extension {extension}"
+            raise CompilationError(msg)
+
+        return Unit(file_content, unit_type, path.stem)
+
+
 class Compiler(Visitor):
     """
     Class used for references extraction. You can analyse several modules in a
