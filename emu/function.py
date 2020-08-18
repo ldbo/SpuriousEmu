@@ -15,12 +15,15 @@ class Function(Value):
 
     name: str
     arguments_names: List[str]
+    reference: Optional[FunctionReference]
 
     def __init__(self, name: str, arguments_names: List[str],
-                 function: Union["ExternalFunction.Signature", Block]) -> None:
+                 function: Union["ExternalFunction.Signature", Block],
+                 reference: Optional[FunctionReference] = None) -> None:
         self.name = name
         self.arguments_names = arguments_names
         self.value = function
+        self.reference = reference
 
     def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
         return None
@@ -36,8 +39,9 @@ class ExternalFunction(Function):
     Signature = Callable[["Interpreter", List[Value]], Value]
 
     def __init__(self, name: str, arguments_names: List[str],
-                 external_function: "ExternalFunction.Signature") -> None:
-        super().__init__(name, arguments_names, external_function)
+                 external_function: "ExternalFunction.Signature",
+                 reference: Optional[FunctionReference] = None) -> None:
+        super().__init__(name, arguments_names, external_function, reference)
 
     @staticmethod
     def from_function(
@@ -71,8 +75,7 @@ class InternalFunction(Function):
 
     def __init__(self, name: str, arguments_names: List[str],
                  body: Block, reference: FunctionReference) -> None:
-        super().__init__(name, arguments_names, body)
-        self.reference = reference
+        super().__init__(name, arguments_names, body, reference)
 
     @property
     def body(self) -> Block:

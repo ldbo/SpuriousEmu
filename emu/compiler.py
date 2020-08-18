@@ -185,6 +185,7 @@ class Compiler(Visitor):
 
         function = self.__current_reference.build_child(
             FunctionReference, name=name)
+        typed_function.reference = function
         self.__memory.add_function(str(function), typed_function)
 
     @property
