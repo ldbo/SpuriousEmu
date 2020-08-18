@@ -171,7 +171,12 @@ class ProceduralModule(Module):
 
 
 class Variable(Reference):
-    Extent = Enum("Extent", "Program Module Procedure Object Aggregate")
+    class Extent(Enum):
+        Program = 1
+        Module = 2
+        Procedure = 3
+        Object = 4
+        Aggregate = 5
 
     category = Reference.Category.Computational
 
