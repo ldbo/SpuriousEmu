@@ -8,6 +8,8 @@ from pprint import pprint
 from sys import exit
 from typing import Dict
 
+from magic import from_buffer as magic_from_buffer
+
 from oletools.olevba import VBA_Parser
 
 from prettytable import PrettyTable
@@ -82,16 +84,19 @@ def compile_input_file(input_file: str) -> Program:
     if content.startswith(b'SpuriousEmuProgram'):
         program = content[len(b'SpuriousEmuProgram'):]
         return loads(program)
+
+    units = []
+    if magic_from_buffer(content, mime=True) == "text/plain":
+        if not input_file.endswith('.vbs'):
+            input_file += '.vbs'
+        units.append(Unit.from_content(content.decode('utf-8'), input_file))
     else:
-        # A regular file can be a source file or an Office document, in any
-        # case olevba extracts the macros content nominally
         vba_parser = VBA_Parser(input_file, data=content)
-        units = []
 
         for _, _, vba_filename, vba_code in vba_parser.extract_all_macros():
             units.append(Unit.from_content(vba_code, vba_filename))
 
-        return Compiler.compile_units(units)
+    return Compiler.compile_units(units)
 
 
 def save_compiled_program(program: Program, path: str) -> None:
