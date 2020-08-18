@@ -232,8 +232,9 @@ class Interpreter(Visitor):
         except KeyError:
             class_ref = object_value.class_reference
             method_reference = class_ref.get_child(child_name)
-            method = self._memory.functions[str(method_reference)]
-            self._evaluation = method
+            unbound_method = self._memory.functions[str(method_reference)]
+            bound_method = unbound_method.create_bound_method(object_value)
+            self._evaluation = bound_method
 
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)

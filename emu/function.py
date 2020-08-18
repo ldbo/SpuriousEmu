@@ -4,7 +4,7 @@ from typing import Callable, List, Optional, Union
 
 from .abstract_syntax_tree import Block
 from .reference import FunctionReference
-from .value import Value
+from .value import Value, Object
 from .type import Type
 
 
@@ -16,6 +16,7 @@ class Function(Value):
     name: str
     arguments_names: List[str]
     reference: Optional[FunctionReference]
+    parent_object: Optional[Object]
 
     def __init__(self, name: str, arguments_names: List[str],
                  function: Union["ExternalFunction.Signature", Block],
@@ -24,9 +25,16 @@ class Function(Value):
         self.arguments_names = arguments_names
         self.value = function
         self.reference = reference
+        self.parent_object = None
 
     def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
         return None
+
+    def create_bound_method(self, parent_object: Object) -> "Function":
+        method = type(self)(self.name, self.arguments_names, self.value,
+                            self.reference)
+        method.parent_object = parent_object
+        return method
 
 
 class ExternalFunction(Function):
@@ -71,7 +79,6 @@ class ExternalFunction(Function):
 
 class InternalFunction(Function):
     """VBA function."""
-    reference: FunctionReference
 
     def __init__(self, name: str, arguments_names: List[str],
                  body: Block, reference: FunctionReference) -> None:
