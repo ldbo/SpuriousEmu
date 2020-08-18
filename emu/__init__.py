@@ -1,6 +1,7 @@
 """SpuriousEmu interface"""
 
-from .compiler import Compiler
+from .compiler import Compiler, Unit, Program
+from .error import *
 from .interpreter import Interpreter
-from .preprocessor import Preprocessor, PreprocessorError
-from .syntax import Parser, ParsingError
+from .preprocessor import Preprocessor
+from .syntax import Parser
