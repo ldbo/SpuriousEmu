@@ -2,6 +2,14 @@
 
 Visual Basic for Applications tools allowing to parse VBA files, interpret them and extract behaviour information for malware analysis purpose.
 
+## Installation
+
+SpuriousEmu is available on PyPI, so you can install it using
+
+```bash
+pip install spurious-emu
+```
+
 ## Usage
 
 SpuriousEmu can work with VBA source files, or directly with Office documents. For the later case, it relies on olevba to extract macros from the files. For each of the commands, use the `-i` flag to specify the input file to work with, whatever its format.
