@@ -12,6 +12,7 @@ python = "^3.8"
 oletools = "^0.55.1"
 python-magic = "^0.4.18"
 prettytable = "^0.7.2"
+pyparsing = "^2.4.7"
 
 [tool.poetry.dev-dependencies]
 ipython = "^7.17.0"
