@@ -39,3 +39,7 @@ def test_01():
 
 def test_02():
     assert_correct_function("interpreter_02", interpreting)
+
+
+def test_03():
+    assert_correct_function("interpreter_03", interpreting)
