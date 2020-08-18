@@ -92,20 +92,6 @@ class Compiler(Visitor):
     __current_reference: Reference
     __memory: Memory
 
-    @staticmethod
-    def module_type_from_name(file_name: str):
-        """
-        Determine the module type from the extension of the file, default to a
-        procedural module.
-        """
-        extension = file_name.split('.')[-1]
-        if extension == 'cls':
-            return ClassModule
-        elif extension == 'bas' or extension == 'vbs':
-            return ProceduralModule
-        else:
-            raise RuntimeError('File {file_name} has unkown extension')
-
     def __init__(self) -> None:
         self.reset()
 
@@ -333,34 +319,44 @@ class Compiler(Visitor):
         pass
 
     @staticmethod
+    def compile_unit(unit: Unit) -> Program:
+        return Compiler.compile_units([unit])
+
+    @staticmethod
+    def compile_units(
+            units: List[Unit], project: Optional[str] = None) -> Program:
+        """
+        Compile a list of units belonging to the same project.
+        """
+        compiler = Compiler()
+
+        if project is not None:
+            compiler.add_project(project)
+
+        for unit in units:
+            if unit.unit_type is Unit.Type.Class:
+                module_type = ClassModule
+            else:
+                module_type = ProceduralModule
+
+            ast = Parser.parse(unit.content, unit.name)
+            compiler.add_module(ast, module_type, unit.name)
+
+        return compiler.program
+
+    @staticmethod
     def compile_file(path: str) -> Program:
-        """Parse a file and then compile it, using Office extension."""
         return Compiler.compile_files([path])
 
     @staticmethod
-    def compile_files(paths: List[str]) -> Program:
+    def compile_files(
+            paths: List[str], project: Optional[str] = None) -> Program:
         """
-        Parse and compile a list of files with Office extensions (cls and bas).
+        Parse and compile a list of files with Office extensions (cls and bas)
+        or vbs extension for standalone scripts.
         """
-        compiler = Compiler()
-
-        for path in paths:
-            ast = Parser.parse_file(path)
-            module_type = Compiler.module_type_from_name(path)
-            compiler.add_module(ast, module_type,
-                                Path(path).name.split('.')[0])
-
-        return compiler.program
-
-    @staticmethod
-    def compile_script(path: str) -> Program:
-        """Compile a single file script, with vbs extension."""
-        compiler = Compiler()
-        ast = Parser.parse_file(path)
-        module_type = ProceduralModule
-        compiler.add_module(ast, module_type, Path(path).name.split('.')[0])
-
-        return compiler.program
+        units = [Unit.from_file(path) for path in paths]
+        return Compiler.compile_units(units, project)
 
     @staticmethod
     def compile_project(project_path: str) -> Program:
@@ -376,4 +372,4 @@ class Compiler(Visitor):
                  (path.rglob(f"*.{ext}") for ext in ('cls', 'bas'))
                  for file in glob]
 
-        return Compiler.compile_files(paths)
+        return Compiler.compile_files(paths, path.stem)
