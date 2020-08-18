@@ -373,3 +373,22 @@ class Compiler(Visitor):
                  for file in glob]
 
         return Compiler.compile_files(paths, path.stem)
+
+    @staticmethod
+    def link_libraries(program: Program, libraries: List[str]) -> Program:
+        """
+        Link host libraries to an already compiled program.
+
+        :arg program: Program to link the library to
+        :arg library: Paths of the libraries
+        :returns: The linked program
+        """
+        compiler = Compiler()
+        compiler.__memory = program.memory
+        compiler.__environment = program.environment
+        compiler.__current_reference = program.environment
+
+        for library in libraries:
+            compiler.load_host_project(library)
+
+        return compiler.program
