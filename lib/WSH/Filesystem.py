@@ -3,10 +3,13 @@ class Filesystem:
 
     @staticmethod
     def FolderExists(interpreter, arguments):
-        interpreter.add_file_event('FolderExists', arguments[0].value)
+        interpreter.add_file_event('FolderExists', arguments[1].value)
         return False
 
     @staticmethod
     def CreateTextFile(interpreter, arguments):
-        interpreter.add_file_event('CreateTextFile', arguments[0].value)
-        return interpreter.create_object('VBAEnv.WSH.FileHandler')
+        path = arguments[1].value
+        interpreter.add_file_event('CreateTextFile', arguments[1].value)
+        file_handler = interpreter.create_object('VBAEnv.WSH.FileHandler')
+        file_handler.value['path'] = path
+        return file_handler

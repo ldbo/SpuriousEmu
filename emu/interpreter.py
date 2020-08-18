@@ -325,7 +325,10 @@ class Interpreter(Visitor):
 
     def call_function(self, function: Function,
                       arguments_values: List[Value]) -> Optional[Value]:
+        # TODO handle attribute access for internal class method
         if type(function) is ExternalFunction:
+            if function.parent_object is not None:
+                arguments_values = [function.parent_object] + arguments_values
             python_value = function.external_function(self, arguments_values)
             return Value.from_python_base_type(python_value)
         elif type(function) is InternalFunction:
