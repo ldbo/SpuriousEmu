@@ -391,6 +391,9 @@ class Interpreter(Visitor):
         pass
 
     @staticmethod
-    def run_program(program: Program) -> None:
+    def run_program(program: Program, entry_point: str = "Main") -> None:
+        """
+        Execute the a program using the given entry_point.
+        """
         interpreter = Interpreter(program)
-        interpreter.run('Main')
+        interpreter.run(entry_point)

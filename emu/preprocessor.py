@@ -26,7 +26,7 @@ comments, etc.
 # Comments:
 #  - Comments added in Instruction pretty-print TODO
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List, Optional
 
 from .error import PreprocessorError
 
@@ -140,11 +140,6 @@ class Preprocessor:
 
         self.__line_number += 1
 
-    def extract_instructions_from_file(self, path: str) -> List[Instruction]:
-        with open(path) as f:
-            content = f.read()
-            return self.extract_instructions(path, content)
-
     def __add_instruction(self, instruction: str, single: bool) -> None:
         self.__instructions.append(Instruction(
             instruction=instruction.strip(),
@@ -219,3 +214,20 @@ class Preprocessor:
         instructions.append(line[instruction_start:position])
 
         return instructions
+
+    @staticmethod
+    def preprocess(file_content: str, file_name: Optional[str] = None) \
+            -> List[Instruction]:
+        """
+        Extract the executable instructions of a file, returning them as a
+        list.
+        """
+        preprocessor = Preprocessor()
+        return preprocessor.extract_instructions(file_name, file_content)
+
+    @staticmethod
+    def preprocess_file(file_path: str) -> List[Instruction]:
+        with open(file_path, 'r') as f:
+            file_content = f.read()
+
+        return Preprocessor.preprocess(file_content, file_path)
