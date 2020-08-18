@@ -9,6 +9,18 @@ homepage = "https://github.com/ldbo/SpuriousEmu"
 packages = [{include = "emu"}]
 include = ["lib/*/*"]
 
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Visual Basic",
+    "Topic :: Security",
+    "Topic :: Software Development :: Interpreters",
+]
+
 [tool.poetry.scripts]
 emu = "emu.__main__:main"
 
