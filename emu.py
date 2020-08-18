@@ -3,13 +3,14 @@
 from argparse import ArgumentParser
 from pathlib import Path
 from pickle import dumps, loads
+from pprint import pprint
 from sys import exit
 
 from oletools.olevba import VBA_Parser
 
 from prettytable import PrettyTable
 
-from emu import Program, Compiler, Unit
+from emu import Program, Compiler, Interpreter, Unit
 
 
 def build_argparser():
@@ -54,6 +55,7 @@ def build_argparser():
         help="Input file")
     dynamic_parser.add_argument(
         "-e", "--entry",
+        default='Main',
         help="Entry point of the dynamic analysis. Must be specified if no "
              "Main function is defined. Must use the absolute path of the "
              "symbol.")
@@ -135,7 +137,24 @@ def static_analysis(arguments):
     return 0
 
 
+def execute_program(program: Program, entry_point: str) -> None:
+    libraries = list(map(str, Path('./lib/').glob('*')))
+    linked_program = Compiler.link_libraries(program, libraries)
+    return Interpreter.run_program(linked_program, entry_point)
+
+
 def dynamic_analysis(arguments):
+    # Check arguments validity
+    if not Path(arguments.input).exists():
+        print(f"Error: input file {arguments.input} does not exist.")
+        return 1
+
+    # Load and execute
+    program = compile_input_file(arguments.input)
+    report = execute_program(program, arguments.entry)
+
+    pprint(report.to_dict())
+
     return 0
 
 
