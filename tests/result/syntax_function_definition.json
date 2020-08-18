@@ -15,7 +15,7 @@
         {
             "_type": "ProcDef",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListDef",
                 "args": [
                     {
                         "_type": "Identifier",
@@ -43,7 +43,7 @@
                 {
                     "_type": "FunCall",
                     "arguments": {
-                        "_type": "ArgList",
+                        "_type": "ArgListCall",
                         "args": [
                             {
                                 "_type": "Identifier",
@@ -87,7 +87,7 @@
         {
             "_type": "ProcDef",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListDef",
                 "args": [
                     {
                         "_type": "Identifier",
@@ -112,7 +112,7 @@
                         {
                             "_type": "FunCall",
                             "arguments": {
-                                "_type": "ArgList",
+                                "_type": "ArgListCall",
                                 "args": [
                                     {
                                         "_type": "Identifier",
@@ -195,7 +195,7 @@
         {
             "_type": "FunDef",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListDef",
                 "args": [
                     {
                         "_type": "Identifier",

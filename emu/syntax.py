@@ -4,7 +4,8 @@ from typing import List, Union
 
 from pyparsing import (Forward, ParseException, ParserElement, QuotedString,
                        Regex, Suppress, StringEnd, StringStart, Word,
-                       delimitedList, infixNotation, nums, Or, Keyword)
+                       delimitedList, infixNotation, nums, Or, Keyword,
+                       FollowedBy)
 from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
@@ -20,8 +21,9 @@ from .type import Type, types
 
 # SEPARATOR
 
-lparen = Suppress('(').setName('(')
-rparen = Suppress(')').setName(')')
+lparen = Suppress('(').setName('lparen')
+rparen = Suppress(')').setName('rparen')
+dot = Suppress('.').setName('dot')
 
 # STATEMENT KEYWORD
 
@@ -142,7 +144,6 @@ eqv_kw = Keyword('Eqv').setName('eqv')
 imp_kw = Keyword('Imp').setName('imp')
 is_kw = Keyword('Is').setName('is')
 like_kw = Keyword('Like').setName('like')
-new_kw = Keyword('New').setName('new')
 mod_kw = Keyword('Mod').setName('mod')
 not_kw = Keyword('Not').setName('not')
 or_kw = Keyword('Or').setName('or')
@@ -150,7 +151,7 @@ typeof_kw = Keyword('TypeOf').setName('typeof')
 xor_kw = Keyword('Xor').setName('xor')
 
 operator_keyword = addressof_kw | and_kw | eqv_kw | imp_kw | is_kw | like_kw \
-    | new_kw | mod_kw | not_kw | or_kw | typeof_kw | xor_kw
+    | mod_kw | not_kw | or_kw | typeof_kw | xor_kw
 
 # TYPES
 
@@ -173,21 +174,20 @@ string = QuotedString(quoteChar='"', escQuote='""').setName("string") \
 literal = (integer | boolean | string).setName("literal")
 literal_kw = true_kw | false_kw
 
-# Types
-variable_type = Or(types)
-
-
 # RESERVED
 
 reserved = statement_keyword | marker_keyword | operator_keyword | literal_kw
 
 # IDENTIFIER
 
-element_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
-identifier_regex = rf"{element_regex}(?:\.{element_regex})*"
+identifier_regex = r"(?:[a-zA-Z]|_[a-zA-Z])[a-zA-Z0-9_]*"
 identifier = (~reserved + Regex(identifier_regex)).setName("identifier") \
     .setParseAction(lambda r: Identifier(r[0]))
+identifier_keyword = Regex(identifier_regex).setName("identifier keyword") \
+    .setParseAction(lambda r: Identifier(r[0]))
 
+# Types
+variable_type = Or(types) | identifier
 
 #############
 #  Grammar  #
@@ -200,6 +200,31 @@ statement = Forward().setName("statement")
 #################
 #  Expressions  #
 #################
+
+# Member access
+def __build_recursive_member_access(expr, pos, result):
+    tokens = list(result)
+    node = tokens[0]
+
+    for token in tokens[1:]:
+        if isinstance(token, Identifier):
+            node = Get(node, token)
+        elif isinstance(token, FunCall):
+            assert(isinstance(token.function, Identifier))
+            node = FunCall(Get(node, token.function), token.arguments)
+
+    return node
+
+
+orphan_function_call_paren = Forward().setName("orphan_function_call_paren")
+member_access_token = dot + (orphan_function_call_paren | identifier_keyword)
+leading_member_access_token = member_access_token \
+    + FollowedBy(member_access_token)
+member_access = (
+    (orphan_function_call_paren + FollowedBy(member_access_token) | identifier)
+    + pOptional((leading_member_access_token)[...] + dot + identifier_keyword)
+).setParseAction(__build_recursive_member_access)
+
 
 # Operator
 def __build_binary_operator(expr, pos, result):
@@ -218,18 +243,25 @@ def __build_binary_operator(expr, pos, result):
 binary_operators = OPERATORS_MAP.get_precedence_list(__build_binary_operator)
 
 # Function call
-arguments_list = pOptional(delimitedList(expression)) \
-    .setName("arguments_list") \
-    .setParseAction(lambda r: ArgList(list(r)))
-function_call_paren = (identifier + lparen + arguments_list + rparen) \
+arguments_list_call = pOptional(delimitedList(expression)) \
+    .setName("arguments_list_call") \
+    .setParseAction(lambda r: ArgListCall(list(r)))
+arguments_list_def = pOptional(delimitedList(identifier)) \
+    .setName("arguments_list_def") \
+    .setParseAction(lambda r: ArgListDef(list(r)))
+orphan_function_call_paren << (identifier + lparen + arguments_list_call
+                               + rparen) \
+    .setName("orphan_function_call_paren") \
+    .setParseAction(lambda r: FunCall(*r))
+function_call_paren = (member_access + lparen + arguments_list_call + rparen) \
     .setName("function_call_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
-function_call_no_paren = (StringStart() + identifier + arguments_list
+function_call_no_paren = (StringStart() + member_access + arguments_list_call
                           + StringEnd()) \
     .setName("function_call_no_paren") \
     .setParseAction(lambda r: FunCall(r[0], r[1]))
 
-terminal = (literal | function_call_paren | identifier)
+terminal = (literal | function_call_paren | member_access)
 expression << infixNotation(
     terminal, binary_operators, lpar=lparen, rpar=rparen) \
     .setName('expression')
@@ -246,14 +278,19 @@ variable_declaration = (dim_kw + identifier
                                     + pOptional(Suppress('=') + expression))) \
     .setParseAction(lambda r: VarDec(*r)) \
     .setName("var dec")
+variable_declaration_with_constructor = \
+    (dim_kw + identifier + as_kw + new_kw + variable_type) \
+    .setParseAction(lambda r: VarDec(*r, new=True))
 
-variable_assignment = (set_kw + identifier + Suppress('=') + expression) \
+# TODO difference between Set and Let
+variable_assignment = (pOptional(let_kw | set_kw) + identifier
+                       + Suppress('=') + expression) \
     .setParseAction(lambda r: VarAssign(*r)) \
     .setName("var assign")
 
 # Function
 procedure_header = (sub_kw + identifier
-                    + pOptional(lparen + arguments_list + rparen)) \
+                    + pOptional(lparen + arguments_list_def + rparen)) \
     .setParseAction(lambda r: ProcDefHeader(*r)) \
     .setName("proc header")
 procedure_footer = (end_kw + sub_kw) \
@@ -261,7 +298,7 @@ procedure_footer = (end_kw + sub_kw) \
     .setName("proc footer")
 
 function_header = (function_kw + identifier
-                   + pOptional(lparen + arguments_list + rparen)) \
+                   + pOptional(lparen + arguments_list_def + rparen)) \
     .setParseAction(lambda r: FunDefHeader(*r)) \
     .setName("function header")
 function_footer = (end_kw + function_kw) \
@@ -270,7 +307,8 @@ function_footer = (end_kw + function_kw) \
 
 
 declarative_statement = (
-    variable_declaration | variable_assignment
+    variable_declaration_with_constructor | variable_declaration
+    | variable_assignment
     | procedure_header | procedure_footer
     | function_header | function_footer) \
     .setName("declaration")
@@ -395,18 +433,31 @@ class Parser:
             parent_block = self.__nested_blocks[-1]
             parent_block.statements_blocks[-1].append(complete_block)
 
+    @staticmethod
+    def parse(content: str, file_name: Optional[str] = "") -> AST:
+        """
+        Parse the content of a file into an abstract syntax tree.
 
-def parse_file(path: str) -> AST:
-    """
-    Parse a file into an abstract syntax tree.
+        :arg content: str content of the file
+        :arg file_name: Optional name of the file
+        :return: An AST representing the syntax of the file
+        """
+        parser = Parser()
+        instructions = Preprocessor.preprocess(content, file_name)
+        tree = parser.build_ast(instructions)
 
-    :arg path: Path of the file
-    :return: An AST representing the syntax of the file
-    """
-    preprocessor = Preprocessor()
-    parser = Parser()
+        return tree
 
-    instructions = preprocessor.extract_instructions_from_file(path)
-    tree = parser.build_ast(instructions)
+    @staticmethod
+    def parse_file(path: str) -> AST:
+        """
+        Parse a file into an abstract syntax tree.
 
-    return tree
+        :arg path: Path of the file
+        :return: An AST representing the syntax of the file
+        """
+        parser = Parser()
+        instructions = Preprocessor.preprocess_file(path)
+        tree = parser.build_ast(instructions)
+
+        return tree

@@ -14,10 +14,13 @@ from .visitor import Visitable
 
 class AST(Visitable, ABC):
     """Base class of all the nodes of the tree."""
+    __ast_nodes_number: int = 0
+    __hash: int
 
     @abstractmethod
     def __init__(self) -> None:
-        pass
+        self.__hash = AST.__ast_nodes_number
+        AST.__ast_nodes_number += 1
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -47,6 +50,9 @@ class AST(Visitable, ABC):
                 d[attr_name] = str(attr)
 
         return d
+
+    def __hash__(self) -> int:
+        return self.__hash
 
 
 class Statement(AST):
@@ -95,15 +101,20 @@ class VarDec(Statement):
     with a one-member variable list.
     """
     identifier: "Identifier"
-    type: Optional[Type]
+    type: Optional[Union[Type, "Identifier"]]
     value: Optional["Expression"]
+    new: bool
 
-    def __init__(self, identifier: "Identifier", type: Optional[Type] = None,
-                 value: Optional["Expression"] = None, **kwargs) -> None:
+    def __init__(self, identifier: "Identifier",
+                 type: Optional[Union[Type, "Identifier"]] = None,
+                 value: Optional["Expression"] = None,
+                 new: bool = False,
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.identifier = identifier
         self.type = type
         self.value = value
+        self.new = new
 
 
 # TODO implement
@@ -121,11 +132,11 @@ class MultipleVarDec(Statement):
 
 class VarAssign(Statement):
     """Variable assignment."""
-    variable: "Identifier"
+    variable: Union["Get", "Identifier"]
     value: "Expression"
 
-    def __init__(self, variable: "Identifier", value: "Expression", **kwargs) \
-            -> None:
+    def __init__(self, variable: "Get", value: "Expression",
+                 **kwargs) -> None:
         super().__init__(**kwargs)
         self.variable = variable
         self.value = value
@@ -134,9 +145,9 @@ class VarAssign(Statement):
 class FunDef(Block):
     """Function definition, corresponding to the Function keyword."""
     name: "Identifier"
-    arguments: "ArgList"
+    arguments: "ArgListDef"
 
-    def __init__(self, name: "Identifier", arguments: "ArgList", **kwargs) \
+    def __init__(self, name: "Identifier", arguments: "ArgListDef", **kwargs) \
             -> None:
         super().__init__(**kwargs)
         self.name = name
@@ -146,9 +157,9 @@ class FunDef(Block):
 class ProcDef(Block):
     """Procedure definition, corresponding to the Sub keyword."""
     name: "Identifier"
-    arguments: "ArgList"
+    arguments: "ArgListDef"
 
-    def __init__(self, name: "Identifier", arguments: "ArgList", **kwargs) \
+    def __init__(self, name: "Identifier", arguments: "ArgListDef", **kwargs) \
             -> None:
         super().__init__(**kwargs)
         self.name = name
@@ -180,6 +191,18 @@ class Identifier(Expression):
         self.name = name
 
 
+class Get(Expression):
+    """Recursive node corresponding to the . operator."""
+    parent: Union["Get", Identifier, "FunCall"]
+    child: Identifier
+
+    def __init__(self, parent: Union["Get", Identifier, "FunCall"],
+                 child: Identifier, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.parent = parent
+        self.child = child
+
+
 class Literal(Expression):
     """Literal value : integer, double, boolean, string, ..."""
     type: Type
@@ -196,9 +219,8 @@ class Literal(Expression):
         return Literal(value.base_type, value.value)
 
 
-# TODO differentiate between ArgList for calls and definitions
-class ArgList(Statement):
-    """List of arguments, used by function calls and declarations"""
+class ArgListCall(Statement):
+    """List of arguments, used by function calls"""
     args: List["Expression"]
 
     def __init__(self, args: List["Expression"], **kwargs) -> None:
@@ -206,13 +228,22 @@ class ArgList(Statement):
         self.args = args
 
 
+class ArgListDef(Statement):
+    """List of arguments, used by function declarations"""
+    args: List[Identifier]
+
+    def __init__(self, args: List["Identifier"], **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.args = args
+
+
 class FunCall(Expression):
     """Function call"""
-    function: Identifier
-    arguments: ArgList
+    function: Union[Get, Identifier]
+    arguments: ArgListCall
 
-    def __init__(self, function: Identifier, arguments: ArgList, **kwargs) \
-            -> None:
+    def __init__(self, function: Union[Get, Identifier],
+                 arguments: ArgListCall, **kwargs) -> None:
         super().__init__(**kwargs)
         self.function = function
         self.arguments = arguments
@@ -321,6 +352,6 @@ class ErrorStatement(Statement):
     """Error statement."""
     number: Literal
 
-    def __init__(self, number: Literal) -> None:
+    def __init__(self, number: Literal, **kwargs) -> None:
         super().__init__(**kwargs)
         self.number = number

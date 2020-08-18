@@ -1,12 +1,30 @@
 {
-    "symbols": [
-        "<Root>",
-        "<Root>.compiler_block",
-        "<Root>.compiler_block.var3",
-        "<Root>.compiler_block.var2",
-        "<Root>.compiler_block.var1"
-    ],
     "memory": {
-        "functions": []
+        "functions": [],
+        "classes": []
+    },
+    "environment": {
+        "name": "VBAEnv",
+        "Project": [
+            {
+                "name": "Default",
+                "ProceduralModule": [
+                    {
+                        "name": "compiler_block",
+                        "Variable": [
+                            {
+                                "name": "var1"
+                            },
+                            {
+                                "name": "var2"
+                            },
+                            {
+                                "name": "var3"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 }

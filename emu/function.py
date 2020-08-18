@@ -2,18 +2,41 @@ from dataclasses import dataclass
 from inspect import getfullargspec
 from typing import Callable, List, Optional, Union
 
-from .value import Value
 from .abstract_syntax_tree import Block
+from .reference import FunctionReference
+from .value import Value, Object
+from .type import Type
 
 
 @dataclass
-class Function:
+class Function(Value):
     """An abstract function, be it implemented in VBA or Python."""
+    base_type = Type.Function
+
     name: str
     arguments_names: List[str]
+    reference: Optional[FunctionReference]
+    parent_object: Optional[Object]
+
+    def __init__(self, name: str, arguments_names: List[str],
+                 function: Union["ExternalFunction.Signature", Block],
+                 reference: Optional[FunctionReference] = None) -> None:
+        self.name = name
+        self.arguments_names = arguments_names
+        self.value = function
+        self.reference = reference
+        self.parent_object = None
+
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
+        return None
+
+    def create_bound_method(self, parent_object: Object) -> "Function":
+        method = type(self)(self.name, self.arguments_names, self.value,
+                            self.reference)
+        method.parent_object = parent_object
+        return method
 
 
-@dataclass
 class ExternalFunction(Function):
     """
     Python function wrapper, the function will be called with two arguments:
@@ -22,7 +45,11 @@ class ExternalFunction(Function):
     It has to return a Value object.
     """
     Signature = Callable[["Interpreter", List[Value]], Value]
-    external_function: "ExternalFunction.Signature"
+
+    def __init__(self, name: str, arguments_names: List[str],
+                 external_function: "ExternalFunction.Signature",
+                 reference: Optional[FunctionReference] = None) -> None:
+        super().__init__(name, arguments_names, external_function, reference)
 
     @staticmethod
     def from_function(
@@ -45,8 +72,18 @@ class ExternalFunction(Function):
         else:
             return decorator(python_function)
 
+    @property
+    def external_function(self) -> "ExternalFunction.Signature":
+        return self.value
 
-@ dataclass
+
 class InternalFunction(Function):
     """VBA function."""
-    body: Block
+
+    def __init__(self, name: str, arguments_names: List[str],
+                 body: Block, reference: FunctionReference) -> None:
+        super().__init__(name, arguments_names, body, reference)
+
+    @property
+    def body(self) -> Block:
+        return self.value

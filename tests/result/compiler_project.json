@@ -1,0 +1,54 @@
+{
+    "memory": {
+        "functions": [
+            "VBAEnv.compiler_project.Class.method1",
+            "VBAEnv.compiler_project.Module.Main"
+        ],
+        "classes": [
+            "VBAEnv.compiler_project.Class"
+        ]
+    },
+    "environment": {
+        "name": "VBAEnv",
+        "Project": [
+            {
+                "name": "compiler_project",
+                "ClassModule": [
+                    {
+                        "name": "Class",
+                        "Variable": [
+                            {
+                                "name": "var1"
+                            }
+                        ],
+                        "FunctionReference": [
+                            {
+                                "name": "method1",
+                                "Variable": [
+                                    {
+                                        "name": "method1"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "ProceduralModule": [
+                    {
+                        "name": "Module",
+                        "FunctionReference": [
+                            {
+                                "name": "Main",
+                                "Variable": [
+                                    {
+                                        "name": "Main"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

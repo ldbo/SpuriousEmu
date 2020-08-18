@@ -1,0 +1,42 @@
+{
+    "stdout": [
+        "msgBox Hey",
+        "msgBox i",
+        "msgBox 0",
+        "msgBox 5",
+        "msgBox 3",
+        "msgBox 1",
+        "msgBox --------",
+        "msgBox i",
+        "msgBox 5",
+        "msgBox 5",
+        "msgBox 3",
+        "msgBox 1",
+        "msgBox --------",
+        "msgBox i",
+        "msgBox 10",
+        "msgBox 5",
+        "msgBox 3",
+        "msgBox 1",
+        "msgBox --------",
+        "msgBox hello, , helo, helo, helo",
+        "msgBox Not that odd",
+        "msgBox High level of oddity",
+        "msgBox Not that odd",
+        "msgBox High level of oddity",
+        "msgBox Not that odd",
+        "msgBox High level of oddity",
+        "msgBox Not that odd",
+        "msgBox High level of oddity",
+        "msgBox Not that odd",
+        "msgBox High level of oddity",
+        "msgBox Not that odd",
+        "msgBox High level of oddity",
+        "msgBox Not that odd"
+    ],
+    "file": [],
+    "network": [],
+    "execution": [
+        "plop plop plop /"
+    ]
+}

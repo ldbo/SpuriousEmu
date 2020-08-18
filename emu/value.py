@@ -7,9 +7,10 @@
 #  - add the Type/Value correspondance in TYPES_MAP
 
 from abc import abstractmethod, ABC
-from typing import Any, Union, Optional
+from typing import Any, Dict, Optional, Union
 
 from .error import ConversionError
+from .reference import ClassModule
 from .type import Type
 
 
@@ -70,6 +71,21 @@ class Value(ABC):
     def __str__(self) -> str:
         return f"{self.base_type.name}({self.value})"
 
+    @staticmethod
+    def from_python_base_type(value: Any) -> "Value":
+        value_type = type(value)
+        if isinstance(value, Value) or value is None:
+            return value
+        elif value_type is int:
+            return Integer(value)
+        elif value_type is bool:
+            return Boolean(value)
+        elif value_type is str:
+            return String(value)
+        else:
+            msg = f"Can't create VBA value for Python type {value_type}"
+            raise ConversionError(msg)
+
 
 class Integer(Value):
     base_type = Type.Integer
@@ -106,6 +122,26 @@ class String(Value):
 
     def __init__(self, string: str) -> None:
         self.value = string
+
+    def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
+        # TODO
+        return None
+
+
+class Object(Value):
+    base_type = Type.Object
+
+    class_reference: ClassModule
+    value: Dict[str, Value]  # Holds the state of the object
+
+    def __init__(self, class_reference=ClassModule,
+                 variables: Dict[str, Value] = None) -> None:
+        self.class_reference = class_reference
+        self.value = variables if variables is not None else dict()
+
+    @property
+    def variables(self) -> Dict[str, Value]:
+        return self.value
 
     def convert_to_different_type(self, to_type: Type) -> Optional[Value]:
         # TODO
