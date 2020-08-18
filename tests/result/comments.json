@@ -22,8 +22,8 @@
             "line_number": 3
         },
         {
-            "instruction": "Set a = 23",
-            "multiline": "Set a = 23 ' Let's start with an easy one",
+            "instruction": "Let a = 23",
+            "multiline": "Let a = 23 ' Let's start with an easy one",
             "single": true,
             "file_name": "tests/source/comments.vbs",
             "line_number": 4
@@ -50,15 +50,15 @@
             "line_number": 7
         },
         {
-            "instruction": "Set str1 = \"Hey why are you here REM ?\"",
-            "multiline": "Set str1 = \"Hey why are you here REM ?\"",
+            "instruction": "Let str1 = \"Hey why are you here REM ?\"",
+            "multiline": "Let str1 = \"Hey why are you here REM ?\"",
             "single": true,
             "file_name": "tests/source/comments.vbs",
             "line_number": 8
         },
         {
-            "instruction": "Set str2 = \"And you ' ?\"",
-            "multiline": "Set str2 = \"And you ' ?\"",
+            "instruction": "str2 = \"And you ' ?\"",
+            "multiline": "str2 = \"And you ' ?\"",
             "single": true,
             "file_name": "tests/source/comments.vbs",
             "line_number": 9

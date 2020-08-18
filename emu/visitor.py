@@ -22,11 +22,13 @@ class Visitable:
 
         visiter = "visit_" + type(self).__qualname__.replace(".", "_")
         try:
-            return getattr(visitor, visiter)(self)
+            visiter_function = getattr(visitor, visiter)
         except AttributeError:
             msg = f"Visitor {type(visitor).__qualname__} doesn't handle " \
                 + f"Visitable type {type(self).__qualname__}"
             raise NotImplementedError(msg)
+
+        return visiter_function(self)
 
 
 class Visitor:

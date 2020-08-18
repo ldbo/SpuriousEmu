@@ -112,7 +112,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [
                     {
                         "_type": "Identifier",
@@ -136,7 +136,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [
                     {
                         "_type": "Literal",
@@ -167,7 +167,7 @@
                     {
                         "_type": "FunCall",
                         "arguments": {
-                            "_type": "ArgList",
+                            "_type": "ArgListCall",
                             "args": [
                                 {
                                     "_type": "Literal",
@@ -214,7 +214,7 @@
                     "left": {
                         "_type": "FunCall",
                         "arguments": {
-                            "_type": "ArgList",
+                            "_type": "ArgListCall",
                             "args": [],
                             "file": "",
                             "line_number": "0"
@@ -233,7 +233,7 @@
                     "right": {
                         "_type": "FunCall",
                         "arguments": {
-                            "_type": "ArgList",
+                            "_type": "ArgListCall",
                             "args": [],
                             "file": "",
                             "line_number": "0"
@@ -294,7 +294,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [
                     {
                         "_type": "Literal",
@@ -332,7 +332,7 @@
         {
             "_type": "FunCall",
             "arguments": {
-                "_type": "ArgList",
+                "_type": "ArgListCall",
                 "args": [],
                 "file": "",
                 "line_number": "0"
@@ -343,6 +343,231 @@
                 "file": "",
                 "line_number": "0",
                 "name": "f"
+            },
+            "line_number": "0"
+        },
+        {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "member1"
+                },
+                "file": "",
+                "line_number": "0",
+                "parent": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "obj1"
+                }
+            },
+            "line_number": "0",
+            "operator": "+",
+            "right": {
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "member2"
+                },
+                "file": "",
+                "line_number": "0",
+                "parent": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "obj1"
+                }
+            }
+        },
+        {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+                "_type": "FunCall",
+                "arguments": {
+                    "_type": "ArgListCall",
+                    "args": [
+                        {
+                            "_type": "Literal",
+                            "file": "",
+                            "line_number": "0",
+                            "type": "Type.Integer",
+                            "value": "1"
+                        },
+                        {
+                            "_type": "Literal",
+                            "file": "",
+                            "line_number": "0",
+                            "type": "Type.Integer",
+                            "value": "2"
+                        },
+                        {
+                            "_type": "Literal",
+                            "file": "",
+                            "line_number": "0",
+                            "type": "Type.Integer",
+                            "value": "3"
+                        }
+                    ],
+                    "file": "",
+                    "line_number": "0"
+                },
+                "file": "",
+                "function": {
+                    "_type": "Get",
+                    "child": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "m5"
+                    },
+                    "file": "",
+                    "line_number": "0",
+                    "parent": {
+                        "_type": "Get",
+                        "child": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "v4"
+                        },
+                        "file": "",
+                        "line_number": "0",
+                        "parent": {
+                            "_type": "FunCall",
+                            "arguments": {
+                                "_type": "ArgListCall",
+                                "args": [],
+                                "file": "",
+                                "line_number": "0"
+                            },
+                            "file": "",
+                            "function": {
+                                "_type": "Get",
+                                "child": {
+                                    "_type": "Identifier",
+                                    "file": "",
+                                    "line_number": "0",
+                                    "name": "m3"
+                                },
+                                "file": "",
+                                "line_number": "0",
+                                "parent": {
+                                    "_type": "Get",
+                                    "child": {
+                                        "_type": "Identifier",
+                                        "file": "",
+                                        "line_number": "0",
+                                        "name": "o2"
+                                    },
+                                    "file": "",
+                                    "line_number": "0",
+                                    "parent": {
+                                        "_type": "Identifier",
+                                        "file": "",
+                                        "line_number": "0",
+                                        "name": "o1"
+                                    }
+                                }
+                            },
+                            "line_number": "0"
+                        }
+                    }
+                },
+                "line_number": "0"
+            },
+            "line_number": "0",
+            "operator": "+",
+            "right": {
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "v3"
+                },
+                "file": "",
+                "line_number": "0",
+                "parent": {
+                    "_type": "Get",
+                    "child": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "v2"
+                    },
+                    "file": "",
+                    "line_number": "0",
+                    "parent": {
+                        "_type": "FunCall",
+                        "arguments": {
+                            "_type": "ArgListCall",
+                            "args": [],
+                            "file": "",
+                            "line_number": "0"
+                        },
+                        "file": "",
+                        "function": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "f1"
+                        },
+                        "line_number": "0"
+                    }
+                }
+            }
+        },
+        {
+            "_type": "FunCall",
+            "arguments": {
+                "_type": "ArgListCall",
+                "args": [
+                    {
+                        "_type": "Get",
+                        "child": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "Read"
+                        },
+                        "file": "",
+                        "line_number": "0",
+                        "parent": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "plt"
+                        }
+                    }
+                ],
+                "file": "",
+                "line_number": "0"
+            },
+            "file": "",
+            "function": {
+                "_type": "Get",
+                "child": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "Write"
+                },
+                "file": "",
+                "line_number": "0",
+                "parent": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "obj"
+                }
             },
             "line_number": "0"
         }

@@ -1,18 +1,49 @@
 {
-    "symbols": [
-        "<Root>",
-        "<Root>.compiler_function",
-        "<Root>.compiler_function.Proc",
-        "<Root>.compiler_function.Proc.arg2",
-        "<Root>.compiler_function.Proc.arg1",
-        "<Root>.compiler_function.CalculateSquareRoot",
-        "<Root>.compiler_function.CalculateSquareRoot.CalculateSquareRoot",
-        "<Root>.compiler_function.CalculateSquareRoot.NumberArg"
-    ],
     "memory": {
         "functions": [
-            "<Root>.compiler_function.CalculateSquareRoot",
-            "<Root>.compiler_function.Proc"
+            "VBAEnv.Default.compiler_function.CalculateSquareRoot",
+            "VBAEnv.Default.compiler_function.Proc"
+        ],
+        "classes": []
+    },
+    "environment": {
+        "name": "VBAEnv",
+        "Project": [
+            {
+                "name": "Default",
+                "ProceduralModule": [
+                    {
+                        "name": "compiler_function",
+                        "FunctionReference": [
+                            {
+                                "name": "CalculateSquareRoot",
+                                "Variable": [
+                                    {
+                                        "name": "NumberArg"
+                                    },
+                                    {
+                                        "name": "CalculateSquareRoot"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "Proc",
+                                "Variable": [
+                                    {
+                                        "name": "arg1"
+                                    },
+                                    {
+                                        "name": "arg2"
+                                    },
+                                    {
+                                        "name": "Proc"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     }
 }

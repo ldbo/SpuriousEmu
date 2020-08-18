@@ -11,6 +11,7 @@
                 "name": "var1"
             },
             "line_number": "0",
+            "new": "False",
             "type": "None",
             "value": "None"
         },
@@ -24,6 +25,7 @@
                 "name": "var2"
             },
             "line_number": "0",
+            "new": "False",
             "type": "Integer",
             "value": "None"
         },
@@ -37,6 +39,7 @@
                 "name": "var3"
             },
             "line_number": "0",
+            "new": "False",
             "type": "Integer",
             "value": {
                 "_type": "Literal",
@@ -141,7 +144,7 @@
             "value": {
                 "_type": "FunCall",
                 "arguments": {
-                    "_type": "ArgList",
+                    "_type": "ArgListCall",
                     "args": [
                         {
                             "_type": "Literal",
