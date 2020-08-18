@@ -2,14 +2,6 @@
 
 Visual Basic for Applications tools allowing to parse VBA files, interpret them and extract behaviour information for malware analysis purpose.
 
-## Requirements
-
-Python 3.8 is used, and the main dependency is `pyparsing`, which allows to parse the VBA grammar. Additionally, `nose` is needed to run the tests. You can create a conda development environment using `environment.yml`:
-
-```bash
-conda env create -f environment.yml
-```
-
 ## Usage
 
 SpuriousEmu can work with VBA source files, or directly with Office documents. For the later case, it relies on olevba to extract macros from the files. For each of the commands, use the `-i` flag to specify the input file to work with, whatever its format.
@@ -55,15 +47,36 @@ Once you have found the entry-point you want to use with the `static` subcommand
 
 This will display a report of the execution of the program. Additionally, if you want to save the files created during execution, you can use the `-o` flag: it specifies a directory to save files to. Each created file is then stored in a file with its md5 sum as title, and a `{hash}.filename.txt` file contains its original name.
 
+## Dependencies
+
+Python 3.8 is used, and SpuriousEmu mainly relies on `pyparsing` for VBA grammar parsing, and `oletools` to extract VBA macros from Office documents.
+
+`nose` is used as testing framework, and `mypy` to perform static code analysis. `lxml` and `coverage` are used to produce test reports.
+
 ## Tests
+
+To set a development environment up, use `poetry`:
+
+```bash
+poetry install
+```
+
+Then, use nose to run the test suite:
+
+```bash
+poetry run nosetests
+```
 
 All test files are in `tests`, including:
     - Python test scripts, starting with `test_`
-    - VBA scripts used to test the different stages of the tools, with `vbs` extensions
-    - expected test results, stored as JSON dumps
+    - VBA scripts used to test the different stages of the tools, with `vbs` extensions, stored in `source`
+    - expected test results, stored as JSON dumps in `result`
 
-The testing framework used is nose, which you can run against the test suite with:
+
+You can use mypy to perform code static analysis:
 
 ```bash
-nosetests tests/test_*.py
+poetry run mypy emu/*.py
 ```
+
+Both commands produce HTML reports stored in 'tests/report'.
