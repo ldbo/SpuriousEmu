@@ -10,13 +10,6 @@ from .value import Value
 from .vba_class import Class
 
 
-@dataclass
-class Variable:
-    # TODO remove
-    name: str
-    value: Value
-
-
 class Memory:
     """
     Represent the memory used for running a program, including static elements
@@ -70,6 +63,7 @@ class Memory:
         self._local_variables.pop()
 
 
+# TODO test hooks
 class OutsideWorld:
     class EventType(Enum):
         STDOUT = "stdout"
