@@ -301,16 +301,22 @@ variable_assignment = (pOptional(let_kw | set_kw) + identifier
     .setName("var assign")
 
 # Function
-procedure_header = (sub_kw + identifier
-                    + pOptional(lparen + arguments_list_def + rparen)) \
+procedure_scope = global_kw | public_kw | private_kw | friend_kw
+
+procedure_header = (pOptional(procedure_scope) + pOptional(static_kw) + sub_kw
+                    + identifier
+                    + pOptional(lparen + arguments_list_def + rparen)
+                    + pOptional(static_kw)) \
     .setParseAction(lambda r: ProcDefHeader(*r)) \
     .setName("proc header")
 procedure_footer = (end_kw + sub_kw) \
     .setParseAction(lambda r: ProcDefFooter()) \
     .setName("proc footer")
 
-function_header = (function_kw + identifier
-                   + pOptional(lparen + arguments_list_def + rparen)) \
+function_header = (pOptional(procedure_scope) + pOptional(static_kw)
+                   + function_kw + identifier
+                   + pOptional(lparen + arguments_list_def + rparen)
+                   + pOptional(as_kw + Suppress(variable_type))) \
     .setParseAction(lambda r: FunDefHeader(*r)) \
     .setName("function header")
 function_footer = (end_kw + function_kw) \

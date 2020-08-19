@@ -164,7 +164,12 @@
         },
         {
             "_type": "FunDef",
-            "arguments": "None",
+            "arguments": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "fun1"
+            },
             "body": [
                 {
                     "_type": "VarAssign",
@@ -185,12 +190,7 @@
                     }
                 }
             ],
-            "name": {
-                "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "fun1"
-            }
+            "name": "Global"
         },
         {
             "_type": "FunDef",
@@ -306,6 +306,36 @@
                 "file": "",
                 "line_number": "0",
                 "name": "fun2"
+            }
+        },
+        {
+            "_type": "FunDef",
+            "arguments": "None",
+            "body": [
+                {
+                    "_type": "VarAssign",
+                    "file": "",
+                    "line_number": "0",
+                    "value": {
+                        "_type": "Literal",
+                        "file": "",
+                        "line_number": "0",
+                        "type": "Type.Integer",
+                        "value": "12"
+                    },
+                    "variable": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "fun3"
+                    }
+                }
+            ],
+            "name": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "fun3"
             }
         }
     ]
