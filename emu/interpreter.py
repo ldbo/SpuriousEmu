@@ -236,6 +236,11 @@ class Interpreter(Visitor):
             bound_method = unbound_method.create_bound_method(object_value)
             self._evaluation = bound_method
 
+    def visit_UnOp(self, un_op: UnOp) -> None:
+        arg_value = self.evaluate(un_op.argument)
+        op = un_op.operator
+        self._evaluation = op.operate(arg_value)
+
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)
         right_value = self.evaluate(bin_op.right)
