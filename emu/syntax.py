@@ -227,6 +227,17 @@ member_access = (
 
 
 # Operator
+def __build_unary_operator(expr, pos, result):
+    tokens = result[0].asList()
+    assert(len(tokens) == 2)
+    operator_symbol = tokens[0]
+    operand = tokens[1]
+
+    operator = Operator.from_symbol(operator_symbol)
+    tree =  UnOp(operator, operand)
+
+    return tree
+
 def __build_binary_operator(expr, pos, result):
     tokens = result[0].asList()
     operator_symbols = tokens[1::2]
@@ -234,13 +245,14 @@ def __build_binary_operator(expr, pos, result):
 
     tree = operands[0]
     for operator_symbol, operand in zip(operator_symbols, operands[1:]):
-        operator = BinaryOperator.build_operator(operator_symbol)
+        operator = BinaryOperator.from_symbol(operator_symbol)
         tree = BinOp(operator, tree, operand)
 
     return tree
 
 
-binary_operators = OPERATORS_MAP.get_precedence_list(__build_binary_operator)
+operators = OPERATORS_MAP.get_precedence_list(__build_unary_operator,
+                                              __build_binary_operator)
 
 # Function call
 arguments_list_call = pOptional(delimitedList(expression)) \
@@ -263,7 +275,7 @@ function_call_no_paren = (StringStart() + member_access + arguments_list_call
 
 terminal = (literal | function_call_paren | member_access)
 expression << infixNotation(
-    terminal, binary_operators, lpar=lparen, rpar=rparen) \
+    terminal, operators, lpar=lparen, rpar=rparen) \
     .setName('expression')
 expression_statement = (function_call_no_paren | expression) \
     .setName("expression_statement")
@@ -289,16 +301,22 @@ variable_assignment = (pOptional(let_kw | set_kw) + identifier
     .setName("var assign")
 
 # Function
-procedure_header = (sub_kw + identifier
-                    + pOptional(lparen + arguments_list_def + rparen)) \
+procedure_scope = global_kw | public_kw | private_kw | friend_kw
+
+procedure_header = (pOptional(procedure_scope) + pOptional(static_kw) + sub_kw
+                    + identifier
+                    + pOptional(lparen + arguments_list_def + rparen)
+                    + pOptional(static_kw)) \
     .setParseAction(lambda r: ProcDefHeader(*r)) \
     .setName("proc header")
 procedure_footer = (end_kw + sub_kw) \
     .setParseAction(lambda r: ProcDefFooter()) \
     .setName("proc footer")
 
-function_header = (function_kw + identifier
-                   + pOptional(lparen + arguments_list_def + rparen)) \
+function_header = (pOptional(procedure_scope) + pOptional(static_kw)
+                   + function_kw + identifier
+                   + pOptional(lparen + arguments_list_def + rparen)
+                   + pOptional(as_kw + Suppress(variable_type))) \
     .setParseAction(lambda r: FunDefHeader(*r)) \
     .setName("function header")
 function_footer = (end_kw + function_kw) \
@@ -334,7 +352,11 @@ elseif_header = (elseif_kw + expression + pOptional(then_kw)) \
 else_header = else_kw.setParseAction(lambda r: ElseHeader())
 if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
 
-conditional_statement = if_header | elseif_header | else_header | if_footer
+if_oneliner = (if_kw + expression + then_kw + statement) \
+    .setParseAction(lambda r: If(condition=r[0], body=[r[1]]))
+
+conditional_statement = (if_oneliner | if_header | elseif_header | else_header
+                         | if_footer)
 
 
 ####################
@@ -383,7 +405,7 @@ class Parser:
         for instruction in instructions:
             if instruction.instruction.strip() != '':
                 parsed_instruction = self.__parse_instruction(instruction)
-                if isinstance(parsed_instruction, Statement):
+                if isinstance(parsed_instruction, (Statement, Block)):
                     self.__handle_statement(parsed_instruction)
                 elif isinstance(parsed_instruction, BlockElement):
                     self.__handle_block_element(parsed_instruction)

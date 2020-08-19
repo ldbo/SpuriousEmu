@@ -9,3 +9,6 @@ f
 obj1.member1 + obj1.member2
 o1.o2.m3().v4.m5(1, 2, 3) + f1().v2.v3
 obj.Write(plt.Read)
+Not True
+Not Not (a Or b) And (c Xor b)
+Not a <= b

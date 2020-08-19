@@ -185,9 +185,9 @@ def dynamic_analysis(arguments):
     # Load and execute
     program = compile_input_file(arguments.input)
     report = execute_program(program, arguments.entry)
-    clean_report = {key: value for key, value in report.to_dict().items()
-                    if key != 'file'}
-    clean_report.update({'file': list(report.files.keys())})
+    clean_report = report.to_dict()
+    clean_report['file'] = [event for event in clean_report['file']
+                            if event['type'] != 'Write']
 
     pprint(clean_report)
 
