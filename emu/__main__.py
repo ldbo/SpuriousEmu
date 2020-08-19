@@ -28,17 +28,16 @@ def build_argparser():
         title="Mode",
         description="You must choose a mode for SpuriousEmu to operate in.",
         required=True)
+    parser.add_argument(
+        "input",
+        help="Input file, can be an Office document, some VBA source files, "
+             "or various SpuriousEmu output files")
 
     # Static analysis
     static_parser = subparsers.add_parser(
         'static',
         help="Static analysis, allows symbols preview, compilation and "
              "deobfuscation")
-    static_parser.add_argument(
-        "-i", "--input",
-        required=True,
-        help="Input file, either a VBA source file or project, an Office "
-             "document or a SpuriousEmu compiled file")
     static_parser.add_argument(
         '-o', '--output',
         help="Output file, used to save the compilation result or the "
@@ -58,9 +57,6 @@ def build_argparser():
     dynamic_parser = subparsers.add_parser(
         'dynamic',
         help="Dynamic analysis used to perform different kind of sandboxing.")
-    dynamic_parser.add_argument(
-        "-i", "--input",
-        help="Input file")
     dynamic_parser.add_argument(
         "-e", "--entry",
         default='Main',
