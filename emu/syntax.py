@@ -352,7 +352,11 @@ elseif_header = (elseif_kw + expression + pOptional(then_kw)) \
 else_header = else_kw.setParseAction(lambda r: ElseHeader())
 if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
 
-conditional_statement = if_header | elseif_header | else_header | if_footer
+if_oneliner = (if_kw + expression + then_kw + statement) \
+    .setParseAction(lambda r: If(condition=r[0], body=[r[1]]))
+
+conditional_statement = (if_oneliner | if_header | elseif_header | else_header
+                         | if_footer)
 
 
 ####################
@@ -401,7 +405,7 @@ class Parser:
         for instruction in instructions:
             if instruction.instruction.strip() != '':
                 parsed_instruction = self.__parse_instruction(instruction)
-                if isinstance(parsed_instruction, Statement):
+                if isinstance(parsed_instruction, (Statement, Block)):
                     self.__handle_statement(parsed_instruction)
                 elif isinstance(parsed_instruction, BlockElement):
                     self.__handle_block_element(parsed_instruction)

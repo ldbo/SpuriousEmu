@@ -27,3 +27,5 @@ Else
     print var5
     print var6
 End If
+
+If condition Then action()
