@@ -14,11 +14,15 @@ from oletools.olevba import VBA_Parser
 
 from prettytable import PrettyTable
 
-from emu import Program, Compiler, Interpreter, Unit
+from emu import Program, Compiler, Interpreter, Unit, __version__
 
 
 def build_argparser():
     parser = ArgumentParser()
+    parser.add_argument(
+        "-v", "--version",
+        action='version',
+        version=f"SpuriousEmu v{__version__}")
     subparsers = parser.add_subparsers(
         dest="mode",
         title="Mode",
