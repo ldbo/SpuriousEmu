@@ -227,6 +227,17 @@ member_access = (
 
 
 # Operator
+def __build_unary_operator(expr, pos, result):
+    tokens = result[0].asList()
+    assert(len(tokens) == 2)
+    operator_symbol = tokens[0]
+    operand = tokens[1]
+
+    operator = Operator.from_symbol(operator_symbol)
+    tree =  UnOp(operator, operand)
+
+    return tree
+
 def __build_binary_operator(expr, pos, result):
     tokens = result[0].asList()
     operator_symbols = tokens[1::2]
@@ -234,13 +245,14 @@ def __build_binary_operator(expr, pos, result):
 
     tree = operands[0]
     for operator_symbol, operand in zip(operator_symbols, operands[1:]):
-        operator = BinaryOperator.build_operator(operator_symbol)
+        operator = BinaryOperator.from_symbol(operator_symbol)
         tree = BinOp(operator, tree, operand)
 
     return tree
 
 
-binary_operators = OPERATORS_MAP.get_precedence_list(__build_binary_operator)
+operators = OPERATORS_MAP.get_precedence_list(__build_unary_operator,
+                                              __build_binary_operator)
 
 # Function call
 arguments_list_call = pOptional(delimitedList(expression)) \
@@ -263,7 +275,7 @@ function_call_no_paren = (StringStart() + member_access + arguments_list_call
 
 terminal = (literal | function_call_paren | member_access)
 expression << infixNotation(
-    terminal, binary_operators, lpar=lparen, rpar=rparen) \
+    terminal, operators, lpar=lparen, rpar=rparen) \
     .setName('expression')
 expression_statement = (function_call_no_paren | expression) \
     .setName("expression_statement")
