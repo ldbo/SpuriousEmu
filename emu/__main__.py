@@ -18,7 +18,9 @@ from emu import Program, Compiler, Interpreter, Unit, __version__
 
 
 def build_argparser():
-    parser = ArgumentParser()
+    parser = ArgumentParser(
+        description="VBA static and dynamic analysis tool for malware analysts"
+    )
     parser.add_argument(
         "-v", "--version",
         action='version',
