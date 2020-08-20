@@ -311,8 +311,7 @@ class Interpreter(Visitor):
         self._memory.set_variable(counter_name, start_value)
         while keep_going():
             self.visit_Block(loop)
-            add_expression = BinOp(OPERATORS_MAP['+'],
-                                   loop.counter, step_literal)
+            add_expression = BinOp('+', loop.counter, step_literal)
             new_counter_value = self.evaluate(add_expression)
             self._memory.set_variable(counter_name, new_counter_value)
 
