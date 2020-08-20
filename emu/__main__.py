@@ -213,7 +213,7 @@ def dynamic_analysis(arguments):
         Serializer.save(outside_world, arguments.results)
 
     # Produce timeline table report
-    report_generator = ReportGenerator(outside_world)
+    report_generator = ReportGenerator(outside_world=outside_world)
     report_generator.output_format = report_generator.Format.TABLE
     print(report_generator.produce_timeline())
 

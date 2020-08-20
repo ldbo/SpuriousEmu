@@ -6,11 +6,38 @@ from dataclasses import dataclass, field
 from enum import Enum
 from hashlib import md5
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import Any, List, Optional, Tuple
 
 from prettytable import PrettyTable
 
 from .side_effect import OutsideWorld
+from .compiler import Program
+
+
+def _needs_outside_world(method):
+    error_msg = "ReportGenerator needs an OutsideWorld object to call " \
+        f"{method.__name__}"
+
+    def decorated(*args, **kwargs):
+        if args[0].outside_world is None:
+            raise RuntimeError(error_msg)
+
+        return method(*args, **kwargs)
+
+    return decorated
+
+
+def _needs_program(method):
+    error_msg = "ReportGenerator needs a Program object to call " \
+        f"{method.__name__}"
+
+    def decorated(*args, **kwargs):
+        if args[0].program is None:
+            raise RuntimeError(error_msg)
+
+        return method(*args, **kwargs)
+
+    return decorated
 
 
 @dataclass
@@ -30,13 +57,15 @@ class ReportGenerator:
 
     EventLine = Tuple[int, float, str, str, Any]
 
-    outside_world: OutsideWorld
+    outside_world: Optional[OutsideWorld] = None
+    program: Optional[Program] = None
     output_format: "ReportGenerator.Format" = field(default=Format.JSON)
     indent: int = 4
     reproducible: bool = False
     skip_identical: bool = False
     hash_algorithm = md5
 
+    @_needs_outside_world
     def extract_timeline(self) -> List["ReportGenerator.EventLine"]:
         """
         Return the chronological list of events, as tuples with elements
@@ -54,6 +83,7 @@ class ReportGenerator:
 
         return timeline
 
+    @_needs_outside_world
     def produce_timeline(self) -> Any:
         """Return the formatted timeline."""
         timeline = self.extract_timeline()
@@ -69,6 +99,7 @@ class ReportGenerator:
 
             return table.get_string()
 
+    @_needs_outside_world
     def extract_files(self, save_directory: str) -> None:
         """
         Extract the content added to the OutsideWorld files, and write it to
@@ -102,3 +133,4 @@ class ReportGenerator:
         hasher.update(content.encode('utf-8'))
 
         return hasher.hexdigest()
+
