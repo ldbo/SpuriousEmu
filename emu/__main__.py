@@ -80,6 +80,10 @@ def build_argparser():
     )
     report_action = report_parser.add_mutually_exclusive_group(required=True)
     report_action.add_argument(
+        '-y', '--symbols',
+        action="store_true",
+        help="Display the list of functions and classes of a .spemu-com file")
+    report_action.add_argument(
         "-x", "--extract-files",
         metavar="DIR",
         help="""Extract files from a dynamic analysis report to DIR. Defaults
@@ -251,6 +255,12 @@ def generate_report(arguments):
     report_generator.skip_similar = arguments.skip_streak
 
     # Produce report
+    if arguments.symbols:
+        if not format_specified:
+            report_generator.output_format = report_generator.Format.TABLE
+
+        print(report_generator.produce_symbols())
+
     if arguments.extract_files is not None:
         report_generator.extract_files(arguments.extract_files)
 
