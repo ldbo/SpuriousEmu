@@ -8,8 +8,6 @@ from magic import from_buffer as magic_from_buffer
 
 from oletools.olevba import VBA_Parser
 
-from prettytable import PrettyTable
-
 from emu import (Program, Compiler, Interpreter, Unit, __version__,
                  ReportGenerator, Serializer, SerializationError)
 
@@ -156,18 +154,6 @@ def save_compiled_program(program: Program, path: str) -> None:
     serializer.save(program, path)
 
 
-def display_functions(program: Program) -> None:
-    functions = PrettyTable()
-    functions.add_column('Functions', program.to_dict()['memory']['functions'],
-                         align='l')
-
-    classes = PrettyTable()
-    classes.add_column('Classes', program.to_dict()['memory']['classes'],
-                       align='l')
-
-    print(f"{functions}\n\n{classes}")
-
-
 def static_analysis(arguments):
     # Check arguments validity
     if not Path(arguments.input).exists():
@@ -184,7 +170,11 @@ def static_analysis(arguments):
 
     # Compile program
     program = compile_input_file(arguments.input)
-    display_functions(program)
+
+    # Display symbols
+    report_generator = ReportGenerator(program=program)
+    report_generator.output_format = ReportGenerator.Format.TABLE
+    print(report_generator.produce_symbols())
 
     if arguments.output is not None:
         save_compiled_program(program, arguments.output)

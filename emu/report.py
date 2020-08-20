@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from hashlib import md5
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from prettytable import PrettyTable
 
@@ -57,13 +57,58 @@ class ReportGenerator:
 
     EventLine = Tuple[int, float, str, str, Any]
 
-    outside_world: Optional[OutsideWorld] = None
     program: Optional[Program] = None
+    outside_world: Optional[OutsideWorld] = None
     output_format: "ReportGenerator.Format" = field(default=Format.JSON)
     indent: int = 4
     reproducible: bool = False
     skip_identical: bool = False
     hash_algorithm = md5
+
+    # Utility methods
+
+    def hash_file(self, content: str) -> str:
+        """
+        Return the hex digest of the file content encoded in UTF8, using
+        the self.hash algorithm.
+        """
+        hasher = self.hash_algorithm()
+        hasher.update(content.encode('utf-8'))
+
+        return hasher.hexdigest()
+
+    def to_json(self, report: Any) -> str:
+        """Return the JSON dump of the report."""
+        return json.dumps(report, indent=self.indent, sort_keys=True)
+
+    # Program reports
+
+    @_needs_program
+    def extract_symbols(self) -> Dict[str, List[str]]:
+        """Returns a dictionnary with 'functions' and 'classes' keys."""
+        memory_dict = self.program.to_dict()['memory']
+        functions = memory_dict['functions']
+        classes = memory_dict['classes']
+
+        return {'functions': functions, 'classes': classes}
+
+    @_needs_program
+    def produce_symbols(self) -> str:
+        """Returns the formatted symbols : classes and functions."""
+        symbols = self.extract_symbols()
+
+        if self.output_format is ReportGenerator.Format.JSON:
+            return self.to_json(symbols)
+        elif self.output_format is ReportGenerator.Format.TABLE:
+            classes = PrettyTable()
+            classes.add_column("Classes", symbols['classes'], align="l")
+
+            functions = PrettyTable()
+            functions.add_column("Functions", symbols['functions'], align='l')
+
+            return f"{classes}\n\n{functions}"
+
+    # OutsideWorld reports
 
     @_needs_outside_world
     def extract_timeline(self) -> List["ReportGenerator.EventLine"]:
@@ -84,7 +129,7 @@ class ReportGenerator:
         return timeline
 
     @_needs_outside_world
-    def produce_timeline(self) -> Any:
+    def produce_timeline(self) -> str:
         """Return the formatted timeline."""
         timeline = self.extract_timeline()
 
@@ -123,14 +168,3 @@ class ReportGenerator:
 
             with open(filename_path.absolute(), 'w') as f:
                 f.write(name)
-
-    def hash_file(self, content: str) -> str:
-        """
-        Return the hex digest of the file content encoded in UTF8, using
-        the self.hash algorithm.
-        """
-        hasher = self.hash_algorithm()
-        hasher.update(content.encode('utf-8'))
-
-        return hasher.hexdigest()
-
