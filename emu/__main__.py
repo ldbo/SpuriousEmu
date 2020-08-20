@@ -9,7 +9,7 @@ from magic import from_buffer as magic_from_buffer
 from oletools.olevba import VBA_Parser
 
 from emu import (Program, Compiler, Interpreter, Unit, __version__,
-                 ReportGenerator, Serializer, SerializationError)
+                 OutsideWorld, ReportGenerator, Serializer, SerializationError)
 
 
 def build_argparser():
@@ -82,7 +82,6 @@ def build_argparser():
     report_action.add_argument(
         "-x", "--extract-files",
         metavar="DIR",
-        dest="destination_directory",
         help="""Extract files from a dynamic analysis report to DIR. Defaults
                 to --table""")
     report_action.add_argument(
@@ -90,7 +89,7 @@ def build_argparser():
         action="store_true",
         help="Display the event timeline. Defaults to --table")
     report_action.add_argument(
-        "-c", "--category",
+        "-c", "--categories",
         action="store_true",
         help="Display all the events, grouped by category. Defaults to --json")
     report_format = report_parser.add_mutually_exclusive_group()
@@ -107,9 +106,19 @@ def build_argparser():
         action="store_true",
         help="Use human-friendly output")
     report_parser.add_argument(
+        '-s', '--shorten',
+        action="store_true",
+        help="Used with --table, produces shorter tables")
+    report_parser.add_argument(
+        '-k', '--skip-streak',
+        type=int,
+        metavar="LENGTH",
+        help="""Used with --shorten and --table, only display the first
+                elements of a series of similar events""")
+    report_parser.add_argument(
         "input",
         help="Dynamic result file to use")
-    report_format.set_defaults(func=generate_report)
+    report_parser.set_defaults(func=generate_report)
 
     return parser
 
@@ -212,7 +221,51 @@ def dynamic_analysis(arguments):
 
 
 def generate_report(arguments):
-    print("report command is not handled yet.")
+    # Check input
+    if not Path(arguments.input).exists():
+        print(f"Error: input file {arguments.input} does not exist.")
+        return 1
+
+    # Prepare report generator
+    result = Serializer.load(arguments.input)
+
+    if isinstance(result, Program):
+        report_generator = ReportGenerator(program=result)
+    elif isinstance(result, OutsideWorld):
+        report_generator = ReportGenerator(outside_world=result)
+    else:
+        print("Report generation is not yet supported for type "
+              f"{type(result)}")
+
+    format_specified = True
+    if arguments.json:
+        report_generator.output_format = report_generator.Format.JSON
+    elif arguments.csv:
+        report_generator.output_format = report_generator.Format.CSV
+    elif arguments.table:
+        report_generator.output_format = report_generator.Format.TABLE
+    else:
+        format_specified = False
+
+    report_generator.shorten = arguments.shorten
+    report_generator.skip_similar = arguments.skip_streak
+
+    # Produce report
+    if arguments.extract_files is not None:
+        report_generator.extract_files(arguments.extract_files)
+
+    if arguments.timeline:
+        if not format_specified:
+            report_generator.output_format = report_generator.Format.TABLE
+
+        print(report_generator.produce_timeline())
+
+    if arguments.categories:
+        if not format_specified:
+            report_generator.output_format = report_generator.Format.JSON
+
+        print(report_generator.produce_organized_events())
+
     return 1
 
 
