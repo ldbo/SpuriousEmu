@@ -8,7 +8,7 @@ from .compiler import Program
 from .error import InterpretationError, ResolutionError
 from .reference import Reference, Environment, Variable, FunctionReference
 from .side_effect import Memory, OutsideWorld
-from .operator import OPERATORS_MAP
+from .operator import OPERATORS_MAP, Operator
 from .value import Value, Integer, Object
 from .visitor import Visitor
 
@@ -238,14 +238,14 @@ class Interpreter(Visitor):
 
     def visit_UnOp(self, un_op: UnOp) -> None:
         arg_value = self.evaluate(un_op.argument)
-        op = un_op.operator
+        op = Operator.from_symbol(un_op.operator)
         self._evaluation = op.operate(arg_value)
 
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)
         right_value = self.evaluate(bin_op.right)
 
-        op = bin_op.operator
+        op = Operator.from_symbol(bin_op.operator)
         self._evaluation = op.operate(left_value, right_value)
 
     def visit_FunCall(self, fun_call: FunCall) -> None:

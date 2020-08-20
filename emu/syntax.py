@@ -10,7 +10,7 @@ from pyparsing import Optional as pOptional
 
 from .abstract_syntax_tree import *
 from .error import ParsingError
-from .operator import *
+from .operator import OPERATORS_MAP
 from .partial_block import *
 from .preprocessor import Instruction, Preprocessor
 from .type import Type, types
@@ -233,10 +233,10 @@ def __build_unary_operator(expr, pos, result):
     operator_symbol = tokens[0]
     operand = tokens[1]
 
-    operator = Operator.from_symbol(operator_symbol)
-    tree =  UnOp(operator, operand)
+    tree = UnOp(operator_symbol, operand)
 
     return tree
+
 
 def __build_binary_operator(expr, pos, result):
     tokens = result[0].asList()
@@ -245,8 +245,7 @@ def __build_binary_operator(expr, pos, result):
 
     tree = operands[0]
     for operator_symbol, operand in zip(operator_symbols, operands[1:]):
-        operator = BinaryOperator.from_symbol(operator_symbol)
-        tree = BinOp(operator, tree, operand)
+        tree = BinOp(operator_symbol, tree, operand)
 
     return tree
 
