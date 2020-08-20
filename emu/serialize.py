@@ -45,18 +45,21 @@ class Serializer:
         return magic + body
 
     @classmethod
-    def save(cls, obj: SerializableType, save_path: str) -> None:
+    def save(cls, obj: SerializableType, file_path: str) -> None:
         """
         Serialize a Python object and save it to a file, potentially overriding
         it. If the save path has no extension, add the corresponding one.
         """
-        path = Path(save_path)
+        path = Path(file_path)
+        print(path.suffix)
         if path.suffix == "":
-            save_path += cls.extension(type(obj))
+            save_path = path.parent / (path.name + cls.extension(type(obj)))
+        else:
+            save_path = path
 
         content = cls.serialize(obj)
 
-        with open(path, 'wb') as f:
+        with open(save_path, 'wb') as f:
             f.write(content)
 
     @classmethod
