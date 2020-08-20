@@ -114,7 +114,7 @@ def build_argparser():
         action="store_true",
         help="Used with --table, produces shorter tables")
     report_parser.add_argument(
-        '-k', '--skip-streak',
+        '-k', '--skip-streaks',
         type=int,
         metavar="LENGTH",
         help="""Used with --shorten and --table, only display the first
@@ -252,7 +252,7 @@ def generate_report(arguments):
         format_specified = False
 
     report_generator.shorten = arguments.shorten
-    report_generator.skip_similar = arguments.skip_streak
+    report_generator.skip_similar = arguments.skip_streaks
 
     # Produce report
     if arguments.symbols:
