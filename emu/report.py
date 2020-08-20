@@ -49,6 +49,14 @@ class ReportGenerator:
     of all the events, ...) using different formats, specified in the Format
     enumeration. You can also use it to extract generated files and save them
     to you file system.
+
+    You can customize the generated reports using the object attributes:
+        - output_format : the output format
+        - indent : Number of spaces for JSON indentation
+        - reproducible: If True, don't display event time
+        - skip_similar: If > 0, skip series of similar events in TABLE output
+        - hash_algorithm: hashing algorithm used to name files
+        - shorten: If True, shorten the context and data fields in TABLE output
     """
     class Format(Enum):
         """Display formats supported by the ReportGenerator."""
@@ -56,15 +64,16 @@ class ReportGenerator:
         CSV = 'csv'
         TABLE = 'table'
 
-    EventLine = Tuple[int, float, str, str, Any]
+    EventLine = Tuple[int, str, str, str, Any]
 
     program: Optional[Program] = None
     outside_world: Optional[OutsideWorld] = None
     output_format: "ReportGenerator.Format" = field(default=Format.JSON)
     indent: int = 4
     reproducible: bool = False
-    skip_identical: bool = False
+    skip_similar: int = 0
     hash_algorithm = md5
+    shorten = False
 
     # Utility methods
 
@@ -81,6 +90,76 @@ class ReportGenerator:
     def to_json(self, report: Any) -> str:
         """Return the JSON dump of the report."""
         return json.dumps(report, indent=self.indent, sort_keys=True)
+
+    def event_to_tuple(self, event: OutsideWorld.Event) \
+            -> "ReportGenerator.EventLine":
+        """
+        Convert an event to a tuple.
+        """
+        identifier = event.identifier
+        time = f"{event.time:.3f}"
+        category = event.category.value
+        context = event.context
+        data = event.data
+
+        return (identifier, time, category, context, data)
+
+    def shorten_tuple(self, event: "ReportGenerator.EventLine") \
+            -> "ReportGenerator.EventLine":
+        """
+        Shorten a tuple if self.shorten is True, ie. only keep context end
+        symbol and discard data['data'] if possible.
+        """
+        if not self.shorten:
+            return event
+
+        identifier = event[0]
+        time = event[1]
+        category = event[2]
+        context = event[3].split('.')[-1]
+
+        if isinstance(event[4], dict):
+            data = {key: value for key, value in event[4].items()
+                    if key != "data"}
+        else:
+            data = event[4]
+
+        return (identifier, time, category, context, data)
+
+    def similar_events(self, event1: "ReportGenerator.EventLine",
+                       event2: "ReportGenerator.EventLine") -> bool:
+        """
+        Compare two events, looking for similarities. Two events are similar
+        if:
+            - they have the same category and
+            - they have the same context
+            - they have dict data field and
+                - they have data['data'] and data['type'] fields
+                - their data['type'] fields are the same
+        """
+        category1 = event1[2]
+        category2 = event2[2]
+        if category1 != category2:
+            return False
+
+        context1 = event1[3]
+        context2 = event2[3]
+        if context1 != context2:
+            return False
+
+        data1 = event1[4]
+        data2 = event2[4]
+
+        if not isinstance(data1, dict):
+            return True
+
+        if 'data' not in data1 or 'data' not in data2:
+            return False
+
+        if 'type' not in data1 or 'type' not in data2:
+            return False
+
+        return data1['type'] == data2['type']
 
     # Program reports
 
@@ -122,14 +201,8 @@ class ReportGenerator:
         Return the chronological list of events, as tuples with elements
         identifier, time, category, context and data.
         """
-        def event_to_tuple(event: OutsideWorld.Event) \
-                -> "ReportGenerator.EventLine":
-            d = event.to_dict(self.reproducible)
-            m = map(lambda attr: d.get(attr, 0.0),
-                    ('identifier', 'time', 'category', 'context', 'data'))
-            return tuple(m)
 
-        timeline = list(map(event_to_tuple, self.outside_world.events))
+        timeline = list(map(self.event_to_tuple, self.outside_world.events))
         timeline.sort()
 
         return timeline
@@ -142,12 +215,34 @@ class ReportGenerator:
         if self.output_format is ReportGenerator.Format.JSON:
             return json.dumps(timeline, indent=self.indent, sort_keys=True)
         elif self.output_format is ReportGenerator.Format.TABLE:
-            fields = ('ID', 'Time', 'Category', 'Context', 'Data')
+            fields = ('ID', 'Time (s)', 'Category', 'Context', 'Data')
             table = PrettyTable(fields)
             table.align = 'l'
-            for event_tuple in timeline:
-                table.add_row(event_tuple)
 
+            similar_events_streak = 0
+            previous_event_tuple = None
+
+            for event_tuple in timeline:
+                if previous_event_tuple is not None:
+                    if self.similar_events(previous_event_tuple, event_tuple):
+                        similar_events_streak += 1
+                    else:
+                        if similar_events_streak > self.skip_similar + 1:
+                            table.add_row(('...', ) * 5)
+
+                        if similar_events_streak > 1:
+                            table.add_row(
+                                self.shorten_tuple(previous_event_tuple))
+                        similar_events_streak = 0
+
+                if similar_events_streak <= self.skip_similar:
+                    table.add_row(self.shorten_tuple(event_tuple))
+
+                previous_event_tuple = event_tuple
+
+            if self.shorten:
+                return table.get_string(
+                    fields=('ID', 'Category', 'Context', 'Data'))
             return table.get_string()
 
     @_needs_outside_world

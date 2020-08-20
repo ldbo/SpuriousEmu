@@ -196,6 +196,8 @@ def dynamic_analysis(arguments):
     # Produce timeline table report
     report_generator = ReportGenerator(outside_world=outside_world)
     report_generator.output_format = report_generator.Format.TABLE
+    report_generator.shorten = True
+    report_generator.skip_similar = 3
     print(report_generator.produce_timeline())
 
     # Export whole analysis
