@@ -66,7 +66,7 @@ def build_argparser():
                 Main function is defined. Must use the absolute path of the
                 symbol""")
     dynamic_parser.add_argument(
-        "-r", "--report",
+        "-r", "--results",
         help="Save the analysis results to REPORT")
     dynamic_parser.add_argument(
         "-o", "--output",
