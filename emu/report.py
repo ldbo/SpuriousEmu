@@ -1,9 +1,11 @@
 """Tools to generate reports based on analysis results."""
 
+import csv
 import json
 
 from dataclasses import dataclass, field
 from enum import Enum
+from io import StringIO
 from hashlib import md5
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -206,6 +208,20 @@ class ReportGenerator:
 
         return table
 
+    def events_to_csv(self, events: List["ReportGenerator.EventLine"]) -> str:
+        """Return a CSV formatted representation of a list of events."""
+        stream = StringIO()
+        writer = csv.writer(stream,
+                            delimiter=";",
+                            quoting=csv.QUOTE_NONNUMERIC)
+
+        writer.writerow(('ID', 'Time (s)', 'Category', 'Context', 'Data'))
+
+        for event in events:
+            writer.writerow(event)
+
+        return stream.getvalue()
+
     # Program reports
 
     @_needs_program
@@ -224,6 +240,8 @@ class ReportGenerator:
 
         if self.output_format is ReportGenerator.Format.JSON:
             return self.to_json(symbols)
+        if self.output_format is ReportGenerator.Format.CSV:
+            return "CSV not supported"
         elif self.output_format is ReportGenerator.Format.TABLE:
             classes = PrettyTable()
             classes.add_column("Classes", symbols['classes'], align="l")
@@ -240,6 +258,7 @@ class ReportGenerator:
 
     # OutsideWorld reports
 
+    # TODO return a list of Events, to ease JSON output
     @_needs_outside_world
     def extract_timeline(self) -> List["ReportGenerator.EventLine"]:
         """
@@ -259,6 +278,8 @@ class ReportGenerator:
 
         if self.output_format is ReportGenerator.Format.JSON:
             return json.dumps(timeline, indent=self.indent, sort_keys=True)
+        elif self.output_format is ReportGenerator.Format.CSV:
+            return self.events_to_csv(timeline)
         elif self.output_format is ReportGenerator.Format.TABLE:
             table = self.events_to_table(timeline)
 
