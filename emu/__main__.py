@@ -225,10 +225,6 @@ def dynamic_analysis(arguments):
         print(f"Error: input file {arguments.input} does not exist.")
         return 1
 
-    if arguments.output is not None and Path(arguments.output).exists():
-        print(f"Error: {arguments.output} exists.")
-        return 1
-
     # Load and execute
     program = compile_input_file(arguments.input)
     outside_world = execute_program(program, arguments.entry)
