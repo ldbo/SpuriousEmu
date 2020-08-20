@@ -132,7 +132,7 @@ class Interpreter(Visitor):
             def hook(*args, **kwargs):
                 pass
 
-        self._outside_world.add_hook(OutsideWorld.EventType.STDOUT, hook)
+        self._outside_world.add_hook(OutsideWorld.Event.Category.STDOUT, hook)
 
     # Internal interface
 
@@ -376,11 +376,15 @@ class Interpreter(Visitor):
 
     # External functions interface
     def add_stdout(self, content: str) -> None:
-        self._outside_world.add_event(OutsideWorld.EventType.STDOUT, content)
+        self._outside_world.add_event(
+            OutsideWorld.Event.Category.STDOUT,
+            str(self._resolver._current_reference),
+            content)
 
     def add_command_execution(self, command: str) -> None:
         self._outside_world.add_event(
-            OutsideWorld.EventType.EXECUTION,
+            OutsideWorld.Event.Category.EXECUTION,
+            str(self._resolver._current_reference),
             command
         )
 
@@ -389,7 +393,10 @@ class Interpreter(Visitor):
         event = {'type': event_type, 'path': path}
         if data is not None:
             event['data'] = data
-        self._outside_world.add_event(OutsideWorld.EventType.FILE, event)
+        self._outside_world.add_event(
+            OutsideWorld.Event.Category.FILESYSTEM,
+            str(self._resolver._current_reference),
+            event)
 
     def add_network_event(self, *args, **kwargs) -> None:
         # TODO

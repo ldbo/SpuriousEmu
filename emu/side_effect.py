@@ -2,8 +2,9 @@
 
 from dataclasses import dataclass
 from enum import Enum
+from itertools import count
 from time import time
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Iterator
 
 from .function import Function
 from .value import Value
@@ -65,49 +66,101 @@ class Memory:
 
 # TODO test hooks
 class OutsideWorld:
-    class EventType(Enum):
-        STDOUT = "stdout"
-        FILE = "file"
-        NETWORK = "network"
-        EXECUTION = "execution"
-
+    """
+    Represent the interaction between a running program and an emulated
+    exterior environment.
+    """
     @dataclass
     class Event:
+        """
+        Class used to record usefull events. It stores its category, the
+        occuring time and a corresponding identifier, its context (the name of
+        the symbol that triggered the event), and a data field, which depends
+        on the event category.
+        """
+        class Category(Enum):
+            STDOUT = "stdout"
+            FILESYSTEM = "filesystem"
+            NETWORK = "network"
+            EXECUTION = "execution"
+            ENVIRONMENT = "environment"
+
+        identifier: int
         time: float
+        category: "OutsideWorld.Event.Category"
+        context: str
         data: Any
 
-        def to_dict(self) -> Dict[str, Any]:
-            return self.data
+        def to_dict(self, reproducible: bool = False) -> Dict[str, Any]:
+            """
+            Return the dict of the event attributes.
 
-    __events: Dict["OutsideWorld.EventType", List[Any]]
-    __hooks: Dict["OutsideWorld.EventType", Callable[[Any], None]]
+            :arg reproducible: If True, don't add the time field
+            :returns: The event attributes
+            """
+            d = {
+                "identifier": self.identifier,
+                "category": self.category.value,
+                "context": self.context,
+                "data": self.data,
+            }
+
+            if not reproducible:
+                d["time"] = self.time
+
+            return d
+
     __start_time: float
+    __events_count: Iterator[int]
+    __hooks: Dict["OutsideWorld.Event.Category",
+                  Callable[["OutsideWorld.Event"], None]]
+    events: List["OutsideWorld.Event"]
     files: Dict[str, str]
 
     def __init__(self) -> None:
-        self.__events = {event_type: []
-                         for event_type in OutsideWorld.EventType}
-        self.__hooks = {event_type: lambda t: None
-                        for event_type in OutsideWorld.EventType}
         self.__start_time = time()
+        self.__events_count = count()
+        self.__hooks = {event_category: (lambda t: None)
+                        for event_category in OutsideWorld.Event.Category}
+        self.events = []
         self.files = dict()
 
-    def add_event(self, event_type: "OutsideWorld.EventType", data: Any) \
-            -> None:
-        self.__hooks[event_type](data)
+    def add_event(self, category: "OutsideWorld.Event.Category", context: str,
+                  data: Any) -> None:
+        """
+        Record a new event, calling the corresponding hook.
+        """
         t = time() - self.__start_time
-        self.__events[event_type].append(OutsideWorld.Event(t, data))
+        identifier = next(self.__events_count)
+        event = OutsideWorld.Event(identifier, t, category, context, data)
 
-        if event_type is OutsideWorld.EventType.FILE:
+        self.events.append(event)
+        self.__hooks[category](event)
+
+        if category is OutsideWorld.Event.Category.FILESYSTEM:
             if data['type'] == 'Write':
-                content = self.files.get(data['path'], "")
-                self.files[data['path']] = content + data['data']
+                path = data['path']
+                content = self.files.get(path, "")
+                self.files[path] = content + data['data']
 
-    def to_dict(self) -> Dict[str, List[Any]]:
-        return {event_type.value: [e.to_dict()
-                                   for e in self.__events[event_type]]
-                for event_type in OutsideWorld.EventType}
+    def to_dict(self, reproducible: bool = False) -> Dict[str, Any]:
+        """
+        Return the list of events and files in a dict.
 
-    def add_hook(self, event_type: "OutsideWorld.EventType",
-                 hook: Callable[[Any], None]) -> None:
-        self.__hooks[event_type] = hook
+        :arg reproducible: If True, discard the time field of the events
+        :returns: A dict with keys 'events' and 'files'
+        """
+        d: Dict[str, Any] = dict()
+        d['events'] = [event.to_dict(reproducible)
+                       for event in self.events]
+        d['files'] = self.files
+
+        return d
+
+    def add_hook(self, category: "OutsideWorld.Event.Category",
+                 hook: Callable[["OutsideWorld.Event"], None]) -> None:
+        """
+        Add a hook that will be called for each recording of a given event
+        category.
+        """
+        self.__hooks[category] = hook
