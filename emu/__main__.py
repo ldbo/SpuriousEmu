@@ -3,7 +3,6 @@
 from argparse import ArgumentParser
 from hashlib import md5
 from pathlib import Path
-from pprint import pprint
 from sys import exit
 from typing import Dict
 
@@ -13,8 +12,8 @@ from oletools.olevba import VBA_Parser
 
 from prettytable import PrettyTable
 
-from emu import (Program, Compiler, Interpreter, Unit, __version__, Serializer,
-                 SerializationError)
+from emu import (Program, Compiler, Interpreter, Unit, __version__,
+                 ReportGenerator, Serializer, SerializationError)
 
 
 def build_argparser():
@@ -232,15 +231,20 @@ def dynamic_analysis(arguments):
 
     # Load and execute
     program = compile_input_file(arguments.input)
-    report = execute_program(program, arguments.entry)
-    clean_report = report.to_dict()
-    clean_report['file'] = [event for event in clean_report['file']
-                            if event['type'] != 'Write']
+    outside_world = execute_program(program, arguments.entry)
 
-    pprint(clean_report)
+    # Export whole analysis
+    if arguments.results is not None:
+        Serializer.save(outside_world, arguments.results)
 
+    # Produce timeline table report
+    report_generator = ReportGenerator(outside_world)
+    report_generator.output_format = report_generator.Format.TABLE
+    print(report_generator.produce_timeline())
+
+    # Save created files
     if arguments.output is not None:
-        save_files(arguments.output, report.files)
+        save_files(arguments.output, outside_world.files)
 
     return 0
 
