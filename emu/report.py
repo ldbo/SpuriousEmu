@@ -4,6 +4,8 @@ import json
 
 from dataclasses import dataclass, field
 from enum import Enum
+from hashlib import md5
+from pathlib import Path
 from typing import Any, List, Tuple
 
 from prettytable import PrettyTable
@@ -33,6 +35,7 @@ class ReportGenerator:
     indent: int = 4
     reproducible: bool = False
     skip_identical: bool = False
+    hash_algorithm = md5
 
     def extract_timeline(self) -> List["ReportGenerator.EventLine"]:
         """
@@ -65,3 +68,37 @@ class ReportGenerator:
                 table.add_row(event_tuple)
 
             return table.get_string()
+
+    def extract_files(self, save_directory: str) -> None:
+        """
+        Extract the content added to the OutsideWorld files, and write it to
+        the actual filesystem. It uses the following convention: for each
+        file that exists in OutsideWorld, with md5 sum `hash`, write to
+        `hash` the content of the file, and to `hash.filename.txt` its name. In
+        case of filename conflict, overrides the file.
+
+        :arg save_directory: Output directory, created if it does not exist.
+        """
+        path = Path(save_directory)
+        path.mkdir(exist_ok=True)
+
+        for name, content in self.outside_world.files.items():
+            content_hash = self.hash_file(content)
+            content_path = path.joinpath(content_hash)
+            filename_path = path.joinpath(f'{content_hash}.filename.txt')
+
+            with open(content_path.absolute(), 'w') as f:
+                f.write(content)
+
+            with open(filename_path.absolute(), 'w') as f:
+                f.write(name)
+
+    def hash_file(self, content: str) -> str:
+        """
+        Return the hex digest of the file content encoded in UTF8, using
+        the self.hash algorithm.
+        """
+        hasher = self.hash_algorithm()
+        hasher.update(content.encode('utf-8'))
+
+        return hasher.hexdigest()

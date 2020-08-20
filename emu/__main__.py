@@ -1,10 +1,8 @@
 #! /usr/bin/env python
 
 from argparse import ArgumentParser
-from hashlib import md5
 from pathlib import Path
 from sys import exit
-from typing import Dict
 
 from magic import from_buffer as magic_from_buffer
 
@@ -200,25 +198,6 @@ def execute_program(program: Program, entry_point: str) -> None:
     return Interpreter.run_program(linked_program, entry_point)
 
 
-def save_files(directory: str, files: Dict[str, str]) -> None:
-    directory_path = Path(directory)
-    directory_path.mkdir()
-
-    for name, content in files.items():
-        hasher = md5()
-        hasher.update(content.encode('utf-8'))
-        digest = hasher.hexdigest()
-        content_path = directory_path.joinpath(digest)
-
-        with open(content_path.absolute(), 'w') as f:
-            f.write(content)
-
-        name_path = directory_path.joinpath(f"{digest}.filename.txt")
-
-        with open(name_path.absolute(), "w") as f:
-            f.write(name)
-
-
 def dynamic_analysis(arguments):
     # Check arguments validity
     if not Path(arguments.input).exists():
@@ -240,7 +219,7 @@ def dynamic_analysis(arguments):
 
     # Save created files
     if arguments.output is not None:
-        save_files(arguments.output, outside_world.files)
+        report_generator.extract_files(arguments.output)
 
     return 0
 
