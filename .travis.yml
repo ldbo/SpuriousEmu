@@ -1,0 +1,22 @@
+dist: bionic
+
+language: python
+python:
+  - "3.8"
+  - "3.8-dev"
+  - "nightly"
+
+matrix:
+  allow_failures:
+    - python: "nightly"
+
+cache: pip
+
+before_install:
+  - pip install poetry
+
+install:
+  - poetry install -v
+
+script:
+  - poetry run nosetests
