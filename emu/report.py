@@ -227,7 +227,8 @@ class ReportGenerator:
                     if self.similar_events(previous_event_tuple, event_tuple):
                         similar_events_streak += 1
                     else:
-                        if similar_events_streak > self.skip_similar + 1:
+                        if similar_events_streak > self.skip_similar + 1 \
+                           and self.shorten:
                             table.add_row(('...', ) * 5)
 
                         if similar_events_streak > 1:
@@ -235,7 +236,8 @@ class ReportGenerator:
                                 self.shorten_tuple(previous_event_tuple))
                         similar_events_streak = 0
 
-                if similar_events_streak <= self.skip_similar:
+                if similar_events_streak <= self.skip_similar \
+                   or not self.shorten:
                     table.add_row(self.shorten_tuple(event_tuple))
 
                 previous_event_tuple = event_tuple
