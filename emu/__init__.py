@@ -7,5 +7,6 @@ from .preprocessor import Preprocessor
 from .report import ReportGenerator
 from .serialize import Serializer
 from .syntax import Parser, AST
+from .side_effect import OutsideWorld
 
 __version__ = "0.1.1"
