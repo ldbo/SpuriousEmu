@@ -9,4 +9,4 @@ from .serialize import Serializer
 from .syntax import Parser, AST
 from .side_effect import OutsideWorld
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
