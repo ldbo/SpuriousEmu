@@ -120,7 +120,7 @@ class OutsideWorld:
     def __init__(self) -> None:
         self.__start_time = time()
         self.__events_count = count()
-        self.__hooks = {event_category: (lambda t: None)
+        self.__hooks = {event_category: OutsideWorld.nop
                         for event_category in OutsideWorld.Event.Category}
         self.events = []
         self.files = dict()
@@ -162,5 +162,13 @@ class OutsideWorld:
         """
         Add a hook that will be called for each recording of a given event
         category.
+
+        Hooks should not be lambda's for OutsideWorld to be used with
+        Serializer.
         """
         self.__hooks[category] = hook
+
+    @staticmethod
+    def nop(event: "OutsideWorld.Event") -> None:
+        """Function that can be used as a hook that does nothing."""
+        pass
