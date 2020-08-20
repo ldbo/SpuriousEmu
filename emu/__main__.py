@@ -149,11 +149,6 @@ def compile_input_file(input_file: str) -> Program:
     return Compiler.compile_units(units)
 
 
-def save_compiled_program(program: Program, path: str) -> None:
-    serializer = Serializer()
-    serializer.save(program, path)
-
-
 def static_analysis(arguments):
     # Check arguments validity
     if not Path(arguments.input).exists():
@@ -177,7 +172,7 @@ def static_analysis(arguments):
     print(report_generator.produce_symbols())
 
     if arguments.output is not None:
-        save_compiled_program(program, arguments.output)
+        report_generator.save_program(arguments.output)
 
     return 0
 
@@ -198,14 +193,14 @@ def dynamic_analysis(arguments):
     program = compile_input_file(arguments.input)
     outside_world = execute_program(program, arguments.entry)
 
-    # Export whole analysis
-    if arguments.results is not None:
-        Serializer.save(outside_world, arguments.results)
-
     # Produce timeline table report
     report_generator = ReportGenerator(outside_world=outside_world)
     report_generator.output_format = report_generator.Format.TABLE
     print(report_generator.produce_timeline())
+
+    # Export whole analysis
+    if arguments.results is not None:
+        report_generator.save_outside_world(arguments.results)
 
     # Save created files
     if arguments.output is not None:

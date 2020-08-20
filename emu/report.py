@@ -10,8 +10,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from prettytable import PrettyTable
 
-from .side_effect import OutsideWorld
 from .compiler import Program
+from .side_effect import OutsideWorld
+from .serialize import Serializer
 
 
 def _needs_outside_world(method):
@@ -108,6 +109,11 @@ class ReportGenerator:
 
             return f"{classes}\n\n{functions}"
 
+    @_needs_program
+    def save_program(self, save_path: str) -> None:
+        """Save the program to save_path."""
+        Serializer.save(self.program, save_path)
+
     # OutsideWorld reports
 
     @_needs_outside_world
@@ -168,3 +174,8 @@ class ReportGenerator:
 
             with open(filename_path.absolute(), 'w') as f:
                 f.write(name)
+
+    @_needs_outside_world
+    def save_outside_world(self, save_path: str) -> None:
+        """Save the outside world to save_path."""
+        Serializer.save(self.outside_world, save_path)
