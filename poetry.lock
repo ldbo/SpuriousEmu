@@ -16,7 +16,7 @@ python-versions = "*"
 version = "0.2.0"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Version-bump your software with a single command!"
 name = "bump2version"
 optional = false
@@ -506,7 +506,7 @@ python-versions = "*"
 version = "0.5"
 
 [metadata]
-content-hash = "7abf8874a255b1639a83d88c1ff7d7909c6d04378435a3ec3a7ea42e7c014951"
+content-hash = "49cb2ad28d7c26d082ed93230a9986d0938986a1bbb2d06c4363bbee18cd4b52"
 lock-version = "1.0"
 python-versions = "^3.8"
 
