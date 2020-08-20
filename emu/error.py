@@ -48,3 +48,7 @@ class ConversionError(Exception):
 
 class ResolutionError(Exception):
     pass
+
+
+class SerializationError(Exception):
+    pass

@@ -3,7 +3,6 @@
 from argparse import ArgumentParser
 from hashlib import md5
 from pathlib import Path
-from pickle import dumps, loads
 from pprint import pprint
 from sys import exit
 from typing import Dict
@@ -14,7 +13,8 @@ from oletools.olevba import VBA_Parser
 
 from prettytable import PrettyTable
 
-from emu import Program, Compiler, Interpreter, Unit, __version__
+from emu import (Program, Compiler, Interpreter, Unit, __version__, Serializer,
+                 SerializationError)
 
 
 def build_argparser():
@@ -129,10 +129,17 @@ def compile_input_file(input_file: str) -> Program:
     with open(input_file, 'rb') as f:
         content = f.read()
 
-    if content.startswith(b'SpuriousEmuProgram'):
-        program = content[len(b'SpuriousEmuProgram'):]
-        return loads(program)
+    # Try to deserialize an already compiled program
+    try:
+        serializer = Serializer()
+        obj = serializer.deserialize(content)
 
+        if type(obj) == Program:
+            return obj
+    except SerializationError:
+        pass
+
+    # Compile an Office document or VBA source files
     units = []
     if magic_from_buffer(content, mime=True) == "text/plain":
         if not input_file.endswith('.vbs'):
@@ -148,11 +155,8 @@ def compile_input_file(input_file: str) -> Program:
 
 
 def save_compiled_program(program: Program, path: str) -> None:
-    serialized_program = dumps(program)
-
-    with open(path, 'wb') as f:
-        f.write(b'SpuriousEmuProgram')
-        f.write(serialized_program)
+    serializer = Serializer()
+    serializer.save(program, path)
 
 
 def display_functions(program: Program) -> None:
