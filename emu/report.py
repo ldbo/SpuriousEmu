@@ -161,6 +161,51 @@ class ReportGenerator:
 
         return data1['type'] == data2['type']
 
+    def events_to_table(self, events: List[OutsideWorld.Event]) -> PrettyTable:
+        """
+        Build a table containing a list of events. The table has the columns
+        ('ID', 'Time (s)', 'Category', 'Context', 'Data') and an event by row.
+
+        Depending on shorten and skip_similar, series of similar events can be
+        skiped.
+        """
+        fields = ('ID', 'Time (s)', 'Category', 'Context', 'Data')
+        table = PrettyTable(fields)
+        table.align = 'l'
+
+        similar_events_streak = 0
+        previous_event_tuple = None
+
+        for event_tuple in events:
+            if previous_event_tuple is not None:
+                if self.similar_events(previous_event_tuple, event_tuple):
+                    similar_events_streak += 1
+                else:
+                    if similar_events_streak > self.skip_similar + 1 \
+                       and self.shorten:
+                        table.add_row(('...', ) * 5)
+
+                    if similar_events_streak > 1:
+                        table.add_row(
+                            self.shorten_tuple(previous_event_tuple))
+                    similar_events_streak = 0
+
+            if similar_events_streak <= self.skip_similar \
+               or not self.shorten:
+                table.add_row(self.shorten_tuple(event_tuple))
+
+            previous_event_tuple = event_tuple
+
+        if similar_events_streak > self.skip_similar + 1 \
+           and self.shorten:
+            table.add_row(('...', ) * 5)
+
+        if similar_events_streak > 1:
+            table.add_row(
+                self.shorten_tuple(previous_event_tuple))
+
+        return table
+
     # Program reports
 
     @_needs_program
@@ -215,37 +260,54 @@ class ReportGenerator:
         if self.output_format is ReportGenerator.Format.JSON:
             return json.dumps(timeline, indent=self.indent, sort_keys=True)
         elif self.output_format is ReportGenerator.Format.TABLE:
-            fields = ('ID', 'Time (s)', 'Category', 'Context', 'Data')
-            table = PrettyTable(fields)
-            table.align = 'l'
-
-            similar_events_streak = 0
-            previous_event_tuple = None
-
-            for event_tuple in timeline:
-                if previous_event_tuple is not None:
-                    if self.similar_events(previous_event_tuple, event_tuple):
-                        similar_events_streak += 1
-                    else:
-                        if similar_events_streak > self.skip_similar + 1 \
-                           and self.shorten:
-                            table.add_row(('...', ) * 5)
-
-                        if similar_events_streak > 1:
-                            table.add_row(
-                                self.shorten_tuple(previous_event_tuple))
-                        similar_events_streak = 0
-
-                if similar_events_streak <= self.skip_similar \
-                   or not self.shorten:
-                    table.add_row(self.shorten_tuple(event_tuple))
-
-                previous_event_tuple = event_tuple
+            table = self.events_to_table(timeline)
 
             if self.shorten:
                 return table.get_string(
                     fields=('ID', 'Category', 'Context', 'Data'))
+
             return table.get_string()
+
+    @_needs_outside_world
+    def produce_organized_events(self) -> str:
+        """Return the events, organized by category."""
+        report = dict()
+
+        for event in self.outside_world.events:
+            category = event.category.value
+            event_dict = {
+                'identifier': event.identifier,
+                'time': event.time,
+                'context': event.context,
+                'data': event.data
+            }
+
+            category_list = report.get(event.category.value, [])
+            report[category] = category_list + [event_dict]
+
+        if self.output_format == ReportGenerator.Format.JSON:
+            return self.to_json(report)
+        elif self.output_format == ReportGenerator.Format.CSV:
+            return "CSV not supported yet"
+        elif self.output_format == ReportGenerator.Format.TABLE:
+            output = ""
+
+            for category in report:
+                output += f"{category}:\n"
+                events = [self.event_to_tuple(event)
+                          for event in self.outside_world.events
+                          if event.category.value == category]
+                table = self.events_to_table(events)
+
+                if self.shorten:
+                    fields = ('ID', 'Context', 'Data')
+                else:
+                    fields = ('ID', 'Time (s)', 'Context', 'Data')
+
+                output += table.get_string(fields=fields)
+                output += "\n\n"
+
+            return output
 
     @_needs_outside_world
     def extract_files(self, save_directory: str) -> None:
