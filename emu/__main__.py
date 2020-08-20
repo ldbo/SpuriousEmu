@@ -173,10 +173,6 @@ def static_analysis(arguments):
         print(f"Error: input file {arguments.input} does not exist.")
         return 1
 
-    if arguments.output is not None and Path(arguments.output).exists():
-        print(f"Error: output file {arguments.output} already exists.")
-        return 1
-
     if arguments.deobfuscate is not None:
         print(f"Error: de-obfuscation is not handled yet.")
         return 1
