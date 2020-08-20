@@ -1,0 +1,15 @@
++-----+------------+----------------+-------------------------------------------------------------------------------------------------+
+| ID  | Category   | Context        | Data                                                                                            |
++-----+------------+----------------+-------------------------------------------------------------------------------------------------+
+| 0   | filesystem | Document_Close | {'type': 'FolderExists', 'path': '%USERPROFILE\\MediaPlayer'}                                   |
+| 1   | filesystem | Document_Close | {'type': 'CreateFolder', 'path': '%USERPROFILE\\MediaPlayer'}                                   |
+| 2   | execution  | Document_Close | schtasks /Create /SC MINUTE /MO 95 /F /tn MediaPlayer /tr %USERPROFILE\MediaPlayer\PlayList.vbs |
+| 3   | filesystem | Document_Close | {'type': 'CreateTextFile', 'path': '%USERPROFILE\\MediaPlayer\\PlayList.vbs'}                   |
+| 4   | filesystem | Document_Close | {'type': 'Write', 'path': '%USERPROFILE\\MediaPlayer\\PlayList.vbs'}                            |
+| 5   | filesystem | Document_Close | {'type': 'Write', 'path': '%USERPROFILE\\MediaPlayer\\PlayList.vbs'}                            |
+| 6   | filesystem | Document_Close | {'type': 'Write', 'path': '%USERPROFILE\\MediaPlayer\\PlayList.vbs'}                            |
+| 7   | filesystem | Document_Close | {'type': 'Write', 'path': '%USERPROFILE\\MediaPlayer\\PlayList.vbs'}                            |
+| ... | ...        | ...            | ...                                                                                             |
+| 142 | filesystem | Document_Close | {'type': 'Write', 'path': '%USERPROFILE\\MediaPlayer\\PlayList.vbs'}                            |
+| 143 | execution  | Document_Close | wscript.exe //b "%USERPROFILE\MediaPlayer\PlayList.vbs"                                         |
++-----+------------+----------------+-------------------------------------------------------------------------------------------------+

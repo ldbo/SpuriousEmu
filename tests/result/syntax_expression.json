@@ -570,6 +570,97 @@
                 }
             },
             "line_number": "0"
+        },
+        {
+            "_type": "UnOp",
+            "argument": {
+                "_type": "Literal",
+                "file": "",
+                "line_number": "0",
+                "type": "Type.Boolean",
+                "value": "True"
+            },
+            "file": "",
+            "line_number": "0",
+            "operator": "Not"
+        },
+        {
+            "_type": "BinOp",
+            "file": "",
+            "left": {
+                "_type": "UnOp",
+                "argument": {
+                    "_type": "UnOp",
+                    "argument": {
+                        "_type": "BinOp",
+                        "file": "",
+                        "left": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "a"
+                        },
+                        "line_number": "0",
+                        "operator": "Or",
+                        "right": {
+                            "_type": "Identifier",
+                            "file": "",
+                            "line_number": "0",
+                            "name": "b"
+                        }
+                    },
+                    "file": "",
+                    "line_number": "0",
+                    "operator": "Not"
+                },
+                "file": "",
+                "line_number": "0",
+                "operator": "Not"
+            },
+            "line_number": "0",
+            "operator": "And",
+            "right": {
+                "_type": "BinOp",
+                "file": "",
+                "left": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "c"
+                },
+                "line_number": "0",
+                "operator": "Xor",
+                "right": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "b"
+                }
+            }
+        },
+        {
+            "_type": "UnOp",
+            "argument": {
+                "_type": "BinOp",
+                "file": "",
+                "left": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "a"
+                },
+                "line_number": "0",
+                "operator": "<=",
+                "right": {
+                    "_type": "Identifier",
+                    "file": "",
+                    "line_number": "0",
+                    "name": "b"
+                }
+            },
+            "file": "",
+            "line_number": "0",
+            "operator": "Not"
         }
     ]
 }

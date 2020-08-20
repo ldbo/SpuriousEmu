@@ -327,6 +327,36 @@
                     }
                 }
             ]
+        },
+        {
+            "_type": "If",
+            "body": [
+                {
+                    "_type": "FunCall",
+                    "arguments": {
+                        "_type": "ArgListCall",
+                        "args": [],
+                        "file": "",
+                        "line_number": "0"
+                    },
+                    "file": "",
+                    "function": {
+                        "_type": "Identifier",
+                        "file": "",
+                        "line_number": "0",
+                        "name": "action"
+                    },
+                    "line_number": "0"
+                }
+            ],
+            "condition": {
+                "_type": "Identifier",
+                "file": "",
+                "line_number": "0",
+                "name": "condition"
+            },
+            "else_block": "None",
+            "elsifs": []
         }
     ]
 }

@@ -1,42 +1,209 @@
 {
-    "stdout": [
-        "msgBox Hey",
-        "msgBox i",
-        "msgBox 0",
-        "msgBox 5",
-        "msgBox 3",
-        "msgBox 1",
-        "msgBox --------",
-        "msgBox i",
-        "msgBox 5",
-        "msgBox 5",
-        "msgBox 3",
-        "msgBox 1",
-        "msgBox --------",
-        "msgBox i",
-        "msgBox 10",
-        "msgBox 5",
-        "msgBox 3",
-        "msgBox 1",
-        "msgBox --------",
-        "msgBox hello, , helo, helo, helo",
-        "msgBox Not that odd",
-        "msgBox High level of oddity",
-        "msgBox Not that odd",
-        "msgBox High level of oddity",
-        "msgBox Not that odd",
-        "msgBox High level of oddity",
-        "msgBox Not that odd",
-        "msgBox High level of oddity",
-        "msgBox Not that odd",
-        "msgBox High level of oddity",
-        "msgBox Not that odd",
-        "msgBox High level of oddity",
-        "msgBox Not that odd"
+    "events": [
+        {
+            "identifier": 0,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Hey"
+        },
+        {
+            "identifier": 1,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox i"
+        },
+        {
+            "identifier": 2,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 0"
+        },
+        {
+            "identifier": 3,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 5"
+        },
+        {
+            "identifier": 4,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 3"
+        },
+        {
+            "identifier": 5,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 1"
+        },
+        {
+            "identifier": 6,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox --------"
+        },
+        {
+            "identifier": 7,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox i"
+        },
+        {
+            "identifier": 8,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 5"
+        },
+        {
+            "identifier": 9,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 5"
+        },
+        {
+            "identifier": 10,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 3"
+        },
+        {
+            "identifier": 11,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 1"
+        },
+        {
+            "identifier": 12,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox --------"
+        },
+        {
+            "identifier": 13,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox i"
+        },
+        {
+            "identifier": 14,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 10"
+        },
+        {
+            "identifier": 15,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 5"
+        },
+        {
+            "identifier": 16,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 3"
+        },
+        {
+            "identifier": 17,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 1"
+        },
+        {
+            "identifier": 18,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox --------"
+        },
+        {
+            "identifier": 19,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox hello, , helo, helo, helo"
+        },
+        {
+            "identifier": 20,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 21,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox High level of oddity"
+        },
+        {
+            "identifier": 22,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 23,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox High level of oddity"
+        },
+        {
+            "identifier": 24,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 25,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox High level of oddity"
+        },
+        {
+            "identifier": 26,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 27,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox High level of oddity"
+        },
+        {
+            "identifier": 28,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 29,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox High level of oddity"
+        },
+        {
+            "identifier": 30,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 31,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox High level of oddity"
+        },
+        {
+            "identifier": 32,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox Not that odd"
+        },
+        {
+            "identifier": 33,
+            "category": "execution",
+            "context": "VBAEnv.Default.main_module.Exexexexe",
+            "data": "plop plop plop /"
+        }
     ],
-    "file": [],
-    "network": [],
-    "execution": [
-        "plop plop plop /"
-    ]
+    "files": {}
 }

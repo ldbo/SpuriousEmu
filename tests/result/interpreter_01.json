@@ -1,12 +1,35 @@
 {
-    "stdout": [
-        "msgBox 12",
-        "msgBox 1",
-        "msgBox 1",
-        "msgBox 1",
-        "msgBox 23"
+    "events": [
+        {
+            "identifier": 0,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 12"
+        },
+        {
+            "identifier": 1,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Return1",
+            "data": "msgBox 1"
+        },
+        {
+            "identifier": 2,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Return1",
+            "data": "msgBox 1"
+        },
+        {
+            "identifier": 3,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 1"
+        },
+        {
+            "identifier": 4,
+            "category": "stdout",
+            "context": "VBAEnv.Default.main_module.Main",
+            "data": "msgBox 23"
+        }
     ],
-    "file": [],
-    "network": [],
-    "execution": []
+    "files": {}
 }

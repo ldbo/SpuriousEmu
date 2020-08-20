@@ -12,7 +12,7 @@ def interpreting(vbs: SourceFile) -> Result:
     interp = interpreter.Interpreter(comp.program)
     interp.run("Main")
 
-    return interp._outside_world.to_dict()
+    return interp._outside_world.to_dict(reproducible=True)
 
 
 def evaluate_expressions(vbs: SourceFile) -> Result:

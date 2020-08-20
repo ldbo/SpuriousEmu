@@ -8,7 +8,7 @@ from .compiler import Program
 from .error import InterpretationError, ResolutionError
 from .reference import Reference, Environment, Variable, FunctionReference
 from .side_effect import Memory, OutsideWorld
-from .operator import OPERATORS_MAP
+from .operator import OPERATORS_MAP, Operator
 from .value import Value, Integer, Object
 from .visitor import Visitor
 
@@ -132,7 +132,7 @@ class Interpreter(Visitor):
             def hook(*args, **kwargs):
                 pass
 
-        self._outside_world.add_hook(OutsideWorld.EventType.STDOUT, hook)
+        self._outside_world.add_hook(OutsideWorld.Event.Category.STDOUT, hook)
 
     # Internal interface
 
@@ -236,11 +236,16 @@ class Interpreter(Visitor):
             bound_method = unbound_method.create_bound_method(object_value)
             self._evaluation = bound_method
 
+    def visit_UnOp(self, un_op: UnOp) -> None:
+        arg_value = self.evaluate(un_op.argument)
+        op = Operator.from_symbol(un_op.operator)
+        self._evaluation = op.operate(arg_value)
+
     def visit_BinOp(self, bin_op: BinOp) -> None:
         left_value = self.evaluate(bin_op.left)
         right_value = self.evaluate(bin_op.right)
 
-        op = bin_op.operator
+        op = Operator.from_symbol(bin_op.operator)
         self._evaluation = op.operate(left_value, right_value)
 
     def visit_FunCall(self, fun_call: FunCall) -> None:
@@ -306,8 +311,7 @@ class Interpreter(Visitor):
         self._memory.set_variable(counter_name, start_value)
         while keep_going():
             self.visit_Block(loop)
-            add_expression = BinOp(OPERATORS_MAP['+'],
-                                   loop.counter, step_literal)
+            add_expression = BinOp('+', loop.counter, step_literal)
             new_counter_value = self.evaluate(add_expression)
             self._memory.set_variable(counter_name, new_counter_value)
 
@@ -371,11 +375,15 @@ class Interpreter(Visitor):
 
     # External functions interface
     def add_stdout(self, content: str) -> None:
-        self._outside_world.add_event(OutsideWorld.EventType.STDOUT, content)
+        self._outside_world.add_event(
+            OutsideWorld.Event.Category.STDOUT,
+            str(self._resolver._current_reference),
+            content)
 
     def add_command_execution(self, command: str) -> None:
         self._outside_world.add_event(
-            OutsideWorld.EventType.EXECUTION,
+            OutsideWorld.Event.Category.EXECUTION,
+            str(self._resolver._current_reference),
             command
         )
 
@@ -384,7 +392,10 @@ class Interpreter(Visitor):
         event = {'type': event_type, 'path': path}
         if data is not None:
             event['data'] = data
-        self._outside_world.add_event(OutsideWorld.EventType.FILE, event)
+        self._outside_world.add_event(
+            OutsideWorld.Event.Category.FILESYSTEM,
+            str(self._resolver._current_reference),
+            event)
 
     def add_network_event(self, *args, **kwargs) -> None:
         # TODO

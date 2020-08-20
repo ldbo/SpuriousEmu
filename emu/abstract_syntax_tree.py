@@ -82,6 +82,7 @@ class Block(AST):
     or inherited to implement block statements (loops, conditionals,
     functions definition, ...).
     """
+    # TODO add support for file and line_number
     body: Optional[List[Union[Statement, "Block"]]]
 
     def __init__(self, body: Optional[List[Union[Statement, "Block"]]] = None)\
@@ -262,11 +263,11 @@ class UnOp(Expression):
 
 class BinOp(Expression):
     """Binary operator"""
-    operator: BinaryOperator
+    operator: str
     left: Expression
     right: Expression
 
-    def __init__(self, operator: BinaryOperator, left: Expression,
+    def __init__(self, operator: str, left: Expression,
                  right: Expression, **kwargs) -> None:
         super().__init__(**kwargs)
         self.operator = operator
