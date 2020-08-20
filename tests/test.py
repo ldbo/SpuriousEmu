@@ -1,12 +1,18 @@
 import json
+import subprocess
+
+from os import listdir
 from pathlib import Path
 from pprint import pprint
-from typing import Callable, Dict, Any
+from typing import Any, Callable, Dict, Optional
 
 from nose.tools import assert_equals
 
 Result = Dict[str, Any]
 SourceFile = str
+
+
+SAMPLES = listdir("tests/samples")
 
 
 def result_path(test: str) -> str:
@@ -38,6 +44,47 @@ def source_path(test: str) -> str:
         path = root_path + ".vbs"
         assert(Path(path).exists())
         return path
+
+
+def output_path(test: str) -> str:
+    """
+    Build the path of a saved command output: tests/result/{text}.output.txt
+    """
+    return f"tests/result/{test}.output.txt"
+
+
+def command_output(command: str, sample_number: Optional[int] = None) -> str:
+    """
+    Return the output of the command, with a optional sample as additional
+    argument.
+    """
+    command_list = command.split()
+
+    if sample_number is not None:
+        command_list.append("tests/samples/" + SAMPLES[sample_number])
+
+    output = subprocess.check_output(command_list)
+    return output.decode('utf-8')
+
+
+def export_output(test: str, command: str,
+                  sample_number: Optional[int] = None) -> None:
+    """Export the output of command to the corresponding output_path."""
+    output = command_output(command, sample_number)
+
+    with open(output_path(test), 'w') as f:
+        f.write(output)
+
+
+def assert_correct_output(test: str, command: str,
+                          sample_number: Optional[int] = None) -> None:
+    """Assert calling command output the expected result"""
+    with open(output_path(test), 'r') as f:
+        expected_output = f.read()
+
+    output = command_output(command, sample_number)
+
+    assert_equals(expected_output, output)
 
 
 def assert_correct_function(test: str,

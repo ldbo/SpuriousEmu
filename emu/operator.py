@@ -211,8 +211,8 @@ class OperatorsMap:
         __operators and __ordered_operators
         """
         if symbol in self.__operators:
-            assert(type(operation)
-                   is type(self.__operators[symbol].operations[-1]))
+            assert(isinstance(operation,
+                              type(self.__operators[symbol].operations[-1])))
             self.__operators[symbol].operations.append(operation)
         else:
             if self.__growing_precedence:
