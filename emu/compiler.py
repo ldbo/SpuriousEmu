@@ -1,5 +1,7 @@
 """Pseudo-compilation stage: allow to extract references and function body."""
 
+import pkg_resources
+
 from dataclasses import dataclass
 from importlib.util import spec_from_file_location, module_from_spec
 from inspect import getmembers, isclass, isfunction
@@ -375,18 +377,26 @@ class Compiler(Visitor):
         return Compiler.compile_files(paths, path.stem)
 
     @staticmethod
-    def link_libraries(program: Program, libraries: List[str]) -> Program:
+    def link_standard_library(program: Program) -> Program:
         """
-        Link host libraries to an already compiled program.
-
-        :arg program: Program to link the library to
-        :arg library: Paths of the libraries
-        :returns: The linked program
+        Extract the standard library embedded in the package resources and link
+        it against a program. Embedded projects are stored inside emu.lib.
         """
         compiler = Compiler()
         compiler.__memory = program.memory
         compiler.__environment = program.environment
         compiler.__current_reference = program.environment
+
+        libraries = list(
+            map(
+                lambda project_name: pkg_resources.resource_filename(
+                    'emu.lib', project_name),
+                filter(
+                    lambda directory: not directory.startswith('__'),
+                    pkg_resources.resource_listdir('emu', 'lib')
+                )
+            )
+        )
 
         for library in libraries:
             compiler.load_host_project(library)

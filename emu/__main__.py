@@ -191,8 +191,7 @@ def static_analysis(arguments):
 
 
 def execute_program(program: Program, entry_point: str) -> None:
-    libraries = list(map(str, Path('./lib/').glob('*')))
-    linked_program = Compiler.link_libraries(program, libraries)
+    linked_program = Compiler.link_standard_library(program)
     return Interpreter.run_program(linked_program, entry_point)
 
 
