@@ -32,8 +32,7 @@ deploy:
   script: poetry publish
   on:
     tags: true
-    condition: "$TRAVIS_PYTHON_VERSION == 3.7"
-    branch: master
+    condition: $TRAVIS_PYTHON_VERSION = 3.7
 
 env:
   global:
