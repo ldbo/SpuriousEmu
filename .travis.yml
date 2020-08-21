@@ -1,3 +1,4 @@
+os: linux
 dist: bionic
 
 language: python
@@ -14,12 +15,22 @@ cache: pip
 
 before_install:
   - pip install poetry
-
 install:
   - poetry install -v
 
 script:
   - poetry run nosetests
-
 after_success:
   - poetry run coveralls
+
+before_deploy:
+  - poetry config --local pypi-token.pypi $PYPI_TOKEN
+  - poetry build
+deploy:
+  provider: script
+  script: poetry publish
+  on:
+    tags: true
+    condition: "$TRAVIS_PYTHON_VERSION == 3.7"
+
+secure: "qb/xHmaRtJYCsYLCmp/7eVHF3qVkXyBcOzofcdwqeB1tH4m7YyKNS6gguGcoDGnHmR9QMPrBfTH9MgTKJnnca7t9HixEWf364kQhx0nwQJsvW6DlLQ4w2ANkE1x9T29s1Fulsayfr2GoM7ZADqAWbh5ft2p+IqAY9bAr/zfSxhXL6WYord/dswhjQg5XuZFSrq3Q1dCnfj5As1LUS7AWoNYvXAbmIRwbPPoSu78BiP9a5bPQsSSiHbuLZse28l/Efg0xmaytahK2GdW8Z3TOu0fWEf4vpttiIji8x8zgt657BeAk6wD8LXdgc5zYr/Km6sgSttPwMkhZdlvdnpg9koABJSVrZ2iNkdCi1qopdbREk+cEOMUN4BgGSDVRKSfEys4CdRWrkKBpFSJSU+1MYGCGnR2Ir/VooXqA1JeFMh1PgU+KsicEfO9r6+zpDXK/TPDumv/LHsovDFF886QRmHHJvWE96OwPY5/VOOIoViqqZMdoBLZwQ9wbHtQ7pnGpotix6Ph5fQh1KqkyGMK53IMVi+gAZg4jC36jzekY/SsnXLsudamkVcJKeJWAizrngR/Lrt9Y3h3Np7PA2lHuLzR7vhVZREfMxGpFQdQKnUChEcQqdX59uv+0lJu2yLLOaqNpceRHakX+Dw1s2zcU71ph6T6J5atsLVWxxw8rXt0="
