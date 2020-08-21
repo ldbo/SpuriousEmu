@@ -3,7 +3,7 @@ from tests.test import assert_correct_output
 
 
 def test_version():
-    assert __version__ == "0.3.0"
+    assert __version__ == "0.3.1"
     assert_correct_output("emu_version", "emu -v")
 
 
