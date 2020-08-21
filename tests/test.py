@@ -66,8 +66,17 @@ def command_output(command: str, sample_number: Optional[int] = None) -> str:
     if sample_number is not None:
         command_list.append("tests/samples/" + SAMPLES[sample_number])
 
-    output = subprocess.check_output(command_list)
-    return output.decode('utf-8')
+    proc = subprocess.run(command_list, capture_output=True, encoding='utf-8')
+    output = f"""
+Return code: {proc.returncode}
+Output:
+{proc.stdout}
+
+Error:
+{proc.stderr}
+"""
+
+    return output
 
 
 def export_output(test: str, command: str,
