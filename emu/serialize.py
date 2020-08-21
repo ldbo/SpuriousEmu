@@ -51,7 +51,6 @@ class Serializer:
         it. If the save path has no extension, add the corresponding one.
         """
         path = Path(file_path)
-        print(path.suffix)
         if path.suffix == "":
             save_path = path.parent / (path.name + cls.extension(type(obj)))
         else:
