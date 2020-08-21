@@ -13,19 +13,22 @@ from abc import abstractmethod
 
 class Visitable:
     """Base class for Visitable classes, must simply be inherited."""
+
     @abstractmethod
     def __init__(self):
         pass
 
     def accept(self, visitor: "Visitor") -> None:
-        assert(isinstance(visitor, Visitor))
+        assert isinstance(visitor, Visitor)
 
         visiter = "visit_" + type(self).__qualname__.replace(".", "_")
         try:
             visiter_function = getattr(visitor, visiter)
         except AttributeError:
-            msg = f"Visitor {type(visitor).__qualname__} doesn't handle " \
+            msg = (
+                f"Visitor {type(visitor).__qualname__} doesn't handle "
                 + f"Visitable type {type(self).__qualname__}"
+            )
             raise NotImplementedError(msg)
 
         return visiter_function(self)
@@ -38,6 +41,7 @@ class Visitor:
     visit_T(self, visitable : Visitable) -> None. Then, to apply the algorithm
     to a Visitable object visitable, simply call visitor.visit(visitable).
     """
+
     @abstractmethod
     def __init__(self):
         pass
@@ -47,6 +51,6 @@ class Visitor:
         Apply an algorithm to a Visitable object of type T. The algorithm must
         be implemented in visit_T, otherwise a NotImplementedError is thrown.
         """
-        assert(isinstance(visitable, Visitable))
+        assert isinstance(visitable, Visitable)
 
         visitable.accept(self)

@@ -16,11 +16,6 @@
                 "ClassModule": [
                     {
                         "name": "Class",
-                        "Variable": [
-                            {
-                                "name": "var1"
-                            }
-                        ],
                         "FunctionReference": [
                             {
                                 "name": "method1",
@@ -29,6 +24,11 @@
                                         "name": "method1"
                                     }
                                 ]
+                            }
+                        ],
+                        "Variable": [
+                            {
+                                "name": "var1"
                             }
                         ]
                     }

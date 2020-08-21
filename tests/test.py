@@ -12,7 +12,9 @@ Result = Dict[str, Any]
 SourceFile = str
 
 
-SAMPLES = listdir("tests/samples")
+SAMPLES = list(
+    filter(lambda filename: "." not in filename, listdir("tests/samples"))
+)
 
 
 def result_path(test: str) -> str:
@@ -28,7 +30,7 @@ def load_result(test: str) -> Result:
 
 def export_result(test: str, function: Callable[[SourceFile], Result]) -> None:
     """Export the result of the test to JSON"""
-    with open(result_path(test), 'w') as f:
+    with open(result_path(test), "w") as f:
         json.dump(function(source_path(test)), f, indent=4)
 
 
@@ -42,7 +44,7 @@ def source_path(test: str) -> str:
         return root_path
     else:
         path = root_path + ".vbs"
-        assert(Path(path).exists())
+        assert Path(path).exists()
         return path
 
 
@@ -63,36 +65,59 @@ def command_output(command: str, sample_number: Optional[int] = None) -> str:
     if sample_number is not None:
         command_list.append("tests/samples/" + SAMPLES[sample_number])
 
-    output = subprocess.check_output(command_list)
-    return output.decode('utf-8')
+    proc = subprocess.run(command_list, capture_output=True, encoding="utf-8")
+    output = f"""
+Return code: {proc.returncode}
+Output:
+{proc.stdout}
+
+Error:
+{proc.stderr}
+"""
+
+    return output
 
 
-def export_output(test: str, command: str,
-                  sample_number: Optional[int] = None) -> None:
+def export_output(
+    test: str, command: str, sample_number: Optional[int] = None
+) -> None:
     """Export the output of command to the corresponding output_path."""
     output = command_output(command, sample_number)
 
-    with open(output_path(test), 'w') as f:
+    with open(output_path(test), "w") as f:
         f.write(output)
 
 
-def assert_correct_output(test: str, command: str,
-                          sample_number: Optional[int] = None) -> None:
+def assert_correct_output(
+    test: str, command: str, sample_number: Optional[int] = None
+) -> None:
     """Assert calling command output the expected result"""
-    with open(output_path(test), 'r') as f:
+    with open(output_path(test), "r") as f:
         expected_output = f.read()
 
     output = command_output(command, sample_number)
 
-    assert_equals(expected_output, output)
+    try:
+        assert_equals(expected_output, output)
+    except AssertionError as e:
+        print(f"\nOutput:\n{output}\n")
+        print(f"Expected output:\n{expected_output}\n")
+        raise (e)
 
 
-def assert_correct_function(test: str,
-                            function: Callable[[SourceFile], Result]) -> None:
+def assert_correct_function(
+    test: str, function: Callable[[SourceFile], Result]
+) -> None:
     """Load the expected result from JSON and compare to the function result"""
     result = function(source_path(test))
     expected_result = load_result(test)
-    assert_equals(result, expected_result)
+
+    try:
+        assert_equals(result, expected_result)
+    except AssertionError as e:
+        print(f"\nResult:\n{result}\n")
+        print(f"Expected result:\n{expected_result}\n")
+        raise (e)
 
 
 def run_function(test: str, function: Callable[[SourceFile], Result]) -> None:

@@ -1,5 +1,13 @@
 # SpuriousEmu
 
+![Travis (.com)](https://img.shields.io/travis/com/ldbo/SpuriousEmu)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/ldbo/SpuriousEmu)
+![PyPI - Downloads](https://img.shields.io/pypi/v/spurious-emu)
+![Coveralls github](https://img.shields.io/coveralls/github/ldbo/SpuriousEmu)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/spurious-emu)
+![Github - License](https://img.shields.io/github/license/ldbo/SpuriousEmu)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Visual Basic for Applications tools allowing to parse VBA files, interpret them and extract behaviour information for malware analysis purpose.
 
 ## Installation

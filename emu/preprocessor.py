@@ -33,14 +33,21 @@ from .error import PreprocessorError
 
 class Instruction:
     """A single instruction, stored with its context."""
+
     instruction: str
     multiline: str
     single: bool
     file_name: str
     line_number: int
 
-    def __init__(self, instruction: str, multiline: str, single: bool,
-                 file_name: str, line_number: int) -> None:
+    def __init__(
+        self,
+        instruction: str,
+        multiline: str,
+        single: bool,
+        file_name: str,
+        line_number: int,
+    ) -> None:
         """
         :arg instruction: Unique instruction
         :arg multiline: Group of continuing lines the instruction is part of
@@ -60,7 +67,7 @@ class Instruction:
         s = f"{self.file_name}:{self.line_number}:{indent}{self.instruction}"
         if not self.single:
             s += indent + "in\n" + indent
-            s += self.multiline.replace('\n', '\n' + indent)
+            s += self.multiline.replace("\n", "\n" + indent)
 
         return s
 
@@ -75,6 +82,7 @@ class Preprocessor:
     """
     Used to extract single instructions from the content of a source file.
     """
+
     CONTINUING_LINE_DELIMITER = " _"
     CONTINUING_LINE_OPERATORS = (",", "&")
     COMMENT_DELIMITERS = ("REM", "'")
@@ -83,8 +91,9 @@ class Preprocessor:
     def __init__(self) -> None:
         pass
 
-    def extract_instructions(self, file_name: str, file_content: str) \
-            -> List[Instruction]:
+    def extract_instructions(
+        self, file_name: str, file_content: str
+    ) -> List[Instruction]:
         """
         Extract all the individual instructions from a file.
 
@@ -123,14 +132,15 @@ class Preprocessor:
             self.__continuing_line = True
             del_chars = len(self.CONTINUING_LINE_DELIMITER)
             self.__concatenated_line = self.__concatenated_line[:-del_chars]
-        elif any(commentless_line.strip().endswith(op)
-                 for op in self.CONTINUING_LINE_OPERATORS):
+        elif any(
+            commentless_line.strip().endswith(op)
+            for op in self.CONTINUING_LINE_OPERATORS
+        ):
             self.__continuing_line = True
             # If the instruction is complete
         else:
             instructions = self.__split_line(self.__concatenated_line)
-            single = len(instructions) == 1 \
-                and "\n" not in self.__multiline
+            single = len(instructions) == 1 and "\n" not in self.__multiline
             for instruction in instructions:
                 self.__add_instruction(instruction, single)
 
@@ -141,13 +151,15 @@ class Preprocessor:
         self.__line_number += 1
 
     def __add_instruction(self, instruction: str, single: bool) -> None:
-        self.__instructions.append(Instruction(
-            instruction=instruction.strip(),
-            multiline=self.__multiline,
-            single=single,
-            file_name=self.__file_name,
-            line_number=self.__instruction_line
-        ))
+        self.__instructions.append(
+            Instruction(
+                instruction=instruction.strip(),
+                multiline=self.__multiline,
+                single=single,
+                file_name=self.__file_name,
+                line_number=self.__instruction_line,
+            )
+        )
 
     @classmethod
     def __remove_comments(cls, line: str) -> str:
@@ -159,7 +171,7 @@ class Preprocessor:
         position = 0
 
         if any(line.startswith(f"{d} ") for d in cls.COMMENT_DELIMITERS):
-            return ''
+            return ""
 
         while position < len(line):
             char = line[position]
@@ -171,8 +183,10 @@ class Preprocessor:
                 elif char == '"':
                     in_string = False
             else:
-                if any(remaining_line.startswith(f" {d} ")
-                       for d in cls.COMMENT_DELIMITERS):
+                if any(
+                    remaining_line.startswith(f" {d} ")
+                    for d in cls.COMMENT_DELIMITERS
+                ):
                     return line[:position]
                 elif char == '"':
                     in_string = True
@@ -216,8 +230,9 @@ class Preprocessor:
         return instructions
 
     @staticmethod
-    def preprocess(file_content: str, file_name: Optional[str] = None) \
-            -> List[Instruction]:
+    def preprocess(
+        file_content: str, file_name: Optional[str] = None
+    ) -> List[Instruction]:
         """
         Extract the executable instructions of a file, returning them as a
         list.
@@ -227,7 +242,7 @@ class Preprocessor:
 
     @staticmethod
     def preprocess_file(file_path: str) -> List[Instruction]:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             file_content = f.read()
 
         return Preprocessor.preprocess(file_content, file_path)

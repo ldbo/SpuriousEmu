@@ -1,5 +1,5 @@
 from emu import Parser, Compiler, reference
-from tests.test import (assert_correct_function, SourceFile, Result)
+from tests.test import assert_correct_function, SourceFile, Result
 
 
 def compile_single_file(vbs: SourceFile) -> Result:
@@ -8,11 +8,11 @@ def compile_single_file(vbs: SourceFile) -> Result:
 
 def compile_with_standard_library(vbs: SourceFile) -> Result:
     cpl = Compiler()
-    cpl.load_host_project("./lib/VBA")
     ast = Parser.parse_file(vbs)
     cpl.add_module(ast, reference.ProceduralModule, "main_module")
+    program = cpl.link_standard_library(cpl.program)
 
-    return cpl.program.to_dict()
+    return program.to_dict()
 
 
 def compile_project(project: SourceFile) -> Result:
@@ -28,8 +28,9 @@ def test_function():
 
 
 def test_standard_library():
-    assert_correct_function("compiler_standard_library",
-                            compile_with_standard_library)
+    assert_correct_function(
+        "compiler_standard_library", compile_with_standard_library
+    )
 
 
 def test_project():

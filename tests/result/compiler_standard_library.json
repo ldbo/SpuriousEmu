@@ -1,35 +1,74 @@
 {
     "memory": {
         "functions": [
-            "VBAEnv.VBA.Strings.Asc",
+            "VBAEnv.Default.main_module.Main",
             "VBAEnv.VBA.Interaction.Environ",
             "VBAEnv.VBA.Interaction.msgBox",
-            "VBAEnv.Default.main_module.Main"
+            "VBAEnv.VBA.Strings.Asc",
+            "VBAEnv.WSH.FileHandler.Close",
+            "VBAEnv.WSH.FileHandler.Write",
+            "VBAEnv.WSH.Filesystem.CreateFolder",
+            "VBAEnv.WSH.Filesystem.CreateTextFile",
+            "VBAEnv.WSH.Filesystem.FolderExists",
+            "VBAEnv.WSH.WScript.CreateObject",
+            "VBAEnv.WSH.WshShell.Run"
         ],
-        "classes": []
+        "classes": [
+            "VBAEnv.WSH.FileHandler",
+            "VBAEnv.WSH.Filesystem",
+            "VBAEnv.WSH.WshShell"
+        ]
     },
     "environment": {
         "name": "VBAEnv",
         "Project": [
             {
+                "name": "Default",
+                "ProceduralModule": [
+                    {
+                        "name": "main_module",
+                        "FunctionReference": [
+                            {
+                                "name": "Main",
+                                "Variable": [
+                                    {
+                                        "name": "Main"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 "name": "VBA",
                 "ProceduralModule": [
                     {
-                        "name": "Strings",
-                        "FunctionReference": [
+                        "name": "ColorConstants",
+                        "Variable": [
                             {
-                                "name": "Asc"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "Interaction",
-                        "FunctionReference": [
-                            {
-                                "name": "Environ"
+                                "name": "vbBlack"
                             },
                             {
-                                "name": "msgBox"
+                                "name": "vbBlue"
+                            },
+                            {
+                                "name": "vbCyan"
+                            },
+                            {
+                                "name": "vbGreen"
+                            },
+                            {
+                                "name": "vbMagenta"
+                            },
+                            {
+                                "name": "vbRed"
+                            },
+                            {
+                                "name": "vbWhite"
+                            },
+                            {
+                                "name": "vbYellow"
                             }
                         ]
                     },
@@ -72,49 +111,77 @@
                         ]
                     },
                     {
-                        "name": "ColorConstants",
-                        "Variable": [
+                        "name": "Interaction",
+                        "FunctionReference": [
                             {
-                                "name": "vbBlack"
+                                "name": "Environ"
                             },
                             {
-                                "name": "vbBlue"
-                            },
+                                "name": "msgBox"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Strings",
+                        "FunctionReference": [
                             {
-                                "name": "vbCyan"
-                            },
-                            {
-                                "name": "vbGreen"
-                            },
-                            {
-                                "name": "vbMagenta"
-                            },
-                            {
-                                "name": "vbRed"
-                            },
-                            {
-                                "name": "vbWhite"
-                            },
-                            {
-                                "name": "vbYellow"
+                                "name": "Asc"
                             }
                         ]
                     }
                 ]
             },
             {
-                "name": "Default",
-                "ProceduralModule": [
+                "name": "WSH",
+                "ClassModule": [
                     {
-                        "name": "main_module",
+                        "name": "FileHandler",
                         "FunctionReference": [
                             {
-                                "name": "Main",
-                                "Variable": [
-                                    {
-                                        "name": "Main"
-                                    }
-                                ]
+                                "name": "Close"
+                            },
+                            {
+                                "name": "Write"
+                            }
+                        ],
+                        "Variable": [
+                            {
+                                "name": "open"
+                            },
+                            {
+                                "name": "path"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Filesystem",
+                        "FunctionReference": [
+                            {
+                                "name": "CreateFolder"
+                            },
+                            {
+                                "name": "CreateTextFile"
+                            },
+                            {
+                                "name": "FolderExists"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "WshShell",
+                        "FunctionReference": [
+                            {
+                                "name": "Run"
+                            }
+                        ]
+                    }
+                ],
+                "ProceduralModule": [
+                    {
+                        "name": "WScript",
+                        "FunctionReference": [
+                            {
+                                "name": "CreateObject"
                             }
                         ]
                     }

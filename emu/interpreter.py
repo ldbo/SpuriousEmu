@@ -15,6 +15,7 @@ from .visitor import Visitor
 
 class Resolver(Visitor):
     """Used to tell the interpreter what each name referes to"""
+
     _interpreter: "Interpreter"
     _program: Program
     _current_reference: Reference
@@ -23,15 +24,17 @@ class Resolver(Visitor):
 
     def __init__(self, interpreter, program=None) -> None:
         self._interpreter = interpreter
-        self._program = program if program is not None \
-            else Program(Memory(), Environment())
+        self._program = (
+            program if program is not None else Program(Memory(), Environment())
+        )
         self._current_reference = self._program.environment
         self._previous_references = []
         self._resolution = None
 
     def visit_Identifier(self, identifier: Identifier) -> None:
         self._resolution = Resolver.resolve_from(
-            self._current_reference, identifier.name)
+            self._current_reference, identifier.name
+        )
 
     def visit_Get(self, get: Get) -> None:
         """Resolve a composite symbol."""
@@ -50,8 +53,12 @@ class Resolver(Visitor):
         return resolution
 
     @staticmethod
-    def resolve_from(reference: Reference, name: str, go_down: bool = False,
-                     exclude: Reference = None) -> Reference:
+    def resolve_from(
+        reference: Reference,
+        name: str,
+        go_down: bool = False,
+        exclude: Reference = None,
+    ) -> Reference:
         # TODO efficient search
         try:
             return reference.search_child(name)
@@ -65,8 +72,9 @@ class Resolver(Visitor):
             msg = f"Symbol {name} is not found in {reference}"
             raise ResolutionError(msg)
 
-        return Resolver.resolve_from(reference.parent, name,
-                                     go_down=True, exclude=reference)
+        return Resolver.resolve_from(
+            reference.parent, name, go_down=True, exclude=reference
+        )
 
     def find_function(self, function_name) -> List[Function]:
         functions = []
@@ -91,6 +99,7 @@ class Resolver(Visitor):
 
 class Interpreter(Visitor):
     """Class used to interprete a program which has already been compiled."""
+
     _memory: Memory
     _resolver: Resolver
     _outside_world: OutsideWorld
@@ -110,8 +119,9 @@ class Interpreter(Visitor):
         self._outside_world = OutsideWorld()
         self._evaluation = None
 
-    def run(self, function_name: str, args: Optional[List[Value]] = None) \
-            -> None:
+    def run(
+        self, function_name: str, args: Optional[List[Value]] = None
+    ) -> None:
         """
         Search for a function entry point in the program references, and
         execute it. You should use it most of the time.
@@ -129,6 +139,7 @@ class Interpreter(Visitor):
         if state:
             hook = print
         else:
+
             def hook(*args, **kwargs):
                 pass
 
@@ -138,7 +149,7 @@ class Interpreter(Visitor):
 
     def evaluate(self, expression: Expression) -> Value:
         """Return the value of an expression"""
-        assert(isinstance(expression, Expression))
+        assert isinstance(expression, Expression)
 
         self.visit(expression)
         value = self._evaluation
@@ -209,23 +220,24 @@ class Interpreter(Visitor):
             elif parent.category is Reference.Category.Structural:
 
                 child = parent.get_child(child_name)
-                assert(isinstance(child, (Variable, FunctionReference)))
+                assert isinstance(child, (Variable, FunctionReference))
                 if isinstance(child, Variable):
                     self._evaluation = self._memory.get_variable(str(child))
                 elif isinstance(child, FunctionReference):
                     self._evaluation = self._memory.functions[str(child)]
         else:
-            msg = f"Evaluation error, with parent {get.parent} and " \
+            msg = (
+                f"Evaluation error, with parent {get.parent} and "
                 + f"child {get.child}"
+            )
             raise InterpretationError(msg)
 
-    def __access_member(self, object_value: Value, child_name: str) \
-            -> None:
+    def __access_member(self, object_value: Value, child_name: str) -> None:
         """
         Helper function to access a variable/method from an object, putting its
         value in self._evaluation.
         """
-        assert(isinstance(object_value, Object))
+        assert isinstance(object_value, Object)
         try:
             variable = object_value.variables[child_name]
             self._evaluation = variable
@@ -252,7 +264,7 @@ class Interpreter(Visitor):
         # TODO handle method call
         # Resolution
         function = self.evaluate(fun_call.function)
-        assert(isinstance(function, Function))
+        assert isinstance(function, Function)
 
         # Arguments handling
         arg_list = fun_call.arguments.args
@@ -299,10 +311,13 @@ class Interpreter(Visitor):
 
         # Comparison function
         if step_value.value >= 0:
+
             def keep_going():
                 counter_value = self._memory.get_variable(counter_name)
                 return counter_value.value <= end_value.value
+
         else:
+
             def keep_going():
                 counter_value = self._memory.get_variable(counter_name)
                 return counter_value.value > end_value.value
@@ -311,7 +326,7 @@ class Interpreter(Visitor):
         self._memory.set_variable(counter_name, start_value)
         while keep_going():
             self.visit_Block(loop)
-            add_expression = BinOp('+', loop.counter, step_literal)
+            add_expression = BinOp("+", loop.counter, step_literal)
             new_counter_value = self.evaluate(add_expression)
             self._memory.set_variable(counter_name, new_counter_value)
 
@@ -327,8 +342,9 @@ class Interpreter(Visitor):
         # TODO
         pass
 
-    def call_function(self, function: Function,
-                      arguments_values: List[Value]) -> Optional[Value]:
+    def call_function(
+        self, function: Function, arguments_values: List[Value]
+    ) -> Optional[Value]:
         # TODO handle attribute access for internal class method
         if type(function) is ExternalFunction:
             if function.parent_object is not None:
@@ -378,32 +394,36 @@ class Interpreter(Visitor):
         self._outside_world.add_event(
             OutsideWorld.Event.Category.STDOUT,
             str(self._resolver._current_reference),
-            content)
+            content,
+        )
 
     def add_command_execution(self, command: str) -> None:
         self._outside_world.add_event(
             OutsideWorld.Event.Category.EXECUTION,
             str(self._resolver._current_reference),
-            command
+            command,
         )
 
-    def add_file_event(self, event_type: str, path: str,
-                       data: Optional[str] = None) -> None:
-        event = {'type': event_type, 'path': path}
+    def add_file_event(
+        self, event_type: str, path: str, data: Optional[str] = None
+    ) -> None:
+        event = {"type": event_type, "path": path}
         if data is not None:
-            event['data'] = data
+            event["data"] = data
         self._outside_world.add_event(
             OutsideWorld.Event.Category.FILESYSTEM,
             str(self._resolver._current_reference),
-            event)
+            event,
+        )
 
     def add_network_event(self, *args, **kwargs) -> None:
         # TODO
         pass
 
     @staticmethod
-    def run_program(program: Program, entry_point: str = "Main") \
-            -> OutsideWorld:
+    def run_program(
+        program: Program, entry_point: str = "Main"
+    ) -> OutsideWorld:
         """
         Execute the a program using the given entry_point.
         """

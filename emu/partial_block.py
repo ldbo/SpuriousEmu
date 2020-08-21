@@ -3,8 +3,15 @@
 from abc import abstractmethod, ABC
 from typing import List, Union
 
-from .abstract_syntax_tree import (For, ElseIf, If, Block, ProcDef, FunDef,
-                                   Statement)
+from .abstract_syntax_tree import (
+    For,
+    ElseIf,
+    If,
+    Block,
+    ProcDef,
+    FunDef,
+    Statement,
+)
 
 
 class BlockElement(ABC):
@@ -12,6 +19,7 @@ class BlockElement(ABC):
     Structural element of a block, for example an ElseIf line in an If block,
     only used during the parsing process.
     """
+
     IsHeader: bool = False
     IsFooter: bool = False
 
@@ -103,16 +111,20 @@ class PartialBlock:
     e.g. function definitions or conditionals. It handles statements with
     multiple sub-blocks, as in a if/elseif/else structure.
     """
+
     elements: List[BlockElement]
     statements_blocks: List[List[Union[Statement, Block]]]
 
-    def __init__(self, elements: List[BlockElement] = None,
-                 statements_blocks: List[List[Statement]] = None) -> None:
+    def __init__(
+        self,
+        elements: List[BlockElement] = None,
+        statements_blocks: List[List[Statement]] = None,
+    ) -> None:
         super().__init__()
         self.elements = elements if elements is not None else []
-        self.statements_blocks = statements_blocks \
-            if statements_blocks is not None \
-            else [[]]  # type: ignore[assignment]
+        self.statements_blocks = (
+            statements_blocks if statements_blocks is not None else [[]]
+        )  # type: ignore[assignment]
 
     # TODO add syntax check
     def build_block(self) -> Block:
@@ -122,20 +134,26 @@ class PartialBlock:
         """
         header = self.elements[0]
         if isinstance(header, ForHeader) and len(self.elements) == 2:
-            for_block = For(header.counter, header.start, header.end,
-                            header.step, body=self.statements_blocks[0])
+            for_block = For(
+                header.counter,
+                header.start,
+                header.end,
+                header.step,
+                body=self.statements_blocks[0],
+            )
             return for_block
 
         elif isinstance(header, IfHeader):
             blocks = zip(self.statements_blocks, self.elements)
             if_body, if_header = next(blocks)
-            assert (isinstance(if_header, IfHeader))
+            assert isinstance(if_header, IfHeader)
             if_block = If(condition=if_header.condition, body=if_body)
 
             for statements, element in blocks:
                 if isinstance(element, ElseIfHeader):
                     elseif = ElseIf(
-                        condition=element.condition, body=statements)
+                        condition=element.condition, body=statements
+                    )
                     if_block.elsifs.append(elseif)
                 elif isinstance(element, ElseHeader):
                     else_block = Block(statements)

@@ -1,1 +1,8 @@
-SpuriousEmu v0.2.0
+
+Return code: 0
+Output:
+SpuriousEmu v0.3.0
+
+
+Error:
+

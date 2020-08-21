@@ -19,8 +19,9 @@ def parsing_show(vbs: SourceFile) -> Result:
     return ast
 
 
-def build_digraph_from_ast(ast: syntax.AST) \
-        -> Tuple[nx.DiGraph, Dict[Any, str]]:
+def build_digraph_from_ast(
+    ast: syntax.AST,
+) -> Tuple[nx.DiGraph, Dict[Any, str]]:
     graph = nx.DiGraph()
 
     nodes = deque([ast])
