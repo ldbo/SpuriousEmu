@@ -24,6 +24,7 @@ after_success:
   - poetry run coveralls
 
 before_deploy:
+  - poetry run black . --check
   - poetry config --local pypi-token.pypi $PYPI_TOKEN
   - poetry build
 deploy:
