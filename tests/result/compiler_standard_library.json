@@ -1,16 +1,101 @@
 {
     "memory": {
         "functions": [
+            "VBAEnv.Default.main_module.Main",
+            "VBAEnv.WSH.FileHandler.Close",
+            "VBAEnv.WSH.FileHandler.Write",
+            "VBAEnv.WSH.WScript.CreateObject",
+            "VBAEnv.WSH.Filesystem.CreateFolder",
+            "VBAEnv.WSH.Filesystem.CreateTextFile",
+            "VBAEnv.WSH.Filesystem.FolderExists",
+            "VBAEnv.WSH.WshShell.Run",
             "VBAEnv.VBA.Strings.Asc",
             "VBAEnv.VBA.Interaction.Environ",
-            "VBAEnv.VBA.Interaction.msgBox",
-            "VBAEnv.Default.main_module.Main"
+            "VBAEnv.VBA.Interaction.msgBox"
         ],
-        "classes": []
+        "classes": [
+            "VBAEnv.WSH.FileHandler",
+            "VBAEnv.WSH.Filesystem",
+            "VBAEnv.WSH.WshShell"
+        ]
     },
     "environment": {
         "name": "VBAEnv",
         "Project": [
+            {
+                "name": "Default",
+                "ProceduralModule": [
+                    {
+                        "name": "main_module",
+                        "FunctionReference": [
+                            {
+                                "name": "Main",
+                                "Variable": [
+                                    {
+                                        "name": "Main"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "WSH",
+                "ClassModule": [
+                    {
+                        "name": "FileHandler",
+                        "Variable": [
+                            {
+                                "name": "path"
+                            },
+                            {
+                                "name": "open"
+                            }
+                        ],
+                        "FunctionReference": [
+                            {
+                                "name": "Close"
+                            },
+                            {
+                                "name": "Write"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Filesystem",
+                        "FunctionReference": [
+                            {
+                                "name": "CreateFolder"
+                            },
+                            {
+                                "name": "CreateTextFile"
+                            },
+                            {
+                                "name": "FolderExists"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "WshShell",
+                        "FunctionReference": [
+                            {
+                                "name": "Run"
+                            }
+                        ]
+                    }
+                ],
+                "ProceduralModule": [
+                    {
+                        "name": "WScript",
+                        "FunctionReference": [
+                            {
+                                "name": "CreateObject"
+                            }
+                        ]
+                    }
+                ]
+            },
             {
                 "name": "VBA",
                 "ProceduralModule": [
@@ -97,24 +182,6 @@
                             },
                             {
                                 "name": "vbYellow"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "name": "Default",
-                "ProceduralModule": [
-                    {
-                        "name": "main_module",
-                        "FunctionReference": [
-                            {
-                                "name": "Main",
-                                "Variable": [
-                                    {
-                                        "name": "Main"
-                                    }
-                                ]
                             }
                         ]
                     }

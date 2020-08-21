@@ -6,10 +6,10 @@ def interpreting(vbs: SourceFile) -> Result:
     ast = Parser.parse_file(vbs)
     comp = Compiler()
     comp.add_module(ast, reference.ProceduralModule, "main_module")
-    comp.load_host_project("./lib/VBA")
-    comp.load_host_project("./lib/WSH")
 
-    interp = interpreter.Interpreter(comp.program)
+    program = comp.link_standard_library(comp.program)
+
+    interp = interpreter.Interpreter(program)
     interp.run("Main")
 
     return interp._outside_world.to_dict(reproducible=True)
