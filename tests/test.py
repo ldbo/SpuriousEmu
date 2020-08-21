@@ -12,7 +12,10 @@ Result = Dict[str, Any]
 SourceFile = str
 
 
-SAMPLES = listdir("tests/samples")
+SAMPLES = list(filter(
+    lambda filename: '.' not in filename,
+    listdir("tests/samples")
+))
 
 
 def result_path(test: str) -> str:
@@ -84,7 +87,12 @@ def assert_correct_output(test: str, command: str,
 
     output = command_output(command, sample_number)
 
-    assert_equals(expected_output, output)
+    try:
+        assert_equals(expected_output, output)
+    except AssertionError as e:
+        print(f"\nOutput:\n{output}\n")
+        print(f"Expected output:\n{expected_output}")
+        raise(e)
 
 
 def assert_correct_function(test: str,
@@ -92,7 +100,12 @@ def assert_correct_function(test: str,
     """Load the expected result from JSON and compare to the function result"""
     result = function(source_path(test))
     expected_result = load_result(test)
-    assert_equals(result, expected_result)
+
+    try:
+        assert_equals(result, expected_result)
+    except AssertionError as e:
+        print(f"\nResult:\n{result}")
+        raise(e)
 
 
 def run_function(test: str, function: Callable[[SourceFile], Result]) -> None:
