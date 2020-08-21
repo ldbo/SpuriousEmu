@@ -16,6 +16,7 @@ class Memory:
     Represent the memory used for running a program, including static elements
     like functions and dynamic ones like local variables.
     """
+
     global_variables: Dict[str, Value]
     _local_variables: List[Dict[str, Value]]
     _functions: Dict[str, Function]
@@ -39,7 +40,7 @@ class Memory:
     def get_variable(self, name: str) -> Value:
         # TODO use full name for variable storage
         # TODO use variable reference instead of name to ensure unicity
-        local_name = name.split('.')[-1]
+        local_name = name.split(".")[-1]
         try:
             return self.locals[local_name]
         except KeyError:
@@ -70,6 +71,7 @@ class OutsideWorld:
     Represent the interaction between a running program and an emulated
     exterior environment.
     """
+
     @dataclass
     class Event:
         """
@@ -78,6 +80,7 @@ class OutsideWorld:
         the symbol that triggered the event), and a data field, which depends
         on the event category.
         """
+
         class Category(Enum):
             STDOUT = "stdout"
             FILESYSTEM = "filesystem"
@@ -112,21 +115,25 @@ class OutsideWorld:
 
     __start_time: float
     __events_count: Iterator[int]
-    __hooks: Dict["OutsideWorld.Event.Category",
-                  Callable[["OutsideWorld.Event"], None]]
+    __hooks: Dict[
+        "OutsideWorld.Event.Category", Callable[["OutsideWorld.Event"], None]
+    ]
     events: List["OutsideWorld.Event"]
     files: Dict[str, str]
 
     def __init__(self) -> None:
         self.__start_time = time()
         self.__events_count = count()
-        self.__hooks = {event_category: OutsideWorld.nop
-                        for event_category in OutsideWorld.Event.Category}
+        self.__hooks = {
+            event_category: OutsideWorld.nop
+            for event_category in OutsideWorld.Event.Category
+        }
         self.events = []
         self.files = dict()
 
-    def add_event(self, category: "OutsideWorld.Event.Category", context: str,
-                  data: Any) -> None:
+    def add_event(
+        self, category: "OutsideWorld.Event.Category", context: str, data: Any
+    ) -> None:
         """
         Record a new event, calling the corresponding hook.
         """
@@ -138,10 +145,10 @@ class OutsideWorld:
         self.__hooks[category](event)
 
         if category is OutsideWorld.Event.Category.FILESYSTEM:
-            if data['type'] == 'Write':
-                path = data['path']
+            if data["type"] == "Write":
+                path = data["path"]
                 content = self.files.get(path, "")
-                self.files[path] = content + data['data']
+                self.files[path] = content + data["data"]
 
     def to_dict(self, reproducible: bool = False) -> Dict[str, Any]:
         """
@@ -151,14 +158,16 @@ class OutsideWorld:
         :returns: A dict with keys 'events' and 'files'
         """
         d: Dict[str, Any] = dict()
-        d['events'] = [event.to_dict(reproducible)
-                       for event in self.events]
-        d['files'] = self.files
+        d["events"] = [event.to_dict(reproducible) for event in self.events]
+        d["files"] = self.files
 
         return d
 
-    def add_hook(self, category: "OutsideWorld.Event.Category",
-                 hook: Callable[["OutsideWorld.Event"], None]) -> None:
+    def add_hook(
+        self,
+        category: "OutsideWorld.Event.Category",
+        hook: Callable[["OutsideWorld.Event"], None],
+    ) -> None:
         """
         Add a hook that will be called for each recording of a given event
         category.

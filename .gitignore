@@ -1,5 +1,6 @@
 # Python
 __pycache__
+spurious_emu.egg-info
 
 # Tests
 .coverage

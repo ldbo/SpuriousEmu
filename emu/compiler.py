@@ -27,14 +27,17 @@ class Program:
     Represent a statically analysed program : a set of references, with a
     memory containing already initialized values.
     """
+
     memory: Memory
     environment: Environment
 
     def to_dict(self) -> Dict[str, Any]:
         d = dict()
-        d['memory'] = {'functions': list(self.memory._functions.keys()),
-                       'classes': list(self.memory._classes.keys())}
-        d['environment'] = self.environment.to_dict()
+        d["memory"] = {
+            "functions": sorted(list(self.memory._functions.keys())),
+            "classes": sorted(list(self.memory._classes.keys())),
+        }
+        d["environment"] = self.environment.to_dict()
         return d
 
 
@@ -43,14 +46,15 @@ class Unit:
     """
     Compilation unit, representing a single file, with its content and type.
     """
+
     Type = Enum("Type", "Class Procedures Script")
 
     content: str
-    unit_type: 'Unit.Type'
+    unit_type: "Unit.Type"
     name: Optional[str] = ""
 
     @staticmethod
-    def from_file(file_path: str) -> 'Unit':
+    def from_file(file_path: str) -> "Unit":
         """
         Build a unit from a file path. See Unit.from_content for information
         about extensions.
@@ -61,8 +65,9 @@ class Unit:
         return Unit.from_content(content, file_path)
 
     @staticmethod
-    def from_content(file_content: str, file_path: Optional[str] = None) \
-            -> 'Unit':
+    def from_content(
+        file_content: str, file_path: Optional[str] = None
+    ) -> "Unit":
         """
         Build a unit from a file content. The unit type is determined based on
         the extension of the file: 'cls' for class module, 'bas' for
@@ -90,6 +95,7 @@ class Compiler(Visitor):
     references and memory by accessing the corresponding properties. To start a
     new analysis, use reset.
     """
+
     __environment: Environment
     __current_reference: Reference
     __memory: Memory
@@ -108,12 +114,12 @@ class Compiler(Visitor):
         Add a project to the current program and use it as the parent project
         for the following operations.
         """
-        project = self.__environment.build_child(Project,
-                                                 name=project_name)
+        project = self.__environment.build_child(Project, name=project_name)
         self.__current_reference = project
 
-    def add_module(self, ast: AST, module_type,
-                   module_name: str = None) -> None:
+    def add_module(
+        self, ast: AST, module_type, module_name: str = None
+    ) -> None:
         """
         Add a module to the current project, analysing the AST of the module.
         """
@@ -126,13 +132,14 @@ class Compiler(Visitor):
                 project = self.__environment.get_child("Default")
             except ResolutionError:
                 project = self.__environment.build_child(
-                    Project,
-                    name="Default")
+                    Project, name="Default"
+                )
 
             self.__current_reference = project
 
         module = self.__current_reference.build_child(
-            module_type, name=module_name)
+            module_type, name=module_name
+        )
 
         if module_type is ClassModule:
             self.__memory.classes[str(module)] = Class([], module)
@@ -143,7 +150,7 @@ class Compiler(Visitor):
     def load_host_project(self, project_path: str) -> None:
         """Load a Python package as a VBA host project."""
         path = Path(project_path)
-        assert(path.is_dir())
+        assert path.is_dir()
         project_name = path.name
 
         project = Project(project_name)
@@ -152,8 +159,9 @@ class Compiler(Visitor):
 
         for module_path in path.glob("*.py"):
             module_name = f"{project_name}.{module_path.name[:-3]}"
-            module_spec = spec_from_file_location(module_name,
-                                                  module_path.absolute())
+            module_spec = spec_from_file_location(
+                module_name, module_path.absolute()
+            )
             module = module_from_spec(module_spec)
             module_spec.loader.exec_module(module)
 
@@ -166,58 +174,62 @@ class Compiler(Visitor):
         Extract objects defined in an already loaded Python module and add them
         to the current program.
         """
+
         def locally_defined(predicate):
             def decorated_predicate(member):
-                return predicate(member) \
-                    and member.__module__ == module.__name__
+                return (
+                    predicate(member) and member.__module__ == module.__name__
+                )
 
             return decorated_predicate
 
-        module_name = module.__name__.split('.')[-1]
+        module_name = module.__name__.split(".")[-1]
 
         classes = getmembers(module, locally_defined(isclass))
-        assert(len(classes) in (0, 1))
+        assert len(classes) in (0, 1)
         if len(classes) == 0:
             self.__current_reference = self.__current_reference.build_child(
-                ProceduralModule, module_name)
+                ProceduralModule, module_name
+            )
             functions_holder = module
         else:
             self.__current_reference = self.__current_reference.build_child(
-                ClassModule, module_name)
+                ClassModule, module_name
+            )
             class_name = classes[0][0]
             py_class = getattr(module, class_name)
             functions_holder = py_class
 
             for variable in py_class.variables:
                 self.__current_reference.build_child(
-                    Variable,
-                    variable,
-                    extent=Variable.Extent.Object
+                    Variable, variable, extent=Variable.Extent.Object
                 )
 
             vba_class = Class(py_class.variables, self.__current_reference)
             self.__memory.classes[str(self.__current_reference)] = vba_class
 
         for name, function in getmembers(
-                functions_holder, locally_defined(isfunction)):
+            functions_holder, locally_defined(isfunction)
+        ):
             self.load_host_function(function)
 
         for name, python_value in getmembers(
-                module, lambda obj: not(isfunction(obj) or isclass(obj))):
-            if not name.startswith('__'):
+            module, lambda obj: not (isfunction(obj) or isclass(obj))
+        ):
+            if not name.startswith("__"):
                 reference = self.__try_add_variable(name)
                 vba_value = Value.from_python_base_type(python_value)
                 self.__memory.global_variables[str(reference)] = vba_value
 
         self.__current_reference = self.__current_reference.parent
 
-    def load_host_function(self, function: ExternalFunction.Signature) \
-            -> None:
+    def load_host_function(self, function: ExternalFunction.Signature) -> None:
         typed_function = ExternalFunction.from_function(function)
         name = typed_function.name
 
         function = self.__current_reference.build_child(
-            FunctionReference, name=name)
+            FunctionReference, name=name
+        )
         typed_function.reference = function
         self.__memory.add_function(str(function), typed_function)
 
@@ -256,8 +268,7 @@ class Compiler(Visitor):
         self.__current_reference = self.__current_reference.parent
 
     def __try_add_variable(self, name: str) -> None:
-        assert(isinstance(self.__current_reference,
-                          (Module, FunctionReference)))
+        assert isinstance(self.__current_reference, (Module, FunctionReference))
 
         try:
             self.__current_reference.get_child(name)
@@ -275,9 +286,8 @@ class Compiler(Visitor):
             extent = Variable.Extent.Procedure
 
         return self.__current_reference.build_child(
-            Variable,
-            name=name,
-            extent=extent)
+            Variable, name=name, extent=extent
+        )
 
     def visit_Block(self, block: Block) -> None:
         for statement in block.body:
@@ -326,7 +336,8 @@ class Compiler(Visitor):
 
     @staticmethod
     def compile_units(
-            units: List[Unit], project: Optional[str] = None) -> Program:
+        units: List[Unit], project: Optional[str] = None
+    ) -> Program:
         """
         Compile a list of units belonging to the same project.
         """
@@ -352,7 +363,8 @@ class Compiler(Visitor):
 
     @staticmethod
     def compile_files(
-            paths: List[str], project: Optional[str] = None) -> Program:
+        paths: List[str], project: Optional[str] = None
+    ) -> Program:
         """
         Parse and compile a list of files with Office extensions (cls and bas)
         or vbs extension for standalone scripts.
@@ -367,12 +379,15 @@ class Compiler(Visitor):
         files.
         """
         path = Path(project_path)
-        assert(path.is_dir())
-        paths = list(chain(list(path.rglob(f'*.{ext}'))
-                           for ext in ('cls', 'bas')))
-        paths = [str(file.absolute()) for glob in
-                 (path.rglob(f"*.{ext}") for ext in ('cls', 'bas'))
-                 for file in glob]
+        assert path.is_dir()
+        paths = list(
+            chain(list(path.rglob(f"*.{ext}")) for ext in ("cls", "bas"))
+        )
+        paths = [
+            str(file.absolute())
+            for glob in (path.rglob(f"*.{ext}") for ext in ("cls", "bas"))
+            for file in glob
+        ]
 
         return Compiler.compile_files(paths, path.stem)
 
@@ -390,11 +405,12 @@ class Compiler(Visitor):
         libraries = list(
             map(
                 lambda project_name: pkg_resources.resource_filename(
-                    'emu.lib', project_name),
+                    "emu.lib", project_name
+                ),
                 filter(
-                    lambda directory: not directory.startswith('__'),
-                    pkg_resources.resource_listdir('emu', 'lib')
-                )
+                    lambda directory: not directory.startswith("__"),
+                    pkg_resources.resource_listdir("emu", "lib"),
+                ),
             )
         )
 

@@ -13,8 +13,17 @@
 from abc import ABC, abstractmethod
 from dataclasses import InitVar, dataclass
 from inspect import signature
-from typing import (Any, Callable, Dict, Generic, List, Optional, Tuple,
-                    TypeVar, Union)
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 from typing import Type as pType
 
 from pyparsing import Or, opAssoc, ParseExpression
@@ -31,6 +40,7 @@ class Operation(ABC):
 @dataclass
 class UnaryOperation(Operation):
     """Represent the underlying function of a unary operator"""
+
     function: InitVar[Callable[[Any], Any]]
     arg_type: Type
     return_type: Type
@@ -43,6 +53,7 @@ class UnaryOperation(Operation):
 @dataclass
 class BinaryOperation(Operation):
     """Represent the underlying function of a binary operator"""
+
     function: InitVar[Callable[[Any, Any], Any]]
     left_type: Type
     right_type: Type
@@ -53,13 +64,14 @@ class BinaryOperation(Operation):
         self.function = function
 
 
-T = TypeVar('T', UnaryOperation, BinaryOperation)
+T = TypeVar("T", UnaryOperation, BinaryOperation)
 
 
 class Operator(Generic[T], ABC):
     """
     Abstract operator, be it unary or binary.
     """
+
     symbol: str
     operations: List[T]
 
@@ -117,8 +129,10 @@ class UnaryOperator(Operator[UnaryOperation]):
             except ConversionError:
                 pass
 
-        msg = f"Type {value.base_type} does not match with operator " \
-              f"{self.symbol}"
+        msg = (
+            f"Type {value.base_type} does not match with operator "
+            f"{self.symbol}"
+        )
         raise OperatorError(msg)
 
 
@@ -147,8 +161,10 @@ class BinaryOperator(Operator[BinaryOperation]):
             except ConversionError:
                 pass
 
-        msg = f"Types {left_value.base_type}, {right_value.base_type} do " \
-              f"not match with operator {self.symbol}"
+        msg = (
+            f"Types {left_value.base_type}, {right_value.base_type} do "
+            f"not match with operator {self.symbol}"
+        )
         raise OperatorError(msg)
 
 
@@ -162,6 +178,7 @@ class OperatorsMap:
     end_precedence_group. Finally, you can use get_precedence_list with
     pyparsing.infixNotation.
     """
+
     __operators: Dict[str, Operator]
     __ordered_operators: List[List[str]]
     __growing_precedence: bool
@@ -211,8 +228,9 @@ class OperatorsMap:
         __operators and __ordered_operators
         """
         if symbol in self.__operators:
-            assert(isinstance(operation,
-                              type(self.__operators[symbol].operations[-1])))
+            assert isinstance(
+                operation, type(self.__operators[symbol].operations[-1])
+            )
             self.__operators[symbol].operations.append(operation)
         else:
             if self.__growing_precedence:
@@ -223,14 +241,18 @@ class OperatorsMap:
             operator = Operator.from_operation(symbol, operation)
             self.__operators[symbol] = operator
 
-    def add_unary_operation(self, symbol: str, function: Callable[[Any], Any],
-                            arg_type: Type, rtype: Optional[Type] = None) \
-            -> None:
+    def add_unary_operation(
+        self,
+        symbol: str,
+        function: Callable[[Any], Any],
+        arg_type: Type,
+        rtype: Optional[Type] = None,
+    ) -> None:
         """
         Add a unary operation to the map. Be carefull of the call order of this
         method: operators are added with decreasing precedence.
         """
-        assert(len(signature(function).parameters) == 1)
+        assert len(signature(function).parameters) == 1
 
         if rtype is None:
             rtype = arg_type
@@ -238,15 +260,19 @@ class OperatorsMap:
         operation = UnaryOperation(function, arg_type, rtype)
         self.__insert_operation(symbol, operation)
 
-    def add_binary_operation(self, symbol: str,
-                             function: Callable[[Any, Any], Any],
-                             ltype: Type, rtype: Optional[Type] = None,
-                             return_type: Optional[Type] = None) -> None:
+    def add_binary_operation(
+        self,
+        symbol: str,
+        function: Callable[[Any, Any], Any],
+        ltype: Type,
+        rtype: Optional[Type] = None,
+        return_type: Optional[Type] = None,
+    ) -> None:
         """
         Add a binary operation to the map. Be carefull of the call order of
         this method: operators are added with decreasing precedence.
         """
-        assert(len(signature(function).parameters) == 2)
+        assert len(signature(function).parameters) == 2
 
         if return_type is None:
             return_type = ltype
@@ -269,24 +295,25 @@ class OperatorsMap:
         argument type of a binary operator, with (symbol, function, left,
         return).
         """
-        assert(len(operation_tuple) >= 3)
+        assert len(operation_tuple) >= 3
         symbol = operation_tuple[0]
         function = operation_tuple[1]
         ltype = operation_tuple[2]
 
         arity = len(signature(function).parameters)
-        assert(arity in (1, 2))
+        assert arity in (1, 2)
 
         if arity == 1:
-            assert(len(operation_tuple) in (3, 4))
+            assert len(operation_tuple) in (3, 4)
             self.add_unary_operation(*operation_tuple)
         elif arity == 2:
-            assert(len(operation_tuple) in (3, 4, 5))
+            assert len(operation_tuple) in (3, 4, 5)
 
             if len(operation_tuple) == 4:
                 return_type = operation_tuple[3]
-                self.add_binary_operation(symbol, function, ltype,
-                                          return_type=return_type)
+                self.add_binary_operation(
+                    symbol, function, ltype, return_type=return_type
+                )
             else:
                 self.add_binary_operation(*operation_tuple)
 
@@ -294,54 +321,94 @@ class OperatorsMap:
 OPERATORS_MAP = OperatorsMap()
 
 # Arithmetic operators
-OPERATORS_MAP << ('^', lambda l, r: l.value ** r.value, Type.Integer)
+OPERATORS_MAP << ("^", lambda l, r: l.value ** r.value, Type.Integer)
 
 OPERATORS_MAP.start_precedence_group()
-OPERATORS_MAP << ('*', lambda l, r: l.value * r.value, Type.Integer)
-OPERATORS_MAP << ('/', lambda l, r: l.value / r.value, Type.Integer)
+OPERATORS_MAP << ("*", lambda l, r: l.value * r.value, Type.Integer)
+OPERATORS_MAP << ("/", lambda l, r: l.value / r.value, Type.Integer)
 OPERATORS_MAP.end_precedence_group()
 
-OPERATORS_MAP << ('\\', lambda l, r: l.value // r.value, Type.Integer)
-OPERATORS_MAP << ('Mod', lambda l, r: l.value % r.value, Type.Integer)
+OPERATORS_MAP << ("\\", lambda l, r: l.value // r.value, Type.Integer)
+OPERATORS_MAP << ("Mod", lambda l, r: l.value % r.value, Type.Integer)
 
 OPERATORS_MAP.start_precedence_group()
-OPERATORS_MAP << ('+', lambda l, r: l.value + r.value, Type.Integer)
-OPERATORS_MAP << ('+', lambda l, r: l.value + r.value, Type.String)
-OPERATORS_MAP << ('-', lambda l, r: l.value - r.value, Type.Integer)
+OPERATORS_MAP << ("+", lambda l, r: l.value + r.value, Type.Integer)
+OPERATORS_MAP << ("+", lambda l, r: l.value + r.value, Type.String)
+OPERATORS_MAP << ("-", lambda l, r: l.value - r.value, Type.Integer)
 OPERATORS_MAP.end_precedence_group()
 
 # Concatenation operator
-OPERATORS_MAP << ('&', lambda l, r: l.value + r.value, Type.String)
+OPERATORS_MAP << ("&", lambda l, r: l.value + r.value, Type.String)
 
 # Relational operators
 OPERATORS_MAP.start_precedence_group()
-OPERATORS_MAP << ('=', lambda l, r: l.value == r.value,
-                  Type.Integer, Type.Boolean)
-OPERATORS_MAP << ('=', lambda l, r: l.value == r.value,
-                  Type.String, Type.Boolean)
-OPERATORS_MAP << ('<>', lambda l, r: l.value != r.value,
-                  Type.Integer, Type.Boolean)
-OPERATORS_MAP << ('<>', lambda l, r: l.value != r.value,
-                  Type.String, Type.Boolean)
-OPERATORS_MAP << ('><', lambda l, r: l.value != r.value,
-                  Type.Integer, Type.Boolean)
-OPERATORS_MAP << ('><', lambda l, r: l.value != r.value,
-                  Type.String, Type.Boolean)
-OPERATORS_MAP << ('<', lambda l, r: l.value < r.value,
-                  Type.Integer, Type.Boolean)
-OPERATORS_MAP << ('>', lambda l, r: l.value > r.value,
-                  Type.Integer, Type.Boolean)
-OPERATORS_MAP << ('<=', lambda l, r: l.value <= r.value,
-                  Type.Integer, Type.Boolean)
-OPERATORS_MAP << ('>=', lambda l, r: l.value >= r.value,
-                  Type.Integer, Type.Boolean)
+OPERATORS_MAP << (
+    "=",
+    lambda l, r: l.value == r.value,
+    Type.Integer,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "=",
+    lambda l, r: l.value == r.value,
+    Type.String,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "<>",
+    lambda l, r: l.value != r.value,
+    Type.Integer,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "<>",
+    lambda l, r: l.value != r.value,
+    Type.String,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "><",
+    lambda l, r: l.value != r.value,
+    Type.Integer,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "><",
+    lambda l, r: l.value != r.value,
+    Type.String,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "<",
+    lambda l, r: l.value < r.value,
+    Type.Integer,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    ">",
+    lambda l, r: l.value > r.value,
+    Type.Integer,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    "<=",
+    lambda l, r: l.value <= r.value,
+    Type.Integer,
+    Type.Boolean,
+)
+OPERATORS_MAP << (
+    ">=",
+    lambda l, r: l.value >= r.value,
+    Type.Integer,
+    Type.Boolean,
+)
 OPERATORS_MAP.end_precedence_group()
 
 
 # Logical and bitwise operators
-OPERATORS_MAP << ('Not', lambda a: not a.value, Type.Boolean)
-OPERATORS_MAP << ('And', lambda l, r: l.value and r.value, Type.Boolean)
-OPERATORS_MAP << ('Or', lambda l, r: l.value or r.value, Type.Boolean)
-OPERATORS_MAP << ('Xor', lambda l, r: l.value != r.value, Type.Boolean)
-OPERATORS_MAP << ('Eqv', lambda l, r: l.value == r.value, Type.Boolean)
-OPERATORS_MAP << ('Imp', lambda l, r: (not l.value) or r.value, Type.Boolean)
+OPERATORS_MAP << ("Not", lambda a: not a.value, Type.Boolean)
+OPERATORS_MAP << ("And", lambda l, r: l.value and r.value, Type.Boolean)
+OPERATORS_MAP << ("Or", lambda l, r: l.value or r.value, Type.Boolean)
+OPERATORS_MAP << ("Xor", lambda l, r: l.value != r.value, Type.Boolean)
+OPERATORS_MAP << ("Eqv", lambda l, r: l.value == r.value, Type.Boolean)
+OPERATORS_MAP << ("Imp", lambda l, r: (not l.value) or r.value, Type.Boolean)

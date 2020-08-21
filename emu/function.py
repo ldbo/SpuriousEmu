@@ -11,6 +11,7 @@ from .type import Type
 @dataclass
 class Function(Value):
     """An abstract function, be it implemented in VBA or Python."""
+
     base_type = Type.Function
 
     name: str
@@ -18,9 +19,13 @@ class Function(Value):
     reference: Optional[FunctionReference]
     parent_object: Optional[Object]
 
-    def __init__(self, name: str, arguments_names: List[str],
-                 function: Union["ExternalFunction.Signature", Block],
-                 reference: Optional[FunctionReference] = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        arguments_names: List[str],
+        function: Union["ExternalFunction.Signature", Block],
+        reference: Optional[FunctionReference] = None,
+    ) -> None:
         self.name = name
         self.arguments_names = arguments_names
         self.value = function
@@ -31,8 +36,9 @@ class Function(Value):
         return None
 
     def create_bound_method(self, parent_object: Object) -> "Function":
-        method = type(self)(self.name, self.arguments_names, self.value,
-                            self.reference)
+        method = type(self)(
+            self.name, self.arguments_names, self.value, self.reference
+        )
         method.parent_object = parent_object
         return method
 
@@ -44,25 +50,34 @@ class ExternalFunction(Function):
       - a list of Value objects, the actual arguments of the function
     It has to return a Value object.
     """
+
     Signature = Callable[["Interpreter", List[Value]], Value]
 
-    def __init__(self, name: str, arguments_names: List[str],
-                 external_function: "ExternalFunction.Signature",
-                 reference: Optional[FunctionReference] = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        arguments_names: List[str],
+        external_function: "ExternalFunction.Signature",
+        reference: Optional[FunctionReference] = None,
+    ) -> None:
         super().__init__(name, arguments_names, external_function, reference)
 
     @staticmethod
     def from_function(
-            python_function: Optional["ExternalFunction.Signature"] = None,
-            name: Optional[str] = None) -> \
-        Union["ExternalFunction.Signature",
-              Callable[["ExternalFunction.Signature"], "ExternalFunction"]]:
+        python_function: Optional["ExternalFunction.Signature"] = None,
+        name: Optional[str] = None,
+    ) -> Union[
+        "ExternalFunction.Signature",
+        Callable[["ExternalFunction.Signature"], "ExternalFunction"],
+    ]:
         """
         Create an ExternalFunction from a Python function, optionally changing
         its name.
         """
-        def decorator(python_function: "ExternalFunction.Signature") \
-                -> "ExternalFunction":
+
+        def decorator(
+            python_function: "ExternalFunction.Signature",
+        ) -> "ExternalFunction":
             new_name = python_function.__name__ if name is None else name
             arguments_names = list(getfullargspec(python_function)[0])
             return ExternalFunction(new_name, arguments_names, python_function)
@@ -80,8 +95,13 @@ class ExternalFunction(Function):
 class InternalFunction(Function):
     """VBA function."""
 
-    def __init__(self, name: str, arguments_names: List[str],
-                 body: Block, reference: FunctionReference) -> None:
+    def __init__(
+        self,
+        name: str,
+        arguments_names: List[str],
+        body: Block,
+        reference: FunctionReference,
+    ) -> None:
         super().__init__(name, arguments_names, body, reference)
 
     @property

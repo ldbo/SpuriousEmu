@@ -9,6 +9,7 @@ class Symbol:
     A symbol extracted during compilation, representing a named programming
     element, and its hierarchical children.
     """
+
     Type = Enum("Type", "Namespace Module Function Variable")
 
     _name: str
@@ -25,14 +26,15 @@ class Symbol:
         name = "<Root>"
         symbol_type = Symbol.Type.Namespace
         parent = None
-        children: List['Symbol'] = []
+        children: List["Symbol"] = []
         position: Tuple[int, ...] = tuple()
         root = Symbol(name, symbol_type, parent, children, position)
         root.__full_name = "<Root>"
         return root
 
-    def __init__(self, name, symbol_type, parent=None, children=None,
-                 position=None) -> None:
+    def __init__(
+        self, name, symbol_type, parent=None, children=None, position=None
+    ) -> None:
         """
         Shall not be called outside of Symbol or a child class. Use add_child
         instead.
@@ -60,22 +62,23 @@ class Symbol:
         """Add an already initialized child."""
         if self.find_child(child._name) is None:
             child._parent = self
-            child._position = self._position + (len(self._children), )
+            child._position = self._position + (len(self._children),)
             child.__full_name = f"{self.__full_name}.{child._name}"
             self._children.append(child)
             return child
         else:
-            msg = f"Trying to add the symbol {child._name} in {self}, which " \
+            msg = (
+                f"Trying to add the symbol {child._name} in {self}, which "
                 "already contains a symbol with the same name"
+            )
             raise CompilationError(msg)
 
     def add_child(self, name, child_type) -> "Symbol":
         """Initialize a child, add it and return it."""
         parent = None
-        children: List['Symbol'] = []
+        children: List["Symbol"] = []
         position = None
-        child = Symbol(
-            name, child_type, parent, children, position)
+        child = Symbol(name, child_type, parent, children, position)
         return self.__add_child(child)
 
     def find_child(self, name: str) -> Optional["Symbol"]:
@@ -86,7 +89,8 @@ class Symbol:
         """
 
         results = list(
-            filter(lambda child: child._name == name, self._children))
+            filter(lambda child: child._name == name, self._children)
+        )
         if len(results) == 0:
             return None
         elif len(results) == 1:
@@ -110,7 +114,7 @@ class Symbol:
 
     def resolve(self, name: str) -> "Symbol":
         """Resolve a name in the recursive children of the symbol."""
-        resolution = self.__resolve(name.split('.'))
+        resolution = self.__resolve(name.split("."))
         if resolution is None:
             msg = f"Can't resolve {name} from {self.full_name()}"
             raise ResolutionError(msg)

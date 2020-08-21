@@ -20,6 +20,7 @@ class Serializer:
     string, corresponding Python classes, and optional extensions, are stored
     in Serialize.FORMATS.
     """
+
     @dataclass
     class FileFormat:
         object_type: type
@@ -27,8 +28,8 @@ class Serializer:
         extension: str
 
     FORMATS: List[FileFormat] = [
-        FileFormat(Program, b'SpuriousEmuProgram', ".spemu-com"),
-        FileFormat(OutsideWorld, b'SpuriousEmuOutsideWorld', ".spemu-out")
+        FileFormat(Program, b"SpuriousEmuProgram", ".spemu-com"),
+        FileFormat(OutsideWorld, b"SpuriousEmuOutsideWorld", ".spemu-out"),
     ]
 
     SerializableType = Union[Program, OutsideWorld]
@@ -58,7 +59,7 @@ class Serializer:
 
         content = cls.serialize(obj)
 
-        with open(save_path, 'wb') as f:
+        with open(save_path, "wb") as f:
             f.write(content)
 
     @classmethod
@@ -66,7 +67,7 @@ class Serializer:
         for fmt in cls.FORMATS:
             magic = fmt.magic_string
             if content.startswith(magic):
-                body = content[len(magic):]
+                body = content[len(magic) :]
                 return pickle.loads(body)
 
         raise SerializationError("Unsupported format")
@@ -77,7 +78,7 @@ class Serializer:
         Try to deserialize the content of the given file, based on its magic
         string.
         """
-        with open(path, 'rb') as f:
+        with open(path, "rb") as f:
             file_content = f.read()
 
         return cls.deserialize(file_content)
