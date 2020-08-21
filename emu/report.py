@@ -18,8 +18,10 @@ from .serialize import Serializer
 
 
 def _needs_outside_world(method):
-    error_msg = "ReportGenerator needs an OutsideWorld object to call " \
+    error_msg = (
+        "ReportGenerator needs an OutsideWorld object to call "
         f"{method.__name__}"
+    )
 
     def decorated(*args, **kwargs):
         if args[0].outside_world is None:
@@ -31,8 +33,9 @@ def _needs_outside_world(method):
 
 
 def _needs_program(method):
-    error_msg = "ReportGenerator needs a Program object to call " \
-        f"{method.__name__}"
+    error_msg = (
+        "ReportGenerator needs a Program object to call " f"{method.__name__}"
+    )
 
     def decorated(*args, **kwargs):
         if args[0].program is None:
@@ -60,11 +63,13 @@ class ReportGenerator:
         - hash_algorithm: hashing algorithm used to name files
         - shorten: If True, shorten the context and data fields in TABLE output
     """
+
     class Format(Enum):
         """Display formats supported by the ReportGenerator."""
-        JSON = 'json'
-        CSV = 'csv'
-        TABLE = 'table'
+
+        JSON = "json"
+        CSV = "csv"
+        TABLE = "table"
 
     EventLine = Tuple[int, str, str, str, Any]
 
@@ -85,7 +90,7 @@ class ReportGenerator:
         the self.hash algorithm.
         """
         hasher = self.hash_algorithm()
-        hasher.update(content.encode('utf-8'))
+        hasher.update(content.encode("utf-8"))
 
         return hasher.hexdigest()
 
@@ -93,8 +98,9 @@ class ReportGenerator:
         """Return the JSON dump of the report."""
         return json.dumps(report, indent=self.indent, sort_keys=True)
 
-    def event_to_tuple(self, event: OutsideWorld.Event) \
-            -> "ReportGenerator.EventLine":
+    def event_to_tuple(
+        self, event: OutsideWorld.Event
+    ) -> "ReportGenerator.EventLine":
         """
         Convert an event to a tuple.
         """
@@ -106,8 +112,9 @@ class ReportGenerator:
 
         return (identifier, time, category, context, data)
 
-    def shorten_tuple(self, event: "ReportGenerator.EventLine") \
-            -> "ReportGenerator.EventLine":
+    def shorten_tuple(
+        self, event: "ReportGenerator.EventLine"
+    ) -> "ReportGenerator.EventLine":
         """
         Shorten a tuple if self.shorten is True, ie. only keep context end
         symbol and discard data['data'] if possible.
@@ -118,18 +125,22 @@ class ReportGenerator:
         identifier = event[0]
         time = event[1]
         category = event[2]
-        context = event[3].split('.')[-1]
+        context = event[3].split(".")[-1]
 
         if isinstance(event[4], dict):
-            data = {key: value for key, value in event[4].items()
-                    if key != "data"}
+            data = {
+                key: value for key, value in event[4].items() if key != "data"
+            }
         else:
             data = event[4]
 
         return (identifier, time, category, context, data)
 
-    def similar_events(self, event1: "ReportGenerator.EventLine",
-                       event2: "ReportGenerator.EventLine") -> bool:
+    def similar_events(
+        self,
+        event1: "ReportGenerator.EventLine",
+        event2: "ReportGenerator.EventLine",
+    ) -> bool:
         """
         Compare two events, looking for similarities. Two events are similar
         if:
@@ -155,13 +166,13 @@ class ReportGenerator:
         if not isinstance(data1, dict):
             return True
 
-        if 'data' not in data1 or 'data' not in data2:
+        if "data" not in data1 or "data" not in data2:
             return False
 
-        if 'type' not in data1 or 'type' not in data2:
+        if "type" not in data1 or "type" not in data2:
             return False
 
-        return data1['type'] == data2['type']
+        return data1["type"] == data2["type"]
 
     def events_to_table(self, events: List[OutsideWorld.Event]) -> PrettyTable:
         """
@@ -171,9 +182,9 @@ class ReportGenerator:
         Depending on shorten and skip_similar, series of similar events can be
         skiped.
         """
-        fields = ('ID', 'Time (s)', 'Category', 'Context', 'Data')
+        fields = ("ID", "Time (s)", "Category", "Context", "Data")
         table = PrettyTable(fields)
-        table.align = 'l'
+        table.align = "l"
 
         similar_events_streak = 0
         previous_event_tuple = None
@@ -183,39 +194,35 @@ class ReportGenerator:
                 if self.similar_events(previous_event_tuple, event_tuple):
                     similar_events_streak += 1
                 else:
-                    if similar_events_streak > self.skip_similar + 1 \
-                       and self.shorten:
-                        table.add_row(('...', ) * 5)
+                    if (
+                        similar_events_streak > self.skip_similar + 1
+                        and self.shorten
+                    ):
+                        table.add_row(("...",) * 5)
 
                     if similar_events_streak > 1:
-                        table.add_row(
-                            self.shorten_tuple(previous_event_tuple))
+                        table.add_row(self.shorten_tuple(previous_event_tuple))
                     similar_events_streak = 0
 
-            if similar_events_streak <= self.skip_similar \
-               or not self.shorten:
+            if similar_events_streak <= self.skip_similar or not self.shorten:
                 table.add_row(self.shorten_tuple(event_tuple))
 
             previous_event_tuple = event_tuple
 
-        if similar_events_streak > self.skip_similar + 1 \
-           and self.shorten:
-            table.add_row(('...', ) * 5)
+        if similar_events_streak > self.skip_similar + 1 and self.shorten:
+            table.add_row(("...",) * 5)
 
         if similar_events_streak > 1:
-            table.add_row(
-                self.shorten_tuple(previous_event_tuple))
+            table.add_row(self.shorten_tuple(previous_event_tuple))
 
         return table
 
     def events_to_csv(self, events: List["ReportGenerator.EventLine"]) -> str:
         """Return a CSV formatted representation of a list of events."""
         stream = StringIO()
-        writer = csv.writer(stream,
-                            delimiter=";",
-                            quoting=csv.QUOTE_NONNUMERIC)
+        writer = csv.writer(stream, delimiter=";", quoting=csv.QUOTE_NONNUMERIC)
 
-        writer.writerow(('ID', 'Time (s)', 'Category', 'Context', 'Data'))
+        writer.writerow(("ID", "Time (s)", "Category", "Context", "Data"))
 
         for event in events:
             writer.writerow(event)
@@ -227,11 +234,11 @@ class ReportGenerator:
     @_needs_program
     def extract_symbols(self) -> Dict[str, List[str]]:
         """Returns a dictionnary with 'functions' and 'classes' keys."""
-        memory_dict = self.program.to_dict()['memory']
-        functions = memory_dict['functions']
-        classes = memory_dict['classes']
+        memory_dict = self.program.to_dict()["memory"]
+        functions = memory_dict["functions"]
+        classes = memory_dict["classes"]
 
-        return {'functions': functions, 'classes': classes}
+        return {"functions": functions, "classes": classes}
 
     @_needs_program
     def produce_symbols(self) -> str:
@@ -244,10 +251,10 @@ class ReportGenerator:
             return "CSV not supported"
         elif self.output_format is ReportGenerator.Format.TABLE:
             classes = PrettyTable()
-            classes.add_column("Classes", symbols['classes'], align="l")
+            classes.add_column("Classes", symbols["classes"], align="l")
 
             functions = PrettyTable()
-            functions.add_column("Functions", symbols['functions'], align='l')
+            functions.add_column("Functions", symbols["functions"], align="l")
 
             return f"{classes}\n\n{functions}"
 
@@ -285,7 +292,8 @@ class ReportGenerator:
 
             if self.shorten:
                 return table.get_string(
-                    fields=('ID', 'Category', 'Context', 'Data'))
+                    fields=("ID", "Category", "Context", "Data")
+                )
 
             return table.get_string()
 
@@ -297,10 +305,10 @@ class ReportGenerator:
         for event in self.outside_world.events:
             category = event.category.value
             event_dict = {
-                'identifier': event.identifier,
-                'time': event.time,
-                'context': event.context,
-                'data': event.data
+                "identifier": event.identifier,
+                "time": event.time,
+                "context": event.context,
+                "data": event.data,
             }
 
             category_list = report.get(event.category.value, [])
@@ -315,15 +323,17 @@ class ReportGenerator:
 
             for category in report:
                 output += f"{category}:\n"
-                events = [self.event_to_tuple(event)
-                          for event in self.outside_world.events
-                          if event.category.value == category]
+                events = [
+                    self.event_to_tuple(event)
+                    for event in self.outside_world.events
+                    if event.category.value == category
+                ]
                 table = self.events_to_table(events)
 
                 if self.shorten:
-                    fields = ('ID', 'Context', 'Data')
+                    fields = ("ID", "Context", "Data")
                 else:
-                    fields = ('ID', 'Time (s)', 'Context', 'Data')
+                    fields = ("ID", "Time (s)", "Context", "Data")
 
                 output += table.get_string(fields=fields)
                 output += "\n\n"
@@ -347,12 +357,12 @@ class ReportGenerator:
         for name, content in self.outside_world.files.items():
             content_hash = self.hash_file(content)
             content_path = path.joinpath(content_hash)
-            filename_path = path.joinpath(f'{content_hash}.filename.txt')
+            filename_path = path.joinpath(f"{content_hash}.filename.txt")
 
-            with open(content_path.absolute(), 'w') as f:
+            with open(content_path.absolute(), "w") as f:
                 f.write(content)
 
-            with open(filename_path.absolute(), 'w') as f:
+            with open(filename_path.absolute(), "w") as f:
                 f.write(name)
 
     @_needs_outside_world

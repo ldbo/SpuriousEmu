@@ -1,5 +1,5 @@
 from emu import Parser, interpreter, Compiler, reference
-from tests.test import (assert_correct_function, SourceFile, Result)
+from tests.test import assert_correct_function, SourceFile, Result
 
 
 def interpreting(vbs: SourceFile) -> Result:
@@ -21,7 +21,7 @@ def evaluate_expressions(vbs: SourceFile) -> Result:
     expressions = []
     for expression in ast.body:
         expressions.append(str(interp.evaluate(expression)))
-    return {'expressions': expressions}
+    return {"expressions": expressions}
 
 
 def test_type():
@@ -29,12 +29,13 @@ def test_type():
 
 
 def test_literal_expression():
-    assert_correct_function('interpreter_literal_expression',
-                            evaluate_expressions)
+    assert_correct_function(
+        "interpreter_literal_expression", evaluate_expressions
+    )
 
 
 def test_01():
-    assert_correct_function('interpreter_01', interpreting)
+    assert_correct_function("interpreter_01", interpreting)
 
 
 def test_02():

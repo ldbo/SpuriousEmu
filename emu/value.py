@@ -16,6 +16,7 @@ from .type import Type
 
 class Value(ABC):
     """Represents the interpretation of an expression."""
+
     base_type: Type
     value: Any
 
@@ -58,8 +59,9 @@ class Value(ABC):
         try:
             return TYPES_MAP[to_type](value)
         except KeyError:
-            raise NotImplementedError(f"Type {to_type} is not already "
-                                      "implemented")
+            raise NotImplementedError(
+                f"Type {to_type} is not already " "implemented"
+            )
 
     @staticmethod
     def from_literal(literal) -> "Value":
@@ -134,8 +136,9 @@ class Object(Value):
     class_reference: ClassModule
     value: Dict[str, Value]  # Holds the state of the object
 
-    def __init__(self, class_reference=ClassModule,
-                 variables: Dict[str, Value] = None) -> None:
+    def __init__(
+        self, class_reference=ClassModule, variables: Dict[str, Value] = None
+    ) -> None:
         self.class_reference = class_reference
         self.value = variables if variables is not None else dict()
 
@@ -148,8 +151,4 @@ class Object(Value):
         return None
 
 
-TYPES_MAP = {
-    Type.Integer: Integer,
-    Type.Boolean: Boolean,
-    Type.String: String
-}
+TYPES_MAP = {Type.Integer: Integer, Type.Boolean: Boolean, Type.String: String}

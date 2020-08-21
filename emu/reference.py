@@ -16,6 +16,7 @@ class Reference(ABC):
     of a program are seen as a tree denoting its organization, with variables
     as the only kind of leaf.
     """
+
     Category = Enum("Category", "Structural Computational")
 
     category: "Reference.Category"
@@ -26,8 +27,12 @@ class Reference(ABC):
     __full_name: str
 
     @abstractmethod
-    def __init__(self, name: str, parent: "Reference" = None,
-                 children: List["Reference"] = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        parent: "Reference" = None,
+        children: List["Reference"] = None,
+    ) -> None:
         self.name = name
         self.parent = parent
         self.children = children if children is not None else []
@@ -40,7 +45,7 @@ class Reference(ABC):
         :throws ResolutionError: If there is no child with the given name
         """
         ret = list(filter(lambda child: child.name == name, self.children))
-        assert(len(ret) <= 1)
+        assert len(ret) <= 1
 
         if len(ret) == 1:
             return ret[0]
@@ -77,9 +82,9 @@ class Reference(ABC):
         self.add_child(child)
         return child
 
-    def search_child(self, name: str,
-                     exclude_child: Optional["Reference"] = None) \
-            -> "Reference":
+    def search_child(
+        self, name: str, exclude_child: Optional["Reference"] = None
+    ) -> "Reference":
         try:
             return self.get_child(name)
         except ResolutionError:
@@ -96,7 +101,7 @@ class Reference(ABC):
         raise ResolutionError(msg)
 
     def to_dict(self) -> Dict[str, Any]:
-        d = {'name': self.name}
+        d = {"name": self.name}
         for child in sorted(self.children, key=lambda child: child.name):
             child_type = type(child).__name__
             similar_childs = d.get(child_type, [])
@@ -137,22 +142,26 @@ class Module(Reference):
 
     @property
     def functions(self):
-        return list(filter(lambda child: type(child) is FunctionReference,
-                           self.children))
+        return list(
+            filter(
+                lambda child: type(child) is FunctionReference, self.children
+            )
+        )
 
     @property
     def variables(self):
-        return list(filter(lambda child: type(child) is Variable,
-                           self.children))
+        return list(
+            filter(lambda child: type(child) is Variable, self.children)
+        )
 
     def get_function(self, name: str) -> "FunctionReference":
         function = self.get_child(name)
-        assert(type(function) is FunctionReference)
+        assert type(function) is FunctionReference
         return function
 
     def get_variable(self, name: str) -> "Variable":
         variable = self.get_child(name)
-        assert(type(variable) is Variable)
+        assert type(variable) is Variable
         return variable
 
 

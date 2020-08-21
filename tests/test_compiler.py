@@ -1,5 +1,5 @@
 from emu import Parser, Compiler, reference
-from tests.test import (assert_correct_function, SourceFile, Result)
+from tests.test import assert_correct_function, SourceFile, Result
 
 
 def compile_single_file(vbs: SourceFile) -> Result:
@@ -28,8 +28,9 @@ def test_function():
 
 
 def test_standard_library():
-    assert_correct_function("compiler_standard_library",
-                            compile_with_standard_library)
+    assert_correct_function(
+        "compiler_standard_library", compile_with_standard_library
+    )
 
 
 def test_project():

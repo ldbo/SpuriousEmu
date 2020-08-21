@@ -1,8 +1,8 @@
-
 class PreprocessorError(Exception):
     """
     Error raised during preprocessing.
     """
+
     file_name: str
     line_number: int
     message: str

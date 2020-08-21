@@ -4,7 +4,7 @@ class FileHandler:
     @staticmethod
     def Write(interpreter, arguments):
         # TODO check open
-        path = arguments[0].value['path']
+        path = arguments[0].value["path"]
         interpreter.add_file_event("Write", path, arguments[1].value)
 
     @staticmethod
