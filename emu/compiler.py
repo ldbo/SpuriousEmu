@@ -32,8 +32,9 @@ class Program:
 
     def to_dict(self) -> Dict[str, Any]:
         d = dict()
-        d['memory'] = {'functions': list(self.memory._functions.keys()),
-                       'classes': list(self.memory._classes.keys())}
+        d['memory'] = {
+            'functions': sorted(list(self.memory._functions.keys())),
+            'classes': sorted(list(self.memory._classes.keys()))}
         d['environment'] = self.environment.to_dict()
         return d
 

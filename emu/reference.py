@@ -97,7 +97,7 @@ class Reference(ABC):
 
     def to_dict(self) -> Dict[str, Any]:
         d = {'name': self.name}
-        for child in self.children:
+        for child in sorted(self.children, key=lambda child: child.name):
             child_type = type(child).__name__
             similar_childs = d.get(child_type, [])
             d[child_type] = similar_childs + [child.to_dict()]

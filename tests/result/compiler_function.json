@@ -19,10 +19,10 @@
                                 "name": "CalculateSquareRoot",
                                 "Variable": [
                                     {
-                                        "name": "NumberArg"
+                                        "name": "CalculateSquareRoot"
                                     },
                                     {
-                                        "name": "CalculateSquareRoot"
+                                        "name": "NumberArg"
                                     }
                                 ]
                             },
@@ -30,13 +30,13 @@
                                 "name": "Proc",
                                 "Variable": [
                                     {
+                                        "name": "Proc"
+                                    },
+                                    {
                                         "name": "arg1"
                                     },
                                     {
                                         "name": "arg2"
-                                    },
-                                    {
-                                        "name": "Proc"
                                     }
                                 ]
                             }
