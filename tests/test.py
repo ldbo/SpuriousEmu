@@ -91,7 +91,7 @@ def assert_correct_output(test: str, command: str,
         assert_equals(expected_output, output)
     except AssertionError as e:
         print(f"\nOutput:\n{output}\n")
-        print(f"Expected output:\n{expected_output}")
+        print(f"Expected output:\n{expected_output}\n")
         raise(e)
 
 
@@ -104,7 +104,8 @@ def assert_correct_function(test: str,
     try:
         assert_equals(result, expected_result)
     except AssertionError as e:
-        print(f"\nResult:\n{result}")
+        print(f"\nResult:\n{result}\n")
+        print(f"Expected result:\n{expected_result}\n")
         raise(e)
 
 
