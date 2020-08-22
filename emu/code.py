@@ -14,8 +14,9 @@ class Formatter(Visitor):
     the object will accumulate the formatted results which you can get with the
     output field. To start a new output, use reset.
 
-    You can configure the identation character with  the indentation field.
+    You can configure the identation character with the indentation field.
     """
+
     indentation: str = " " * 4
 
     __formatted_node: Optional[str] = field(init=False, repr=None, default=None)
@@ -160,3 +161,20 @@ class Formatter(Visitor):
         self.visit_Block(for_loop)
         self.__indentation_level -= 1
         self.__newline(footer)
+
+    def visit_OnError(self, on_error: OnError) -> None:
+        self.__formatted_node = "On Error "
+        if on_error.goto is None:
+            self.__formatted_node += "Resume Next"
+        else:
+            self.__formatted_node += "Goto" + self.format_ast(on_error.goto)
+
+    def visit_Resume(self, resume: Resume) -> None:
+        self.__formatted_node = "Resume "
+        if resume.goto is None:
+            self.__formatted_node += "Next"
+        else:
+            self.__formatted_node += self.format_ast(resume.goto)
+
+    def visit_ErrorStatement(self, error: ErrorStatement) -> None:
+        self.__formatted_node = "Error " + self.format_ast(error.number)
