@@ -11,6 +11,8 @@ from oletools.olevba import VBA_Parser
 from emu import (
     Program,
     Compiler,
+    Deobfuscator,
+    Formatter,
     Interpreter,
     Unit,
     __version__,
@@ -39,27 +41,12 @@ def build_argparser():
     # Static analysis
     static_parser = subparsers.add_parser(
         "static",
-        help="Static analysis, allows symbols preview, compilation and "
-        "deobfuscation.",
+        help="Static analysis, allows symbols preview and file compilation.",
     )
     static_parser.add_argument(
         "-o",
         "--output",
-        help="Output file, used to save the compilation result or the "
-        "deobfuscated macros",
-    )
-    static_parser.add_argument(
-        "-d",
-        "--deobfuscate",
-        metavar="LEVEL",
-        type=int,
-        help="Enable deobfuscation and specify the deobfuscation level. See "
-        "-e to only process a specific symbol",
-    )
-    static_parser.add_argument(
-        "-e",
-        "--entry",
-        help="Absolute path of the class or function to deobfuscate",
+        help="Output file, used to save the compilation result",
     )
     static_parser.add_argument(
         "input",
@@ -93,6 +80,40 @@ def build_argparser():
                 a SpuriousEmu compiled program""",
     )
     dynamic_parser.set_defaults(func=dynamic_analysis)
+
+    # Deobfuscation
+    deobfuscate_parser = subparsers.add_parser(
+        "deobfuscate", help="Deobfuscate macros."
+    )
+    deobfuscate_parser.add_argument(
+        "-e",
+        "--entry",
+        help="""Symbol to deobfuscate, either a module or a function. If not
+                supplied, deobfuscate all the modules""",
+    )
+    deobfuscate_parser.add_argument(
+        "-p",
+        "--evaluate-pure-functions",
+        type=int,
+        metavar="LEVEL",
+        choices={0, 1, 2},
+        default=1,
+        help="""Replace the use of literal expressions (LEVEL 1, default), as
+                well as pure function calls (LEVEL 2) with thir evaluation.
+                LEVEL 0 does nothing""",
+    )
+    deobfuscate_parser.add_argument(
+        "-s",
+        "--rename-symbols",
+        action="store_true",
+        help="Rename seemingly obfuscated symbol names with legible ones",
+    )
+    deobfuscate_parser.add_argument(
+        "input",
+        help="""Input file, can be an Office document, some VBA source code, or
+                a SpuriousEmu compiled program""",
+    )
+    deobfuscate_parser.set_defaults(func=deobfuscate)
 
     # Report generation
     report_parser = subparsers.add_parser(
@@ -197,14 +218,6 @@ def static_analysis(arguments):
         print(f"Error: input file {arguments.input} does not exist.")
         return 1
 
-    if arguments.deobfuscate is not None:
-        print(f"Error: de-obfuscation is not handled yet.")
-        return 1
-
-    if (arguments.entry is not None) and arguments.deobfuscate is None:
-        print(f"Error: the -e flag requires the -d flag.")
-        return 1
-
     # Compile program
     program = compile_input_file(arguments.input)
 
@@ -225,11 +238,6 @@ def execute_program(program: Program, entry_point: str) -> None:
 
 
 def dynamic_analysis(arguments):
-    # Check arguments validity
-    if not Path(arguments.input).exists():
-        print(f"Error: input file {arguments.input} does not exist.")
-        return 1
-
     # Load and execute
     program = compile_input_file(arguments.input)
     outside_world = execute_program(program, arguments.entry)
@@ -253,11 +261,6 @@ def dynamic_analysis(arguments):
 
 
 def generate_report(arguments):
-    # Check input
-    if not Path(arguments.input).exists():
-        print(f"Error: input file {arguments.input} does not exist.")
-        return 1
-
     # Prepare report generator
     result = Serializer.load(arguments.input)
 
@@ -308,9 +311,39 @@ def generate_report(arguments):
     return 1
 
 
+def deobfuscate(arguments):
+    program = compile_input_file(arguments.input)
+    formatter = Formatter()
+    deobfuscator = Deobfuscator(program)
+    deobfuscator.evaluation_level = arguments.evaluate_pure_functions
+    deobfuscator.rename_symbols = arguments.rename_symbols
+
+    if arguments.entry is not None:
+        print("Warning: don't use -e, you're not as free as Doby yet")
+
+    if arguments.rename_symbols is not None:
+        print("Warning: -s seems to only add cosmetic improvements to the "
+              "CLI ...")
+
+    for module, ast in program.asts.items():
+        print(f"Module: {module}\n==================")
+
+        clean_ast = deobfuscator.deobfuscate(ast)
+        print(formatter.format_ast(clean_ast))
+
+        print("\n==================\n\n")
+
+    return 0
+
+
 def main():
     parser = build_argparser()
     args = parser.parse_args()
+
+    # Check input
+    if hasattr(args, "input") and not Path(args.input).exists():
+        print(f"Error: input file {args.input} does not exist.")
+        return 1
 
     return args.func(args)
 
