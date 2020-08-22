@@ -161,11 +161,14 @@ class FunDef(Block):
     arguments: "ArgListDef"
 
     def __init__(
-        self, name: "Identifier", arguments: "ArgListDef", **kwargs
+        self,
+        name: "Identifier",
+        arguments: Optional["ArgListDef"] = None,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self.name = name
-        self.arguments = arguments
+        self.arguments = arguments if arguments is not None else ArgListDef([])
 
 
 class ProcDef(Block):
@@ -175,11 +178,14 @@ class ProcDef(Block):
     arguments: "ArgListDef"
 
     def __init__(
-        self, name: "Identifier", arguments: "ArgListDef", **kwargs
+        self,
+        name: "Identifier",
+        arguments: Optional["ArgListDef"] = None,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         self.name = name
-        self.arguments = arguments
+        self.arguments = arguments if arguments is not None else ArgListDef([])
 
 
 ###########################
