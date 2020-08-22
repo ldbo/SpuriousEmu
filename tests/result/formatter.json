@@ -1,0 +1,3 @@
+{
+    "code": "Function Main()\n    Dim A As Integer = 12\n    Dim b As Integer = True\n    Dim c As String = \"hey'\"\"''\"\n    c = \"blop\"\n    For i = 12 To 57\n        msgBox(i)\n        If (i > 20) Then\n            b = (b Xor True)\n        EndIf\n\n        obj.method().sbob.plip.plop()\n    Next i\n\n\nEnd Function\n\n"
+}
