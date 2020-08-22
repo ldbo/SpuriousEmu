@@ -21,5 +21,5 @@ def test_load_program_dynamic():
     assert_correct_output(
         "emu_load_program_dynamic",
         "emu dynamic -e Document_Close "
-        "tests/samples/gamaredon_first_stage.spemu-com",
+        "tests/samples/01_gamaredon_first_stage.spemu-com",
     )
