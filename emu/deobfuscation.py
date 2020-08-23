@@ -38,9 +38,10 @@ class Deobfuscator(Visitor[AST]):
     __resolver: Resolver
     __interpreter: Interpreter
 
-    evaluation_level: "Deobfuscator.EvaluationLevel"
+    __evaluation_level: "Deobfuscator.EvaluationLevel"
     rename_symbols: bool
 
+    # Configuration
     def __init__(
         self,
         program: Program,
@@ -51,8 +52,18 @@ class Deobfuscator(Visitor[AST]):
         self.__interpreter = Interpreter(program)
         self.__resolver = Resolver(self.__interpreter, program)
 
-        self.evaluation_level = self.EvaluationLevel(evaluation_level)
+        self.evaluation_level = evaluation_level
         self.rename_symbols = rename_symbols
+
+    @property
+    def evaluation_level(self) -> "Deobfuscator.EvaluationLevel":
+        return self.__evaluation_level
+
+    @evaluation_level.setter
+    def evaluation_level(
+        self, level: Union["Deobfuscator.EvaluationLevel", int]
+    ) -> None:
+        self.__evaluation_level = Deobfuscator.EvaluationLevel(level)
 
     def deobfuscate(self, ast: AST) -> AST:
         """
