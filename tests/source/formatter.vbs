@@ -9,6 +9,8 @@ Public Function Main(arg1, arg2)
 For i = 12 To 57 Step 1: msgBox i
 If i > 20 Then b = b Xor True
 A = 52 * 3 + 12 - 5
+B = f(1) + 2
+C = f(12)
 obj.method().sbob.plip.plop()
 condition = Not (A = 52) Xor 57
 If condition Then

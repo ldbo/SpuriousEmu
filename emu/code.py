@@ -139,9 +139,15 @@ class Formatter(Visitor[str]):
         return output
 
     def visit_BinOp(self, bin_op: BinOp) -> str:
-        output = "(" + self.visit(bin_op.left)
+        def parenthesize(expr: Expression) -> str:
+            if isinstance(expr, BinOp):
+                return "(" + self.visit(expr) + ")"
+            else:
+                return self.visit(expr)
+
+        output = parenthesize(bin_op.left)
         output += " " + bin_op.operator + " "
-        output += self.visit(bin_op.right) + ")"
+        output += parenthesize(bin_op.right)
 
         return output
 
