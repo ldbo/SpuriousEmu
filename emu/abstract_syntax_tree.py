@@ -3,7 +3,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any, Union
 
-from .operator import BinaryOperator
 from .type import Type
 from .visitor import Visitable
 

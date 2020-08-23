@@ -511,8 +511,14 @@ elseif_header = (elseif_kw + expression + pOptional(then_kw)).setParseAction(
 else_header = else_kw.setParseAction(lambda r: ElseHeader())
 if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
 
-if_oneliner = (if_kw + expression + then_kw + statement).setParseAction(
-    lambda r: If(condition=r[0], body=[r[1]])
+if_oneliner = (
+    if_kw + expression + then_kw + statement + pOptional(else_kw + statement)
+).setParseAction(
+    lambda r: If(
+        condition=r[0],
+        body=[r[1]],
+        else_block=Block([r[3]]) if len(r) >= 3 else None,
+    )
 )
 
 conditional_statement = (
