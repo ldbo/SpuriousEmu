@@ -266,6 +266,7 @@ integer = (
 true_kw = Keyword("True")
 false_kw = Keyword("False")
 
+# TODO convert to Python bool
 boolean = (
     (true_kw | false_kw)
     .setName("boolean")
@@ -540,8 +541,8 @@ statement <<= (
     declarative_statement
     | loop_statement
     | conditional_statement
-    | expression_statement
     | error_statement
+    | expression_statement
 )
 
 ############
