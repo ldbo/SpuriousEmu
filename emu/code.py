@@ -8,173 +8,209 @@ from .visitor import Visitor
 
 
 @dataclass
-class Formatter(Visitor):
+class Formatter(Visitor[str]):
     """
     Allow to format an AST to VBA code. You can call format_ast several times,
     the object will accumulate the formatted results which you can get with the
     output field. To start a new output, use reset.
 
-    You can configure the identation character with the indentation field.
+    You can configure the identation character with the indentation field, and
+    the end-of-line with eol.
     """
 
     indentation: str = " " * 4
+    eol: str = "\n"
 
     __formatted_node: Optional[str] = field(init=False, repr=None, default=None)
     __indentation_level: int = field(init=False, repr=None, default=0)
+    __newline: str = field(init=False, repr=None)
+
+    def __post_init__(self) -> None:
+        self.__newline = self.eol * 2
 
     def format_ast(self, ast: AST) -> str:
         """
         Format an AST to VBA, add it to the current output, and return the
         formatted AST.
         """
-        previous_formatted_node = self.__formatted_node
-        self.__formatted_node = ""
-        self.visit(ast)
-        formatted_node = self.__formatted_node
-        self.__formatted_node = previous_formatted_node
-        return formatted_node
+        output = self.visit(ast)
+        assert self.__indentation_level == 0
+        return output
 
-    def __newline(self, line: str) -> None:
-        self.__formatted_node += self.indentation * self.__indentation_level
-        self.__formatted_node += line
-        self.__formatted_node += "\n"
+    def __indent(self) -> str:
+        """Return the current indentation string."""
+        return self.__indentation_level * self.indentation
 
     # visit_ methods
-    def visit_Block(self, block: Block) -> None:
-        for statement in block.body:
-            self.__newline(self.format_ast(statement))
+    def visit(self, *args, **kwargs) -> str:
+        tmp = self.__indentation_level
+        ret = super().visit(*args, **kwargs)
+        assert(tmp == self.__indentation_level)
+        return ret
 
-    def visit_VarDec(self, var_dec: VarDec) -> None:
-        self.__formatted_node = f"Dim " + self.format_ast(var_dec.identifier)
+    def visit_Block(self, block: Block) -> str:
+        output = ""
+        for statement in block.body:
+            if isinstance(statement, FunCall):
+                output += self.__indent() + self.visit(statement) + self.eol
+            else:
+                output += self.visit(statement)
+
+        return output
+
+    def visit_VarDec(self, var_dec: VarDec) -> str:
+        output = self.__indent() + f"Dim " + self.visit(var_dec.identifier)
 
         if var_dec.type is not None:
-            self.__formatted_node += " As "
+            output += " As "
             if isinstance(var_dec.type, Identifier):
-                self.__formatted_node += self.format_ast(var_dec.type)
+                output += self.visit(var_dec.type)
             else:
-                self.__formatted_node += str(var_dec.type)
+                output += str(var_dec.type)
 
         if var_dec.value is not None:
-            self.__formatted_node += " = " + self.format_ast(var_dec.value)
+            output += " = " + self.visit(var_dec.value)
 
-    def visit_VarAssign(self, var_assign: VarAssign) -> None:
-        self.__formatted_node = self.format_ast(var_assign.variable)
-        self.__formatted_node += " = "
-        self.__formatted_node += self.format_ast(var_assign.value)
+        return output + self.eol
 
-    def visit_FunDef(self, fun_def: FunDef) -> None:
-        self.__formatted_node = "Function " + self.format_ast(fun_def.name)
-        self.__formatted_node += self.format_ast(fun_def.arguments) + "\n"
+    def visit_VarAssign(self, var_assign: VarAssign) -> str:
+        output = self.__indent() + self.visit(var_assign.variable)
+        output += " = "
+        output += self.visit(var_assign.value)
+
+        return output + self.eol
+
+    def visit_FunDef(self, fun_def: FunDef) -> str:
+        output = self.__indent() + "Function " + self.visit(fun_def.name)
+        output += self.visit(fun_def.arguments) + self.eol
         self.__indentation_level += 1
-        self.visit_Block(fun_def)
+        output += self.visit_Block(fun_def)
         self.__indentation_level -= 1
-        self.__newline("End Function")
+        output += self.__indent() + "End Function" + self.__newline
 
-    def visit_ProcDef(self, proc_def: ProcDef) -> None:
-        self.__formatted_node = "Sub " + self.format_ast(proc_def.name)
-        self.__formatted_node += self.format_ast(proc_def.arguments) + "\n"
+        return output
+
+    def visit_ProcDef(self, proc_def: ProcDef) -> str:
+        output = self.__indent() + "Sub " + self.visit(proc_def.name)
+        output += self.visit(proc_def.arguments) + self.eol
         self.__indentation_level += 1
-        self.visit_Block(proc_def)
+        output += self.visit_Block(proc_def)
         self.__indentation_level -= 1
-        self.__newline("End Sub")
+        output += self.__indent() + "End Sub" + self.__newline
 
-    def visit_Identifier(self, identifier: Identifier) -> None:
-        self.__formatted_node = identifier.name
+        return output
 
-    def visit_Get(self, get: Get) -> None:
-        self.visit(get.parent)
-        self.__formatted_node += "." + self.format_ast(get.child)
+    def visit_Identifier(self, identifier: Identifier) -> str:
+        return identifier.name
 
-    def visit_Literal(self, literal: Literal) -> None:
+    def visit_Get(self, get: Get) -> str:
+        return self.visit(get.parent) + "." + self.visit(get.child)
+
+    def visit_Literal(self, literal: Literal) -> str:
         if literal.type is Type.String:
             escaped_string = literal.value.replace('"', '""')
-            self.__formatted_node = f'"{escaped_string}"'
+            return f'"{escaped_string}"'
         else:
-            self.__formatted_node = str(literal.value)
+            return str(literal.value)
 
-    def visit_ArgListCall(self, arg_list_call: ArgListCall) -> None:
-        self.__formatted_node = "("
-        self.__formatted_node += ", ".join(
-            self.format_ast(arg) for arg in arg_list_call.args
-        )
-        self.__formatted_node += ")"
+    def visit_ArgListCall(self, arg_list_call: ArgListCall) -> str:
+        output = "("
+        output += ", ".join(self.visit(arg) for arg in arg_list_call.args)
+        output += ")"
 
-    def visit_ArgListDef(self, arg_list_def: ArgListDef) -> None:
-        self.__formatted_node = "("
-        self.__formatted_node += ", ".join(
-            self.format_ast(arg) for arg in arg_list_def.args
-        )
-        self.__formatted_node += ")"
+        return output
 
-    def visit_FunCall(self, fun_call: FunCall) -> None:
-        self.__formatted_node = self.format_ast(fun_call.function)
-        self.__formatted_node += self.format_ast(fun_call.arguments)
+    def visit_ArgListDef(self, arg_list_def: ArgListDef) -> str:
+        output = "("
+        output += ", ".join(self.visit(arg) for arg in arg_list_def.args)
+        output += ")"
 
-    def visit_UnOp(self, un_op: UnOp) -> None:
-        self.__formatted_node = un_op.operator
+        return output
+
+    def visit_FunCall(self, fun_call: FunCall) -> str:
+        return self.visit(fun_call.function) + self.visit(fun_call.arguments)
+
+    def visit_UnOp(self, un_op: UnOp) -> str:
+        output = un_op.operator
         if un_op.operator not in ("+", "-"):
-            self.__formatted_node += " "
-        self.__formatted_node += self.format_ast(un_op.argument)
+            output += " "
+        output += self.visit(un_op.argument)
 
-    def visit_BinOp(self, bin_op: BinOp) -> None:
-        self.__formatted_node = "(" + self.format_ast(bin_op.left)
-        self.__formatted_node += " " + bin_op.operator + " "
-        self.__formatted_node += self.format_ast(bin_op.right) + ")"
+        return output
 
-    def visit_ElseIf(self, else_if: ElseIf) -> None:
-        self.__formatted_node = "ElseIf " + self.format_ast(else_if.condition)
-        self.__formatted_node += " Then\n"
+    def visit_BinOp(self, bin_op: BinOp) -> str:
+        output = "(" + self.visit(bin_op.left)
+        output += " " + bin_op.operator + " "
+        output += self.visit(bin_op.right) + ")"
+
+        return output
+
+    def visit_ElseIf(self, else_if: ElseIf) -> str:
+        output = self.__indent() + "ElseIf " + self.visit(else_if.condition)
+        output += " Then" + self.eol
         self.__indentation_level += 1
-        self.visit_Block(else_if)
+        output += self.visit_Block(else_if)
         self.__indentation_level -= 1
 
-    def visit_If(self, if_block: If) -> None:
-        self.__formatted_node = "If " + self.format_ast(if_block.condition)
-        self.__formatted_node += " Then\n"
+        return output
+
+    def visit_If(self, if_block: If) -> str:
+        output = self.eol + self.__indent() + "If "
+        output += self.visit(if_block.condition) + " Then" + self.eol
         self.__indentation_level += 1
-        self.visit_Block(if_block)
+        output += self.visit_Block(if_block)
         self.__indentation_level -= 1
 
-        self.__formatted_node += "\n".join(
-            self.format_ast(else_if) for else_if in if_block.elsifs
+        output += "".join(
+            self.visit(else_if) for else_if in if_block.elsifs
         )
 
         if if_block.else_block is not None:
-            self.__formatted_node += "Else\n"
+            output += self.__indent() + "Else" + self.eol
             self.__indentation_level += 1
-            self.visit_Block(if_block.else_block)
+            output += self.visit_Block(if_block.else_block)
             self.__indentation_level -= 1
 
-        self.__newline("EndIf")
+        output += self.__indent() + "End If" + self.__newline
 
-    def visit_For(self, for_loop: For) -> None:
-        header = "For " + self.format_ast(for_loop.counter) + " = "
-        header += self.format_ast(for_loop.start)
-        header += " To " + self.format_ast(for_loop.end) + "\n"
-        footer = "Next " + self.format_ast(for_loop.counter) + "\n"
+        return output
+
+    def visit_For(self, for_loop: For) -> str:
+        output = self.eol + self.__indent() + "For "
+        output += self.visit(for_loop.counter)
+        output += " = " + self.visit(for_loop.start)
+        output += " To " + self.visit(for_loop.end)
 
         if for_loop.step is not None:
-            header += " Step " + self.format_ast(for_loop.step)
+            output += " Step " + self.visit(for_loop.step)
 
-        self.__formatted_node = header
+        output += self.eol
+
         self.__indentation_level += 1
-        self.visit_Block(for_loop)
+        output += self.visit_Block(for_loop)
         self.__indentation_level -= 1
-        self.__newline(footer)
 
-    def visit_OnError(self, on_error: OnError) -> None:
-        self.__formatted_node = "On Error "
+        output += self.__indent() + "Next " + self.visit(for_loop.counter)
+
+        return output + self.__newline
+
+    def visit_OnError(self, on_error: OnError) -> str:
+        output = self.__indent() + "On Error "
         if on_error.goto is None:
-            self.__formatted_node += "Resume Next"
+            output += "Resume Next"
         else:
-            self.__formatted_node += "Goto" + self.format_ast(on_error.goto)
+            output += "Goto " + self.visit(on_error.goto)
 
-    def visit_Resume(self, resume: Resume) -> None:
-        self.__formatted_node = "Resume "
+        return output + self.eol
+
+    def visit_Resume(self, resume: Resume) -> str:
+        output = self.__indent() + "Resume "
         if resume.goto is None:
-            self.__formatted_node += "Next"
+            output += "Next"
         else:
-            self.__formatted_node += self.format_ast(resume.goto)
+            output += self.visit(resume.goto)
 
-    def visit_ErrorStatement(self, error: ErrorStatement) -> None:
-        self.__formatted_node = "Error " + self.format_ast(error.number)
+        return output + self.eol
+
+    def visit_ErrorStatement(self, error: ErrorStatement) -> str:
+        return self.__indent() + "Error " + self.visit(error.number) + self.eol
