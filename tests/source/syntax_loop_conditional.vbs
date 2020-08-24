@@ -29,3 +29,5 @@ Else
 End If
 
 If condition Then action()
+
+If condition Then action() Else action2()

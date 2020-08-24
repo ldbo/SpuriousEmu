@@ -38,6 +38,10 @@ class CompilationError(Exception):
     pass
 
 
+class DeobfuscationError(Exception):
+    pass
+
+
 class OperatorError(Exception):
     pass
 

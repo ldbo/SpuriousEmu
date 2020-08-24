@@ -23,9 +23,9 @@ pip install spurious-emu
 SpuriousEmu can work with VBA source files, or directly with Office documents. For the later case, it relies on olevba to extract macros from the files. All of the command use a final positional argument to specify the input file to work with.
 
 If you work with VBA source files, the following convention is used:
-    - procedural modules have `.bas` extension
-    - class modules have `.cls` extension
-    - standalone script files have `.vbs` extension
+ - procedural modules have `.bas` extension
+ - class modules have `.cls` extension
+ - standalone script files have `.vbs` extension
 
 SpuriousEmu uses different subcommands for its different operating modes.
 
@@ -45,12 +45,6 @@ Additionally, for large files, you can use the `-o` flag to serialize the inform
 emu static -o document.spurious-com document.xlsm
 ```
 
-You can also de-obfuscate a file by using the `-d` flag, which specifies the de-obfuscation level. You can output the whole file, or a single function or module using the `-e` flag. The result can be sent to standard output or written to a file specified with the `-o` file:
-
-```bash
-emu static -d3 -e VBAEnv.Default.Main -o Main.bas document.xlsm
-```
-
 ### Dynamic analysis
 
 You can trigger dynamic analysis with the `dynamic` subcommand.
@@ -66,6 +60,30 @@ This will display a report of the execution of the program. Additionally, if you
 ```bash
 emu dynamic -o extract_files -r report.spemu-out doc.xlsm
 ```
+
+### De-obfuscation
+
+SpuriousEmu ~will often~ can fail to interpret VBA program, however it should still be able to help you de-obfuscate macros : that is what the `deobfuscate` command is for.
+
+It works with a document, source file or compiled file and writes to the standard output a de-obfuscated version of macros that have been found. The most basic invocation is
+
+```bash
+emu deobfuscate document.docm
+```
+
+You can customize de-obfuscation with two options:
+ - Flag `-p` allows you to evaluate expressions without side effects. Use `-p 0` to disable it, `-p 1` to only handle literal expressions (e.g. replace `"W" + "Scr" & "ip"` with `"WScript"`) and `-p 2` to also handle pure functions (e.g. replace `Chr(37)` with `"%"`)
+ - Flag `-s` renames symbols that seem to be obfuscated with legible names (e.g. `1l11l1l` to `var_1`). If it is not specified, all the modules will be de-obfuscated.
+
+Additionally, you can choose to only output a given symbol with the `-e` flag.
+
+Thus, to de-obfuscate `Document_Open`, using clear variable names and decrypting XOR-encrypted static strings, use
+
+```bash
+emu deobfuscate -e Document_Open -p 2 -s document.spemu-com
+```
+
+Finally, you can use the *experimental* Markov classifier feature : variable names to be demangled are determined by a classifier which tries to compute how English a word appears. It is enabled by the `-m` flag.
 
 ### Report production
 

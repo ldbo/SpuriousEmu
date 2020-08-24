@@ -266,6 +266,7 @@ integer = (
 true_kw = Keyword("True")
 false_kw = Keyword("False")
 
+# TODO convert to Python bool
 boolean = (
     (true_kw | false_kw)
     .setName("boolean")
@@ -510,8 +511,14 @@ elseif_header = (elseif_kw + expression + pOptional(then_kw)).setParseAction(
 else_header = else_kw.setParseAction(lambda r: ElseHeader())
 if_footer = (end_kw + if_kw).setParseAction(lambda r: IfFooter())
 
-if_oneliner = (if_kw + expression + then_kw + statement).setParseAction(
-    lambda r: If(condition=r[0], body=[r[1]])
+if_oneliner = (
+    if_kw + expression + then_kw + statement + pOptional(else_kw + statement)
+).setParseAction(
+    lambda r: If(
+        condition=r[0],
+        body=[r[1]],
+        else_block=Block([r[3]]) if len(r) >= 3 else None,
+    )
 )
 
 conditional_statement = (
@@ -540,8 +547,8 @@ statement <<= (
     declarative_statement
     | loop_statement
     | conditional_statement
-    | expression_statement
     | error_statement
+    | expression_statement
 )
 
 ############

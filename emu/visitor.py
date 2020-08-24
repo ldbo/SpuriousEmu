@@ -9,6 +9,7 @@ can then call visit(SubVisitable).
 
 
 from abc import abstractmethod
+from typing import Any, Generic, TypeVar
 
 
 class Visitable:
@@ -18,7 +19,7 @@ class Visitable:
     def __init__(self):
         pass
 
-    def accept(self, visitor: "Visitor") -> None:
+    def accept(self, visitor: "Visitor") -> Any:
         assert isinstance(visitor, Visitor)
 
         visiter = "visit_" + type(self).__qualname__.replace(".", "_")
@@ -34,23 +35,28 @@ class Visitable:
         return visiter_function(self)
 
 
-class Visitor:
+T = TypeVar('T')
+
+
+class Visitor(Generic[T]):
     """
     Base class for Visitor classes. For a subclass to be able to handle the
-    Visitable type T, it must implement a method
-    visit_T(self, visitable : Visitable) -> None. Then, to apply the algorithm
-    to a Visitable object visitable, simply call visitor.visit(visitable).
+    Visitable type SubVisitable, it must implement a method
+    visit_SubVisitable(self, visitable : Visitable) -> T. Then, to apply the
+    algorithm to a Visitable object visitable, simply call
+    visitor.visit(visitable). Use the class argument T to specify the output
+    type of the visit_ methods.
     """
 
     @abstractmethod
     def __init__(self):
         pass
 
-    def visit(self, visitable: Visitable) -> None:
+    def visit(self, visitable: Visitable) -> T:
         """
         Apply an algorithm to a Visitable object of type T. The algorithm must
         be implemented in visit_T, otherwise a NotImplementedError is thrown.
         """
         assert isinstance(visitable, Visitable)
 
-        visitable.accept(self)
+        return visitable.accept(self)
