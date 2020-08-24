@@ -13,6 +13,7 @@ from .value import Value, Integer, Object
 from .visitor import Visitor
 
 
+# TODO handle private references (function locals for example)
 class Resolver(Visitor):
     """Used to tell the interpreter what each name referes to"""
 

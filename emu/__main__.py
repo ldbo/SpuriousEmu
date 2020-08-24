@@ -321,10 +321,6 @@ def deobfuscate(arguments):
     if arguments.entry is not None:
         print("Warning: don't use -e, you're not as free as Doby yet")
 
-    if arguments.rename_symbols is not None:
-        print("Warning: -s seems to only add cosmetic improvements to the "
-              "CLI ...")
-
     for module, ast in program.asts.items():
         print(f"Module: {module}\n==================")
 
