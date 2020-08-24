@@ -1,7 +1,10 @@
 """Deobfuscation tools."""
 
 from enum import Enum
-from typing import Any, Dict
+from random import choices, shuffle
+from statistics import mean
+from string import digits, ascii_lowercase
+from typing import Any, Dict, Set, Tuple
 from typing import Type as tType
 
 from .abstract_syntax_tree import *
@@ -14,6 +17,7 @@ from .visitor import Visitor
 # TODO add pure function evaluation
 # TODO sharing variable names between functions causes issues because of how
 #      the resolver works
+
 
 class Deobfuscator(Visitor[AST]):
     """
@@ -59,6 +63,7 @@ class Deobfuscator(Visitor[AST]):
 
     __evaluation_level: "Deobfuscator.EvaluationLevel"
     rename_symbols: bool
+    mangling_classifier: Optional["ManglingClassifier"]
 
     # Configuration
 
@@ -67,6 +72,7 @@ class Deobfuscator(Visitor[AST]):
         program: Program,
         evaluation_level: Union["Deobfuscator.EvaluationLevel", int] = 1,
         rename_symbols: bool = False,
+        mangling_classifier: Optional["ManglingClassifier"] = None
     ) -> None:
         self.__program = program
         self.__interpreter = Interpreter(program)
@@ -84,6 +90,7 @@ class Deobfuscator(Visitor[AST]):
 
         self.evaluation_level = evaluation_level
         self.rename_symbols = rename_symbols
+        self.mangling_classifier = mangling_classifier
 
     @property
     def evaluation_level(self) -> "Deobfuscator.EvaluationLevel":
@@ -253,6 +260,28 @@ class Deobfuscator(Visitor[AST]):
             return False
 
     # Symbol demangling
+    def __is_mangled(self, name: str) -> bool:
+        """
+        If no classifier is specified, return True. Else, consider name as an
+        underscore-separated list of words. It is mangled if one of this is
+        mangled, ie. it has non-ending digits or its non-digit prefix is
+        classified as mangled by the classifier.
+        """
+        if self.mangling_classifier is None:
+            return True
+
+        for word in name.lower().split("_"):
+            for i in range(len(word) - 1):
+                if word[i] in digits and word[i + 1] in ascii_lowercase:
+                    return True
+                if word[i + 1] in digits and word[i] in ascii_lowercase:
+                    first_digit_position = i + 1
+
+            if word[: i + 1] in self.mangling_classifier:
+                return True
+
+        return False
+
     def __craft_name(self, reference: Reference) -> str:
         """
         Craft a new name for the given reference, using the format
@@ -295,7 +324,11 @@ class Deobfuscator(Visitor[AST]):
         try:
             new_name = self.__new_names[resolution]
         except KeyError:
-            new_name = self.__craft_name(resolution)
+            if self.__is_mangled(identifier.name):
+                new_name = self.__craft_name(resolution)
+            else:
+                new_name = identifier.name
+
             self.__new_names[resolution] = new_name
 
         return self.__deobfuscated_copy(identifier, name=new_name)
@@ -322,7 +355,14 @@ class Deobfuscator(Visitor[AST]):
         """
         # TODO Use generic type to ensure type(definition) is type(return)
         function_reference = self.__resolver.resolve(definition.name)
-        new_name = self.__craft_callable_name(function_reference, definition)
+
+        if self.__is_mangled(definition.name.name):
+            new_name = self.__craft_callable_name(
+                function_reference, definition
+            )
+        else:
+            new_name = definition.name.name
+
         self.__new_names[function_reference] = new_name
         arguments = self.visit(definition.arguments)
 
@@ -351,7 +391,12 @@ class Deobfuscator(Visitor[AST]):
         args = []
         for arg_identifier in arg_list.args:
             arguments_count += 1
-            new_name = self.__craft_arg(arguments_count)
+
+            if self.__is_mangled(arg_identifier.name):
+                new_name = self.__craft_arg(arguments_count)
+            else:
+                new_parent = arg_identifier.name
+
             reference = self.__resolver.resolve(arg_identifier)
             self.__new_names[reference] = new_name
             args.append(Identifier(new_name))
@@ -390,3 +435,162 @@ class Deobfuscator(Visitor[AST]):
     def visit_ProcDef(self, proc_def: ProcDef) -> AST:
         if self.rename_symbols:
             return self.__rename_callable_definition(proc_def)
+
+
+class ManglingClassifier:
+    """
+    Allows to detect mangled names based on Markov chain model of the supposedly
+    used language.
+
+    First use the constructor, or the train method, to train the model. Then,
+    the `in` operator or the is_mangled method can be used to determine if a
+    word is mangled.
+
+    This classifier is only made to work with lower case letter-only words, ie.
+    words matching the [a-z]* regex.
+    """
+
+    FrequencyMatrixType = Dict[Tuple[str, str], float]
+
+    __n: int
+    __false_negative_rate: float
+    __frequency_matrix: "ManglingClassifier.FrequencyMatrixType"
+    __ngrams: Set[str]
+    __threshold: float
+
+    def __init__(
+        self,
+        n: int,
+        training_data: Union[
+            List[str], "ManglingClassifier.FrequencyMatrixType"
+        ],
+        false_negative_rate: float,
+    ) -> None:
+        """
+        Train a Markov classifier. First, compute the frequency matrix of the
+        hidden model : it holds the probability of having a character given its
+        n previous neighbours. Then, find the threshold parameter ensuring the
+        false negative rate on a test set extracted from training_data.
+
+        :arg n: Number of previous characters to take into account
+        :arg training_data: List of words (must be big enough, tens of thousands
+         for example) to train
+        :arg false_negative_rate: Maximum false negative rate allowed on a test
+        set extracted from the training data
+        """
+        self.n = n
+        self.false_negative_rate = false_negative_rate
+
+        self.train(training_data)
+
+    def train(self, dictionnary: List[str]) -> None:
+        """
+        Build the frequency matrix of the hidden model and set the threshold.
+        """
+        test_set, training_set = self.__extract_training_test(dictionnary, 0.1)
+
+        self.__build_frequency_matrix(training_set)
+        self.__set_threshold(test_set)
+
+    def word_probability(self, word: str) -> float:
+        """
+        Compute the mean probability of the ngram pairs of the word.
+        """
+        reduced_length = len(word) - self.n
+
+        if reduced_length < 0:
+            return 1.0
+        elif reduced_length == 0:
+            return 1.0 if word in self.__ngrams else 0.0
+        else:
+            probability_sum = sum(
+                map(
+                    lambda pair: self.__frequency_coefficient(*pair),
+                    self.__ngram_pairs(word.lower()),
+                )
+            )
+            return probability_sum / reduced_length
+
+    def is_mangled(self, word: str) -> bool:
+        """
+        Check if a word appears to be mangled by comparing its probability with
+        the threshold compute so that the training language has a false negative
+        rate lower than false_negative_rate.
+
+
+        :returns: True if the word seems to be mangled
+        """
+        return self.word_probability(word) < self.__threshold
+
+    def __contains__(self, word: str) -> bool:
+        """
+        Check if a word is mangled using is_mangled.
+        """
+        return self.is_mangled(word)
+
+    def __extract_training_test(
+        self, sample: List[Any], test_rate: float
+    ) -> Tuple[List[Any], List[Any]]:
+        """
+        Split a sample into a training and a test dataset.
+        """
+        sample_copy = list(sample)
+        shuffle(sample_copy)
+        training_length = int(test_rate * len(sample))
+
+        return sample_copy[:training_length], sample_copy[training_length:]
+
+    def __ngram_pairs(self, word):
+        """Generator producing the list of (w[i]...w[i+n-1], w[i+n]) pairs."""
+        for i in range(len(word) - self.n):
+            end = i + self.n
+            yield word[i:end], word[end]
+
+    def __build_frequency_matrix(self, training_set: List[str]) -> None:
+        """
+        Extract statistical information from a list of strings: the set of
+        ngrams and the frequency matrix.
+        """
+        ngram_pairs_counts: Dict[Tuple[str, str], int] = dict()
+        ngram_counts: Dict[str, int] = dict()
+
+        for word in training_set:
+            for ngram, next_char in self.__ngram_pairs(word):
+                ngram_counts[ngram] = ngram_counts.get(ngram, 0) + 1
+                ngram_pairs_counts[ngram, next_char] = (
+                    ngram_pairs_counts.get((ngram, next_char), 0) + 1
+                )
+
+        self.__frequency_matrix = {
+            ngram_pair: pair_count / ngram_counts[ngram_pair[0]]
+            for ngram_pair, pair_count in ngram_pairs_counts.items()
+        }
+        self.__ngrams = set(ngram_counts.keys())
+
+    def __mean_sample_probability(self, sample: List[str]) -> float:
+        """
+        Return the mean probability of a list of words, using word_probability.
+        """
+        return mean(map(self.word_probability, sample))
+
+    def __negative_rate(self, sample: List[str]) -> float:
+        """
+        Return the negative rate of is_mangled applied on a list of words.
+        """
+        return len(list(filter(lambda w: w in self, sample))) / len(sample)
+
+    def __set_threshold(self, test_set: List[str]) -> None:
+        """
+        Find a threshold such that
+        P(w in test_set: w not in self) < false_negative_rate.
+        """
+        self.__threshold = self.__mean_sample_probability(test_set)
+
+        while self.__negative_rate(test_set) >= self.false_negative_rate:
+            self.__threshold /= 2
+
+    def __frequency_coefficient(self, ngram: str, next_char: str) -> float:
+        """
+        Return the probability of having next_char after ngram.
+        """
+        return self.__frequency_matrix.get((ngram, next_char), 0.0)

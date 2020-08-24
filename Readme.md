@@ -83,6 +83,8 @@ Thus, to de-obfuscate `Document_Open`, using clear variable names and decrypting
 emu deobfuscate -e Document_Open -p 2 -s document.spemu-com
 ```
 
+Finally, you can use the *experimental* Markov classifier feature : variable names to be demangled are determined by a classifier which tries to compute how English a word appears. It is enabled by the `-m` flag.
+
 ### Report production
 
 You can work with `.spemu-out` and `.spemu-com` file with the `report` command.

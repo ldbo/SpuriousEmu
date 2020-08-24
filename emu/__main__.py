@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+import pkg_resources
+
 from argparse import ArgumentParser
 from pathlib import Path
 from sys import exit
@@ -107,6 +109,13 @@ def build_argparser():
         "--rename-symbols",
         action="store_true",
         help="Rename seemingly obfuscated symbol names with legible ones",
+    )
+    deobfuscate_parser.add_argument(
+        "-m",
+        "--markov",
+        action="store_true",
+        help="""[Experimental feature] Use a Markov classifier to determine
+                which symbols to deobfuscate.""",
     )
     deobfuscate_parser.add_argument(
         "input",
@@ -260,6 +269,35 @@ def dynamic_analysis(arguments):
     return 0
 
 
+def deobfuscate(arguments):
+    program = compile_input_file(arguments.input)
+    formatter = Formatter()
+    deobfuscator = Deobfuscator(program)
+    deobfuscator.evaluation_level = arguments.evaluate_pure_functions
+    deobfuscator.rename_symbols = arguments.rename_symbols
+
+    if arguments.entry is not None:
+        print("Warning: don't use -e, you're not as free as Doby yet")
+
+    if arguments.markov:
+        classifier = Serializer.load(
+            pkg_resources.resource_filename(
+                "emu.resources", "english_n1.spemu-mancl"
+            )
+        )
+        deobfuscator.mangling_classifier = classifier
+
+    for module, ast in program.asts.items():
+        print(f"Module: {module}\n==================")
+
+        clean_ast = deobfuscator.deobfuscate(ast)
+        print(formatter.format_ast(clean_ast))
+
+        print("\n==================\n\n")
+
+    return 0
+
+
 def generate_report(arguments):
     # Prepare report generator
     result = Serializer.load(arguments.input)
@@ -309,27 +347,6 @@ def generate_report(arguments):
         print(report_generator.produce_organized_events())
 
     return 1
-
-
-def deobfuscate(arguments):
-    program = compile_input_file(arguments.input)
-    formatter = Formatter()
-    deobfuscator = Deobfuscator(program)
-    deobfuscator.evaluation_level = arguments.evaluate_pure_functions
-    deobfuscator.rename_symbols = arguments.rename_symbols
-
-    if arguments.entry is not None:
-        print("Warning: don't use -e, you're not as free as Doby yet")
-
-    for module, ast in program.asts.items():
-        print(f"Module: {module}\n==================")
-
-        clean_ast = deobfuscator.deobfuscate(ast)
-        print(formatter.format_ast(clean_ast))
-
-        print("\n==================\n\n")
-
-    return 0
 
 
 def main():

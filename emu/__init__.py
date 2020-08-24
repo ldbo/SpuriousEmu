@@ -2,7 +2,7 @@
 
 from .code import Formatter
 from .compiler import Compiler, Unit, Program
-from .deobfuscation import Deobfuscator
+from .deobfuscation import Deobfuscator, ManglingClassifier
 from .error import *
 from .interpreter import Interpreter
 from .preprocessor import Preprocessor
