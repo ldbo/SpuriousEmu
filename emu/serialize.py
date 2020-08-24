@@ -4,9 +4,10 @@ import pickle
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Type, Union
+from typing import List, Union
 
 from .compiler import Program
+from .deobfuscation import ManglingClassifier
 from .error import SerializationError
 from .side_effect import OutsideWorld
 
@@ -30,9 +31,12 @@ class Serializer:
     FORMATS: List[FileFormat] = [
         FileFormat(Program, b"SpuriousEmuProgram", ".spemu-com"),
         FileFormat(OutsideWorld, b"SpuriousEmuOutsideWorld", ".spemu-out"),
+        FileFormat(
+            ManglingClassifier, b"SpuriousEmuManglingClassifier", ".spemu-mancl"
+        ),
     ]
 
-    SerializableType = Union[Program, OutsideWorld]
+    SerializableType = Union[Program, OutsideWorld, ManglingClassifier]
 
     @classmethod
     def serialize(cls, obj: SerializableType) -> bytes:

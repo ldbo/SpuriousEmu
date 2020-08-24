@@ -2,7 +2,7 @@
 
 import pkg_resources
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from importlib.util import spec_from_file_location, module_from_spec
 from inspect import getmembers, isclass, isfunction
 from itertools import chain
@@ -25,11 +25,13 @@ from .value import Value
 class Program:
     """
     Represent a statically analysed program : a set of references, with a
-    memory containing already initialized values.
+    memory containing already initialized values, and a dict containing the ASTs
+    of the different compiled files.
     """
 
-    memory: Memory
-    environment: Environment
+    asts: Dict[str, AST] = field(default_factory=dict)
+    memory: Memory = field(default_factory=Memory)
+    environment: Environment = field(default_factory=Environment)
 
     def to_dict(self) -> Dict[str, Any]:
         d = dict()
@@ -99,6 +101,7 @@ class Compiler(Visitor):
     __environment: Environment
     __current_reference: Reference
     __memory: Memory
+    __asts: Dict[str, AST]
 
     def __init__(self) -> None:
         self.reset()
@@ -108,6 +111,7 @@ class Compiler(Visitor):
         self.__environment = Environment()
         self.__current_reference = self.__environment
         self.__memory = Memory()
+        self.__asts = dict()
 
     def add_project(self, project_name: str) -> None:
         """
@@ -136,6 +140,8 @@ class Compiler(Visitor):
                 )
 
             self.__current_reference = project
+
+        self.__asts[module_name] = ast
 
         module = self.__current_reference.build_child(
             module_type, name=module_name
@@ -236,7 +242,7 @@ class Compiler(Visitor):
     @property
     def program(self):
         """Return the compiled program."""
-        return Program(self.__memory, self.__environment)
+        return Program(self.__asts, self.__memory, self.__environment)
 
     def __parse_callable(self, definition: Union[FunDef, ProcDef]) -> None:
         # Extract information
@@ -288,6 +294,8 @@ class Compiler(Visitor):
         return self.__current_reference.build_child(
             Variable, name=name, extent=extent
         )
+
+    # visit_ methods
 
     def visit_Block(self, block: Block) -> None:
         for statement in block.body:

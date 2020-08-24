@@ -3,7 +3,12 @@
     "body": [
         {
             "_type": "ProcDef",
-            "arguments": "None",
+            "arguments": {
+                "_type": "ArgListDef",
+                "args": [],
+                "file": "",
+                "line_number": "0"
+            },
             "body": [],
             "name": {
                 "_type": "Identifier",
@@ -164,7 +169,12 @@
         },
         {
             "_type": "FunDef",
-            "arguments": "None",
+            "arguments": {
+                "_type": "ArgListDef",
+                "args": [],
+                "file": "",
+                "line_number": "0"
+            },
             "body": [
                 {
                     "_type": "VarAssign",
@@ -310,7 +320,12 @@
         },
         {
             "_type": "FunDef",
-            "arguments": "None",
+            "arguments": {
+                "_type": "ArgListDef",
+                "args": [],
+                "file": "",
+                "line_number": "0"
+            },
             "body": [
                 {
                     "_type": "VarAssign",

@@ -8,11 +8,12 @@ from .compiler import Program
 from .error import InterpretationError, ResolutionError
 from .reference import Reference, Environment, Variable, FunctionReference
 from .side_effect import Memory, OutsideWorld
-from .operator import OPERATORS_MAP, Operator
+from .operator import Operator
 from .value import Value, Integer, Object
 from .visitor import Visitor
 
 
+# TODO handle private references (function locals for example)
 class Resolver(Visitor):
     """Used to tell the interpreter what each name referes to"""
 
@@ -112,7 +113,7 @@ class Interpreter(Visitor):
         run an AST starting without a state.
         """
         if program is None:
-            program = Program(Memory(), Environment())
+            program = Program()
 
         self._memory = program.memory
         self._resolver = Resolver(self, program)

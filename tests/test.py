@@ -12,9 +12,11 @@ Result = Dict[str, Any]
 SourceFile = str
 
 
-SAMPLES = list(
-    filter(lambda filename: "." not in filename, listdir("tests/samples"))
+SAMPLES = sorted(
+    list(filter(lambda filename: "." not in filename, listdir("tests/samples")))
 )
+
+assert_equals.__self__.maxDiff = None
 
 
 def result_path(test: str) -> str:
@@ -97,12 +99,7 @@ def assert_correct_output(
 
     output = command_output(command, sample_number)
 
-    try:
-        assert_equals(expected_output, output)
-    except AssertionError as e:
-        print(f"\nOutput:\n{output}\n")
-        print(f"Expected output:\n{expected_output}\n")
-        raise (e)
+    assert_equals(expected_output, output)
 
 
 def assert_correct_function(
@@ -112,12 +109,7 @@ def assert_correct_function(
     result = function(source_path(test))
     expected_result = load_result(test)
 
-    try:
-        assert_equals(result, expected_result)
-    except AssertionError as e:
-        print(f"\nResult:\n{result}\n")
-        print(f"Expected result:\n{expected_result}\n")
-        raise (e)
+    assert_equals(expected_result, result)
 
 
 def run_function(test: str, function: Callable[[SourceFile], Result]) -> None:

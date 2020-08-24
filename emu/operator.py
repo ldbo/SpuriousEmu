@@ -6,6 +6,8 @@
 #  - add it to the list of operator tokens
 
 # TODO:
+#  - For deobfuscation: add support for Operator.COMMUTATIVE/ASSOCIATIVE ...
+#    with <<
 #  - Take Let-coercion into account, improve conversion process
 #  - Extends supported types
 #  - Implement Like and Is
@@ -26,7 +28,7 @@ from typing import (
 )
 from typing import Type as pType
 
-from pyparsing import Or, opAssoc, ParseExpression
+from pyparsing import Or, opAssoc
 
 from .error import OperatorError
 from .type import Type
