@@ -45,7 +45,7 @@ class Formatter(Visitor[str]):
     def visit(self, *args, **kwargs) -> str:
         tmp = self.__indentation_level
         ret = super().visit(*args, **kwargs)
-        assert(tmp == self.__indentation_level)
+        assert tmp == self.__indentation_level
         return ret
 
     def visit_Block(self, block: Block) -> str:
@@ -167,9 +167,7 @@ class Formatter(Visitor[str]):
         output += self.visit_Block(if_block)
         self.__indentation_level -= 1
 
-        output += "".join(
-            self.visit(else_if) for else_if in if_block.elsifs
-        )
+        output += "".join(self.visit(else_if) for else_if in if_block.elsifs)
 
         if if_block.else_block is not None:
             output += self.__indent() + "Else" + self.eol
