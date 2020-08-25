@@ -72,7 +72,7 @@ class Deobfuscator(Visitor[AST]):
         program: Program,
         evaluation_level: Union["Deobfuscator.EvaluationLevel", int] = 1,
         rename_symbols: bool = False,
-        mangling_classifier: Optional["ManglingClassifier"] = None
+        mangling_classifier: Optional["ManglingClassifier"] = None,
     ) -> None:
         self.__program = program
         self.__interpreter = Interpreter(program)
