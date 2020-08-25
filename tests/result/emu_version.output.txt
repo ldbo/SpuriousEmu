@@ -1,7 +1,7 @@
 
 Return code: 0
 Output:
-SpuriousEmu v0.4.0
+SpuriousEmu v0.4.1
 
 
 Error:
