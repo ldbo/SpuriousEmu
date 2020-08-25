@@ -35,7 +35,7 @@ class Visitable:
         return visiter_function(self)
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class Visitor(Generic[T]):
