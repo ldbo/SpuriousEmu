@@ -2,176 +2,281 @@
     "_type": "Block",
     "body": [
         {
+            "_type": "Comment",
+            "content": "Single line declaration statements",
+            "end_column": "37",
+            "end_line": "1",
+            "file": "syntax_inline_declaration.vbs",
+            "start_column": "1",
+            "start_line": "1"
+        },
+        {
             "_type": "VarDec",
-            "file": "",
+            "end_column": "9",
+            "end_line": "2",
+            "file": "syntax_inline_declaration.vbs",
             "identifier": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "var1"
+                "end_column": "9",
+                "end_line": "2",
+                "file": "syntax_inline_declaration.vbs",
+                "name": "var1",
+                "start_column": "5",
+                "start_line": "2"
             },
-            "line_number": "0",
             "new": "False",
+            "start_column": "1",
+            "start_line": "2",
             "type": "None",
             "value": "None"
         },
         {
             "_type": "VarDec",
-            "file": "",
+            "end_column": "20",
+            "end_line": "3",
+            "file": "syntax_inline_declaration.vbs",
             "identifier": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "var2"
+                "end_column": "9",
+                "end_line": "3",
+                "file": "syntax_inline_declaration.vbs",
+                "name": "var2",
+                "start_column": "5",
+                "start_line": "3"
             },
-            "line_number": "0",
             "new": "False",
+            "start_column": "1",
+            "start_line": "3",
             "type": "Integer",
             "value": "None"
         },
         {
             "_type": "VarDec",
-            "file": "",
+            "end_column": "25",
+            "end_line": "4",
+            "file": "syntax_inline_declaration.vbs",
             "identifier": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "var3"
+                "end_column": "9",
+                "end_line": "4",
+                "file": "syntax_inline_declaration.vbs",
+                "name": "var3",
+                "start_column": "5",
+                "start_line": "4"
             },
-            "line_number": "0",
             "new": "False",
+            "start_column": "1",
+            "start_line": "4",
             "type": "Integer",
             "value": {
                 "_type": "Literal",
-                "file": "",
-                "line_number": "0",
-                "type": "Type.Integer",
-                "value": "12"
+                "end_column": "25",
+                "end_line": "4",
+                "file": "syntax_inline_declaration.vbs",
+                "start_column": "23",
+                "start_line": "4",
+                "value": "12",
+                "vba_type": "Type.Integer"
             }
         },
         {
-            "_type": "VarAssign",
-            "file": "",
-            "line_number": "0",
+            "_type": "Let",
+            "end_column": "14",
+            "end_line": "6",
+            "file": "syntax_inline_declaration.vbs",
+            "start_column": "1",
+            "start_line": "6",
             "value": {
                 "_type": "Literal",
-                "file": "",
-                "line_number": "0",
-                "type": "Type.Integer",
-                "value": "12"
+                "end_column": "14",
+                "end_line": "6",
+                "file": "syntax_inline_declaration.vbs",
+                "start_column": "12",
+                "start_line": "6",
+                "value": "12",
+                "vba_type": "Type.Integer"
             },
             "variable": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "var4"
+                "end_column": "9",
+                "end_line": "6",
+                "file": "syntax_inline_declaration.vbs",
+                "name": "var4",
+                "start_column": "5",
+                "start_line": "6"
             }
         },
         {
-            "_type": "VarAssign",
-            "file": "",
-            "line_number": "0",
+            "_type": "Let",
+            "end_column": "32",
+            "end_line": "7",
+            "file": "syntax_inline_declaration.vbs",
+            "start_column": "1",
+            "start_line": "7",
             "value": {
                 "_type": "BinOp",
-                "file": "",
+                "end_column": "32",
+                "end_line": "7",
+                "file": "syntax_inline_declaration.vbs",
                 "left": {
                     "_type": "Literal",
-                    "file": "",
-                    "line_number": "0",
-                    "type": "Type.Integer",
-                    "value": "12"
+                    "end_column": "32",
+                    "end_line": "7",
+                    "file": "syntax_inline_declaration.vbs",
+                    "start_column": "12",
+                    "start_line": "7",
+                    "value": "12",
+                    "vba_type": "Type.Integer"
                 },
-                "line_number": "0",
                 "operator": "-",
                 "right": {
                     "_type": "BinOp",
-                    "file": "",
+                    "end_column": "32",
+                    "end_line": "7",
+                    "file": "syntax_inline_declaration.vbs",
                     "left": {
                         "_type": "BinOp",
-                        "file": "",
+                        "end_column": "32",
+                        "end_line": "7",
+                        "file": "syntax_inline_declaration.vbs",
                         "left": {
                             "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "3"
+                            "end_column": "32",
+                            "end_line": "7",
+                            "file": "syntax_inline_declaration.vbs",
+                            "start_column": "12",
+                            "start_line": "7",
+                            "value": "3",
+                            "vba_type": "Type.Integer"
                         },
-                        "line_number": "0",
                         "operator": "*",
                         "right": {
                             "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "4"
-                        }
+                            "end_column": "32",
+                            "end_line": "7",
+                            "file": "syntax_inline_declaration.vbs",
+                            "start_column": "12",
+                            "start_line": "7",
+                            "value": "4",
+                            "vba_type": "Type.Integer"
+                        },
+                        "start_column": "12",
+                        "start_line": "7"
                     },
-                    "line_number": "0",
                     "operator": "/",
                     "right": {
                         "_type": "BinOp",
-                        "file": "",
+                        "end_column": "32",
+                        "end_line": "7",
+                        "file": "syntax_inline_declaration.vbs",
                         "left": {
                             "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "5"
+                            "end_column": "31",
+                            "end_line": "7",
+                            "file": "syntax_inline_declaration.vbs",
+                            "start_column": "26",
+                            "start_line": "7",
+                            "value": "5",
+                            "vba_type": "Type.Integer"
                         },
-                        "line_number": "0",
                         "operator": "-",
                         "right": {
                             "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "6"
-                        }
-                    }
-                }
+                            "end_column": "31",
+                            "end_line": "7",
+                            "file": "syntax_inline_declaration.vbs",
+                            "start_column": "26",
+                            "start_line": "7",
+                            "value": "6",
+                            "vba_type": "Type.Integer"
+                        },
+                        "start_column": "12",
+                        "start_line": "7"
+                    },
+                    "start_column": "12",
+                    "start_line": "7"
+                },
+                "start_column": "12",
+                "start_line": "7"
             },
             "variable": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "var5"
+                "end_column": "9",
+                "end_line": "7",
+                "file": "syntax_inline_declaration.vbs",
+                "name": "var5",
+                "start_column": "5",
+                "start_line": "7"
             }
         },
         {
-            "_type": "VarAssign",
-            "file": "",
-            "line_number": "0",
+            "_type": "Let",
+            "end_column": "17",
+            "end_line": "8",
+            "file": "syntax_inline_declaration.vbs",
+            "start_column": "1",
+            "start_line": "8",
             "value": {
-                "_type": "FunCall",
+                "_type": "IndexExpr",
                 "arguments": {
-                    "_type": "ArgListCall",
-                    "args": [
+                    "_type": "ArgList",
+                    "arguments": [
                         {
-                            "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "13"
+                            "_type": "Arg",
+                            "byval": "False",
+                            "end_column": "16",
+                            "end_line": "8",
+                            "file": "syntax_inline_declaration.vbs",
+                            "name": "None",
+                            "start_column": "14",
+                            "start_line": "8",
+                            "value": {
+                                "_type": "Literal",
+                                "end_column": "16",
+                                "end_line": "8",
+                                "file": "syntax_inline_declaration.vbs",
+                                "start_column": "14",
+                                "start_line": "8",
+                                "value": "13",
+                                "vba_type": "Type.Integer"
+                            }
                         }
                     ],
-                    "file": "",
-                    "line_number": "0"
+                    "end_column": "16",
+                    "end_line": "8",
+                    "file": "syntax_inline_declaration.vbs",
+                    "start_column": "14",
+                    "start_line": "8"
                 },
-                "file": "",
-                "function": {
+                "end_column": "17",
+                "end_line": "8",
+                "expression": {
                     "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "f"
+                    "end_column": "13",
+                    "end_line": "8",
+                    "file": "syntax_inline_declaration.vbs",
+                    "name": "f",
+                    "start_column": "12",
+                    "start_line": "8"
                 },
-                "line_number": "0"
+                "file": "syntax_inline_declaration.vbs",
+                "start_column": "12",
+                "start_line": "8"
             },
             "variable": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "var6"
+                "end_column": "9",
+                "end_line": "8",
+                "file": "syntax_inline_declaration.vbs",
+                "name": "var6",
+                "start_column": "5",
+                "start_line": "8"
             }
         }
-    ]
+    ],
+    "end_column": "17",
+    "end_line": "8",
+    "file": "syntax_inline_declaration.vbs",
+    "start_column": "1",
+    "start_line": "1"
 }

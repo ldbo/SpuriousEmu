@@ -2,665 +2,1256 @@
     "_type": "Block",
     "body": [
         {
-            "_type": "BinOp",
-            "file": "",
-            "left": {
+            "_type": "Comment",
+            "content": "Expressions tests",
+            "end_column": "20",
+            "end_line": "1",
+            "file": "syntax_expression.vbs",
+            "start_column": "1",
+            "start_line": "1"
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "35",
+            "end_line": "2",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "2",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "2"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "2",
+            "type": "None",
+            "value": {
                 "_type": "BinOp",
-                "file": "",
+                "end_column": "35",
+                "end_line": "2",
+                "file": "syntax_expression.vbs",
                 "left": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "v1"
-                },
-                "line_number": "0",
-                "operator": "-",
-                "right": {
                     "_type": "BinOp",
-                    "file": "",
+                    "end_column": "35",
+                    "end_line": "2",
+                    "file": "syntax_expression.vbs",
                     "left": {
                         "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "v2"
+                        "end_column": "35",
+                        "end_line": "2",
+                        "file": "syntax_expression.vbs",
+                        "name": "v1",
+                        "start_column": "11",
+                        "start_line": "2"
                     },
-                    "line_number": "0",
-                    "operator": "*",
+                    "operator": "-",
                     "right": {
                         "_type": "BinOp",
-                        "file": "",
+                        "end_column": "35",
+                        "end_line": "2",
+                        "file": "syntax_expression.vbs",
                         "left": {
                             "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v3"
+                            "end_column": "35",
+                            "end_line": "2",
+                            "file": "syntax_expression.vbs",
+                            "name": "v2",
+                            "start_column": "11",
+                            "start_line": "2"
                         },
-                        "line_number": "0",
-                        "operator": "-",
+                        "operator": "*",
                         "right": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v4"
-                        }
-                    }
-                }
-            },
-            "line_number": "0",
-            "operator": "+",
-            "right": {
-                "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "v5"
+                            "_type": "BinOp",
+                            "end_column": "35",
+                            "end_line": "2",
+                            "file": "syntax_expression.vbs",
+                            "left": {
+                                "_type": "Identifier",
+                                "end_column": "29",
+                                "end_line": "2",
+                                "file": "syntax_expression.vbs",
+                                "name": "v3",
+                                "start_column": "22",
+                                "start_line": "2"
+                            },
+                            "operator": "-",
+                            "right": {
+                                "_type": "Identifier",
+                                "end_column": "29",
+                                "end_line": "2",
+                                "file": "syntax_expression.vbs",
+                                "name": "v4",
+                                "start_column": "22",
+                                "start_line": "2"
+                            },
+                            "start_column": "11",
+                            "start_line": "2"
+                        },
+                        "start_column": "11",
+                        "start_line": "2"
+                    },
+                    "start_column": "11",
+                    "start_line": "2"
+                },
+                "operator": "+",
+                "right": {
+                    "_type": "Identifier",
+                    "end_column": "35",
+                    "end_line": "2",
+                    "file": "syntax_expression.vbs",
+                    "name": "v5",
+                    "start_column": "11",
+                    "start_line": "2"
+                },
+                "start_column": "11",
+                "start_line": "2"
             }
         },
         {
-            "_type": "BinOp",
-            "file": "",
-            "left": {
+            "_type": "VarDec",
+            "end_column": "33",
+            "end_line": "3",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "3",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "3"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "3",
+            "type": "None",
+            "value": {
                 "_type": "BinOp",
-                "file": "",
+                "end_column": "33",
+                "end_line": "3",
+                "file": "syntax_expression.vbs",
                 "left": {
                     "_type": "BinOp",
-                    "file": "",
+                    "end_column": "33",
+                    "end_line": "3",
+                    "file": "syntax_expression.vbs",
                     "left": {
                         "_type": "BinOp",
-                        "file": "",
+                        "end_column": "33",
+                        "end_line": "3",
+                        "file": "syntax_expression.vbs",
                         "left": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v1"
+                            "_type": "BinOp",
+                            "end_column": "33",
+                            "end_line": "3",
+                            "file": "syntax_expression.vbs",
+                            "left": {
+                                "_type": "Identifier",
+                                "end_column": "33",
+                                "end_line": "3",
+                                "file": "syntax_expression.vbs",
+                                "name": "v1",
+                                "start_column": "11",
+                                "start_line": "3"
+                            },
+                            "operator": "/",
+                            "right": {
+                                "_type": "Identifier",
+                                "end_column": "33",
+                                "end_line": "3",
+                                "file": "syntax_expression.vbs",
+                                "name": "v2",
+                                "start_column": "11",
+                                "start_line": "3"
+                            },
+                            "start_column": "11",
+                            "start_line": "3"
                         },
-                        "line_number": "0",
-                        "operator": "/",
+                        "operator": "*",
                         "right": {
                             "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v2"
-                        }
+                            "end_column": "33",
+                            "end_line": "3",
+                            "file": "syntax_expression.vbs",
+                            "name": "v3",
+                            "start_column": "11",
+                            "start_line": "3"
+                        },
+                        "start_column": "11",
+                        "start_line": "3"
                     },
-                    "line_number": "0",
-                    "operator": "*",
+                    "operator": "/",
                     "right": {
                         "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "v3"
-                    }
-                },
-                "line_number": "0",
-                "operator": "/",
-                "right": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "v4"
-                }
-            },
-            "line_number": "0",
-            "operator": "*",
-            "right": {
-                "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "v5"
-            }
-        },
-        {
-            "_type": "FunCall",
-            "arguments": {
-                "_type": "ArgListCall",
-                "args": [
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "a"
-                    }
-                ],
-                "file": "",
-                "line_number": "0"
-            },
-            "file": "",
-            "function": {
-                "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "f"
-            },
-            "line_number": "0"
-        },
-        {
-            "_type": "FunCall",
-            "arguments": {
-                "_type": "ArgListCall",
-                "args": [
-                    {
-                        "_type": "Literal",
-                        "file": "",
-                        "line_number": "0",
-                        "type": "Type.Integer",
-                        "value": "1"
+                        "end_column": "33",
+                        "end_line": "3",
+                        "file": "syntax_expression.vbs",
+                        "name": "v4",
+                        "start_column": "11",
+                        "start_line": "3"
                     },
-                    {
-                        "_type": "BinOp",
-                        "file": "",
-                        "left": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "var1"
-                        },
-                        "line_number": "0",
-                        "operator": "+",
-                        "right": {
-                            "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "2"
-                        }
-                    },
-                    {
-                        "_type": "FunCall",
-                        "arguments": {
-                            "_type": "ArgListCall",
-                            "args": [
-                                {
-                                    "_type": "Literal",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "type": "Type.Integer",
-                                    "value": "1"
-                                }
-                            ],
-                            "file": "",
-                            "line_number": "0"
-                        },
-                        "file": "",
-                        "function": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "g"
-                        },
-                        "line_number": "0"
-                    }
-                ],
-                "file": "",
-                "line_number": "0"
-            },
-            "file": "",
-            "function": {
-                "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "f"
-            },
-            "line_number": "0"
-        },
-        {
-            "_type": "BinOp",
-            "file": "",
-            "left": {
-                "_type": "BinOp",
-                "file": "",
-                "left": {
-                    "_type": "BinOp",
-                    "file": "",
-                    "left": {
-                        "_type": "FunCall",
-                        "arguments": {
-                            "_type": "ArgListCall",
-                            "args": [],
-                            "file": "",
-                            "line_number": "0"
-                        },
-                        "file": "",
-                        "function": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "g"
-                        },
-                        "line_number": "0"
-                    },
-                    "line_number": "0",
-                    "operator": "+",
-                    "right": {
-                        "_type": "FunCall",
-                        "arguments": {
-                            "_type": "ArgListCall",
-                            "args": [],
-                            "file": "",
-                            "line_number": "0"
-                        },
-                        "file": "",
-                        "function": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "d"
-                        },
-                        "line_number": "0"
-                    }
+                    "start_column": "11",
+                    "start_line": "3"
                 },
-                "line_number": "0",
-                "operator": "/",
-                "right": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "var2"
-                }
-            },
-            "line_number": "0",
-            "operator": "+",
-            "right": {
-                "_type": "BinOp",
-                "file": "",
-                "left": {
-                    "_type": "Literal",
-                    "file": "",
-                    "line_number": "0",
-                    "type": "Type.Integer",
-                    "value": "2"
-                },
-                "line_number": "0",
                 "operator": "*",
                 "right": {
-                    "_type": "BinOp",
-                    "file": "",
-                    "left": {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "var1"
-                    },
-                    "line_number": "0",
-                    "operator": "+",
-                    "right": {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "var2"
-                    }
-                }
+                    "_type": "Identifier",
+                    "end_column": "33",
+                    "end_line": "3",
+                    "file": "syntax_expression.vbs",
+                    "name": "v5",
+                    "start_column": "11",
+                    "start_line": "3"
+                },
+                "start_column": "11",
+                "start_line": "3"
             }
         },
         {
-            "_type": "FunCall",
-            "arguments": {
-                "_type": "ArgListCall",
-                "args": [
-                    {
-                        "_type": "Literal",
-                        "file": "",
-                        "line_number": "0",
-                        "type": "Type.Integer",
-                        "value": "1"
-                    },
-                    {
-                        "_type": "Literal",
-                        "file": "",
-                        "line_number": "0",
-                        "type": "Type.Integer",
-                        "value": "12"
-                    },
-                    {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "abcd"
-                    }
-                ],
-                "file": "",
-                "line_number": "0"
-            },
-            "file": "",
-            "function": {
+            "_type": "VarDec",
+            "end_column": "15",
+            "end_line": "4",
+            "file": "syntax_expression.vbs",
+            "identifier": {
                 "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "f"
+                "end_column": "8",
+                "end_line": "4",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "4"
             },
-            "line_number": "0"
-        },
-        {
-            "_type": "FunCall",
-            "arguments": {
-                "_type": "ArgListCall",
-                "args": [],
-                "file": "",
-                "line_number": "0"
-            },
-            "file": "",
-            "function": {
-                "_type": "Identifier",
-                "file": "",
-                "line_number": "0",
-                "name": "f"
-            },
-            "line_number": "0"
-        },
-        {
-            "_type": "BinOp",
-            "file": "",
-            "left": {
-                "_type": "Get",
-                "child": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "member1"
-                },
-                "file": "",
-                "line_number": "0",
-                "parent": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "obj1"
-                }
-            },
-            "line_number": "0",
-            "operator": "+",
-            "right": {
-                "_type": "Get",
-                "child": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "member2"
-                },
-                "file": "",
-                "line_number": "0",
-                "parent": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "obj1"
-                }
-            }
-        },
-        {
-            "_type": "BinOp",
-            "file": "",
-            "left": {
-                "_type": "FunCall",
+            "new": "False",
+            "start_column": "1",
+            "start_line": "4",
+            "type": "None",
+            "value": {
+                "_type": "IndexExpr",
                 "arguments": {
-                    "_type": "ArgListCall",
-                    "args": [
+                    "_type": "ArgList",
+                    "arguments": [
                         {
-                            "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "1"
-                        },
-                        {
-                            "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "2"
-                        },
-                        {
-                            "_type": "Literal",
-                            "file": "",
-                            "line_number": "0",
-                            "type": "Type.Integer",
-                            "value": "3"
+                            "_type": "Arg",
+                            "byval": "False",
+                            "end_column": "14",
+                            "end_line": "4",
+                            "file": "syntax_expression.vbs",
+                            "name": "None",
+                            "start_column": "13",
+                            "start_line": "4",
+                            "value": {
+                                "_type": "Identifier",
+                                "end_column": "14",
+                                "end_line": "4",
+                                "file": "syntax_expression.vbs",
+                                "name": "a",
+                                "start_column": "13",
+                                "start_line": "4"
+                            }
                         }
                     ],
-                    "file": "",
-                    "line_number": "0"
+                    "end_column": "14",
+                    "end_line": "4",
+                    "file": "syntax_expression.vbs",
+                    "start_column": "13",
+                    "start_line": "4"
                 },
-                "file": "",
-                "function": {
-                    "_type": "Get",
-                    "child": {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "m5"
-                    },
-                    "file": "",
-                    "line_number": "0",
-                    "parent": {
-                        "_type": "Get",
-                        "child": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "v4"
-                        },
-                        "file": "",
-                        "line_number": "0",
-                        "parent": {
-                            "_type": "FunCall",
-                            "arguments": {
-                                "_type": "ArgListCall",
-                                "args": [],
-                                "file": "",
-                                "line_number": "0"
-                            },
-                            "file": "",
-                            "function": {
-                                "_type": "Get",
-                                "child": {
-                                    "_type": "Identifier",
-                                    "file": "",
-                                    "line_number": "0",
-                                    "name": "m3"
-                                },
-                                "file": "",
-                                "line_number": "0",
-                                "parent": {
-                                    "_type": "Get",
-                                    "child": {
-                                        "_type": "Identifier",
-                                        "file": "",
-                                        "line_number": "0",
-                                        "name": "o2"
-                                    },
-                                    "file": "",
-                                    "line_number": "0",
-                                    "parent": {
-                                        "_type": "Identifier",
-                                        "file": "",
-                                        "line_number": "0",
-                                        "name": "o1"
-                                    }
-                                }
-                            },
-                            "line_number": "0"
-                        }
-                    }
-                },
-                "line_number": "0"
-            },
-            "line_number": "0",
-            "operator": "+",
-            "right": {
-                "_type": "Get",
-                "child": {
+                "end_column": "15",
+                "end_line": "4",
+                "expression": {
                     "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "v3"
+                    "end_column": "12",
+                    "end_line": "4",
+                    "file": "syntax_expression.vbs",
+                    "name": "f",
+                    "start_column": "11",
+                    "start_line": "4"
                 },
-                "file": "",
-                "line_number": "0",
-                "parent": {
-                    "_type": "Get",
-                    "child": {
-                        "_type": "Identifier",
-                        "file": "",
-                        "line_number": "0",
-                        "name": "v2"
-                    },
-                    "file": "",
-                    "line_number": "0",
-                    "parent": {
-                        "_type": "FunCall",
-                        "arguments": {
-                            "_type": "ArgListCall",
-                            "args": [],
-                            "file": "",
-                            "line_number": "0"
-                        },
-                        "file": "",
-                        "function": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "f1"
-                        },
-                        "line_number": "0"
-                    }
-                }
+                "file": "syntax_expression.vbs",
+                "start_column": "11",
+                "start_line": "4"
             }
         },
         {
-            "_type": "FunCall",
-            "arguments": {
-                "_type": "ArgListCall",
-                "args": [
-                    {
-                        "_type": "Get",
-                        "child": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "Read"
+            "_type": "VarDec",
+            "end_column": "31",
+            "end_line": "5",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "5",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "5"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "5",
+            "type": "None",
+            "value": {
+                "_type": "IndexExpr",
+                "arguments": {
+                    "_type": "ArgList",
+                    "arguments": [
+                        {
+                            "_type": "Arg",
+                            "byval": "False",
+                            "end_column": "14",
+                            "end_line": "5",
+                            "file": "syntax_expression.vbs",
+                            "name": "None",
+                            "start_column": "13",
+                            "start_line": "5",
+                            "value": {
+                                "_type": "Literal",
+                                "end_column": "14",
+                                "end_line": "5",
+                                "file": "syntax_expression.vbs",
+                                "start_column": "13",
+                                "start_line": "5",
+                                "value": "1",
+                                "vba_type": "Type.Integer"
+                            }
                         },
-                        "file": "",
-                        "line_number": "0",
-                        "parent": {
-                            "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "plt"
+                        {
+                            "_type": "Arg",
+                            "byval": "False",
+                            "end_column": "24",
+                            "end_line": "5",
+                            "file": "syntax_expression.vbs",
+                            "name": "None",
+                            "start_column": "16",
+                            "start_line": "5",
+                            "value": {
+                                "_type": "BinOp",
+                                "end_column": "24",
+                                "end_line": "5",
+                                "file": "syntax_expression.vbs",
+                                "left": {
+                                    "_type": "Identifier",
+                                    "end_column": "24",
+                                    "end_line": "5",
+                                    "file": "syntax_expression.vbs",
+                                    "name": "var1",
+                                    "start_column": "16",
+                                    "start_line": "5"
+                                },
+                                "operator": "+",
+                                "right": {
+                                    "_type": "Literal",
+                                    "end_column": "24",
+                                    "end_line": "5",
+                                    "file": "syntax_expression.vbs",
+                                    "start_column": "16",
+                                    "start_line": "5",
+                                    "value": "2",
+                                    "vba_type": "Type.Integer"
+                                },
+                                "start_column": "16",
+                                "start_line": "5"
+                            }
+                        },
+                        {
+                            "_type": "Arg",
+                            "byval": "False",
+                            "end_column": "30",
+                            "end_line": "5",
+                            "file": "syntax_expression.vbs",
+                            "name": "None",
+                            "start_column": "26",
+                            "start_line": "5",
+                            "value": {
+                                "_type": "IndexExpr",
+                                "arguments": {
+                                    "_type": "ArgList",
+                                    "arguments": [
+                                        {
+                                            "_type": "Arg",
+                                            "byval": "False",
+                                            "end_column": "29",
+                                            "end_line": "5",
+                                            "file": "syntax_expression.vbs",
+                                            "name": "None",
+                                            "start_column": "28",
+                                            "start_line": "5",
+                                            "value": {
+                                                "_type": "Literal",
+                                                "end_column": "29",
+                                                "end_line": "5",
+                                                "file": "syntax_expression.vbs",
+                                                "start_column": "28",
+                                                "start_line": "5",
+                                                "value": "1",
+                                                "vba_type": "Type.Integer"
+                                            }
+                                        }
+                                    ],
+                                    "end_column": "29",
+                                    "end_line": "5",
+                                    "file": "syntax_expression.vbs",
+                                    "start_column": "28",
+                                    "start_line": "5"
+                                },
+                                "end_column": "30",
+                                "end_line": "5",
+                                "expression": {
+                                    "_type": "Identifier",
+                                    "end_column": "27",
+                                    "end_line": "5",
+                                    "file": "syntax_expression.vbs",
+                                    "name": "g",
+                                    "start_column": "26",
+                                    "start_line": "5"
+                                },
+                                "file": "syntax_expression.vbs",
+                                "start_column": "26",
+                                "start_line": "5"
+                            }
                         }
-                    }
-                ],
-                "file": "",
-                "line_number": "0"
-            },
-            "file": "",
-            "function": {
-                "_type": "Get",
-                "child": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "Write"
+                    ],
+                    "end_column": "30",
+                    "end_line": "5",
+                    "file": "syntax_expression.vbs",
+                    "start_column": "13",
+                    "start_line": "5"
                 },
-                "file": "",
-                "line_number": "0",
-                "parent": {
+                "end_column": "31",
+                "end_line": "5",
+                "expression": {
                     "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "obj"
-                }
-            },
-            "line_number": "0"
+                    "end_column": "12",
+                    "end_line": "5",
+                    "file": "syntax_expression.vbs",
+                    "name": "f",
+                    "start_column": "11",
+                    "start_line": "5"
+                },
+                "file": "syntax_expression.vbs",
+                "start_column": "11",
+                "start_line": "5"
+            }
         },
         {
-            "_type": "UnOp",
-            "argument": {
-                "_type": "Literal",
-                "file": "",
-                "line_number": "0",
-                "type": "Type.Boolean",
-                "value": "True"
+            "_type": "VarDec",
+            "end_column": "51",
+            "end_line": "6",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "6",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "6"
             },
-            "file": "",
-            "line_number": "0",
-            "operator": "Not"
-        },
-        {
-            "_type": "BinOp",
-            "file": "",
-            "left": {
-                "_type": "UnOp",
-                "argument": {
-                    "_type": "UnOp",
-                    "argument": {
+            "new": "False",
+            "start_column": "1",
+            "start_line": "6",
+            "type": "None",
+            "value": {
+                "_type": "BinOp",
+                "end_column": "51",
+                "end_line": "6",
+                "file": "syntax_expression.vbs",
+                "left": {
+                    "_type": "BinOp",
+                    "end_column": "51",
+                    "end_line": "6",
+                    "file": "syntax_expression.vbs",
+                    "left": {
                         "_type": "BinOp",
-                        "file": "",
+                        "end_column": "30",
+                        "end_line": "6",
+                        "file": "syntax_expression.vbs",
+                        "left": {
+                            "_type": "IndexExpr",
+                            "arguments": {
+                                "_type": "ArgList",
+                                "arguments": [],
+                                "end_column": "None",
+                                "end_line": "None",
+                                "file": "None",
+                                "start_column": "None",
+                                "start_line": "None"
+                            },
+                            "end_column": "22",
+                            "end_line": "6",
+                            "expression": {
+                                "_type": "Identifier",
+                                "end_column": "14",
+                                "end_line": "6",
+                                "file": "syntax_expression.vbs",
+                                "name": "g",
+                                "start_column": "13",
+                                "start_line": "6"
+                            },
+                            "file": "syntax_expression.vbs",
+                            "start_column": "13",
+                            "start_line": "6"
+                        },
+                        "operator": "+",
+                        "right": {
+                            "_type": "IndexExpr",
+                            "arguments": {
+                                "_type": "ArgList",
+                                "arguments": [],
+                                "end_column": "None",
+                                "end_line": "None",
+                                "file": "None",
+                                "start_column": "None",
+                                "start_line": "None"
+                            },
+                            "end_column": "22",
+                            "end_line": "6",
+                            "expression": {
+                                "_type": "Identifier",
+                                "end_column": "20",
+                                "end_line": "6",
+                                "file": "syntax_expression.vbs",
+                                "name": "d",
+                                "start_column": "19",
+                                "start_line": "6"
+                            },
+                            "file": "syntax_expression.vbs",
+                            "start_column": "13",
+                            "start_line": "6"
+                        },
+                        "start_column": "12",
+                        "start_line": "6"
+                    },
+                    "operator": "/",
+                    "right": {
+                        "_type": "Identifier",
+                        "end_column": "30",
+                        "end_line": "6",
+                        "file": "syntax_expression.vbs",
+                        "name": "var2",
+                        "start_column": "12",
+                        "start_line": "6"
+                    },
+                    "start_column": "11",
+                    "start_line": "6"
+                },
+                "operator": "+",
+                "right": {
+                    "_type": "BinOp",
+                    "end_column": "51",
+                    "end_line": "6",
+                    "file": "syntax_expression.vbs",
+                    "left": {
+                        "_type": "Literal",
+                        "end_column": "51",
+                        "end_line": "6",
+                        "file": "syntax_expression.vbs",
+                        "start_column": "11",
+                        "start_line": "6",
+                        "value": "2",
+                        "vba_type": "Type.Integer"
+                    },
+                    "operator": "*",
+                    "right": {
+                        "_type": "BinOp",
+                        "end_column": "51",
+                        "end_line": "6",
+                        "file": "syntax_expression.vbs",
                         "left": {
                             "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "a"
+                            "end_column": "50",
+                            "end_line": "6",
+                            "file": "syntax_expression.vbs",
+                            "name": "var1",
+                            "start_column": "39",
+                            "start_line": "6"
                         },
-                        "line_number": "0",
-                        "operator": "Or",
+                        "operator": "+",
                         "right": {
                             "_type": "Identifier",
-                            "file": "",
-                            "line_number": "0",
-                            "name": "b"
-                        }
+                            "end_column": "50",
+                            "end_line": "6",
+                            "file": "syntax_expression.vbs",
+                            "name": "var2",
+                            "start_column": "39",
+                            "start_line": "6"
+                        },
+                        "start_column": "11",
+                        "start_line": "6"
                     },
-                    "file": "",
-                    "line_number": "0",
-                    "operator": "Not"
+                    "start_column": "11",
+                    "start_line": "6"
                 },
-                "file": "",
-                "line_number": "0",
-                "operator": "Not"
-            },
-            "line_number": "0",
-            "operator": "And",
-            "right": {
-                "_type": "BinOp",
-                "file": "",
-                "left": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "c"
-                },
-                "line_number": "0",
-                "operator": "Xor",
-                "right": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "b"
-                }
+                "start_column": "11",
+                "start_line": "6"
             }
         },
         {
-            "_type": "UnOp",
-            "argument": {
-                "_type": "BinOp",
-                "file": "",
-                "left": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "a"
-                },
-                "line_number": "0",
-                "operator": "<=",
-                "right": {
-                    "_type": "Identifier",
-                    "file": "",
-                    "line_number": "0",
-                    "name": "b"
-                }
+            "_type": "VarDec",
+            "end_column": "12",
+            "end_line": "7",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "7",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "7"
             },
-            "file": "",
-            "line_number": "0",
-            "operator": "Not"
+            "new": "False",
+            "start_column": "1",
+            "start_line": "7",
+            "type": "None",
+            "value": {
+                "_type": "Identifier",
+                "end_column": "12",
+                "end_line": "7",
+                "file": "syntax_expression.vbs",
+                "name": "f",
+                "start_column": "11",
+                "start_line": "7"
+            }
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "38",
+            "end_line": "8",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "8",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "8"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "8",
+            "type": "None",
+            "value": {
+                "_type": "BinOp",
+                "end_column": "38",
+                "end_line": "8",
+                "file": "syntax_expression.vbs",
+                "left": {
+                    "_type": "MemberAccess",
+                    "child": {
+                        "_type": "Identifier",
+                        "end_column": "23",
+                        "end_line": "8",
+                        "file": "syntax_expression.vbs",
+                        "name": "member1",
+                        "start_column": "16",
+                        "start_line": "8"
+                    },
+                    "end_column": "38",
+                    "end_line": "8",
+                    "file": "syntax_expression.vbs",
+                    "parent": {
+                        "_type": "Identifier",
+                        "end_column": "15",
+                        "end_line": "8",
+                        "file": "syntax_expression.vbs",
+                        "name": "obj1",
+                        "start_column": "11",
+                        "start_line": "8"
+                    },
+                    "start_column": "11",
+                    "start_line": "8"
+                },
+                "operator": "+",
+                "right": {
+                    "_type": "MemberAccess",
+                    "child": {
+                        "_type": "Identifier",
+                        "end_column": "38",
+                        "end_line": "8",
+                        "file": "syntax_expression.vbs",
+                        "name": "member2",
+                        "start_column": "31",
+                        "start_line": "8"
+                    },
+                    "end_column": "38",
+                    "end_line": "8",
+                    "file": "syntax_expression.vbs",
+                    "parent": {
+                        "_type": "Identifier",
+                        "end_column": "30",
+                        "end_line": "8",
+                        "file": "syntax_expression.vbs",
+                        "name": "obj1",
+                        "start_column": "26",
+                        "start_line": "8"
+                    },
+                    "start_column": "11",
+                    "start_line": "8"
+                },
+                "start_column": "11",
+                "start_line": "8"
+            }
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "49",
+            "end_line": "9",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "9",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "9"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "9",
+            "type": "None",
+            "value": {
+                "_type": "BinOp",
+                "end_column": "49",
+                "end_line": "9",
+                "file": "syntax_expression.vbs",
+                "left": {
+                    "_type": "IndexExpr",
+                    "arguments": {
+                        "_type": "ArgList",
+                        "arguments": [
+                            {
+                                "_type": "Arg",
+                                "byval": "False",
+                                "end_column": "29",
+                                "end_line": "9",
+                                "file": "syntax_expression.vbs",
+                                "name": "None",
+                                "start_column": "28",
+                                "start_line": "9",
+                                "value": {
+                                    "_type": "Literal",
+                                    "end_column": "29",
+                                    "end_line": "9",
+                                    "file": "syntax_expression.vbs",
+                                    "start_column": "28",
+                                    "start_line": "9",
+                                    "value": "1",
+                                    "vba_type": "Type.Integer"
+                                }
+                            },
+                            {
+                                "_type": "Arg",
+                                "byval": "False",
+                                "end_column": "32",
+                                "end_line": "9",
+                                "file": "syntax_expression.vbs",
+                                "name": "None",
+                                "start_column": "31",
+                                "start_line": "9",
+                                "value": {
+                                    "_type": "Literal",
+                                    "end_column": "32",
+                                    "end_line": "9",
+                                    "file": "syntax_expression.vbs",
+                                    "start_column": "31",
+                                    "start_line": "9",
+                                    "value": "2",
+                                    "vba_type": "Type.Integer"
+                                }
+                            },
+                            {
+                                "_type": "Arg",
+                                "byval": "False",
+                                "end_column": "35",
+                                "end_line": "9",
+                                "file": "syntax_expression.vbs",
+                                "name": "None",
+                                "start_column": "34",
+                                "start_line": "9",
+                                "value": {
+                                    "_type": "Literal",
+                                    "end_column": "35",
+                                    "end_line": "9",
+                                    "file": "syntax_expression.vbs",
+                                    "start_column": "34",
+                                    "start_line": "9",
+                                    "value": "3",
+                                    "vba_type": "Type.Integer"
+                                }
+                            }
+                        ],
+                        "end_column": "35",
+                        "end_line": "9",
+                        "file": "syntax_expression.vbs",
+                        "start_column": "28",
+                        "start_line": "9"
+                    },
+                    "end_column": "49",
+                    "end_line": "9",
+                    "expression": {
+                        "_type": "MemberAccess",
+                        "child": {
+                            "_type": "Identifier",
+                            "end_column": "27",
+                            "end_line": "9",
+                            "file": "syntax_expression.vbs",
+                            "name": "m5",
+                            "start_column": "25",
+                            "start_line": "9"
+                        },
+                        "end_column": "27",
+                        "end_line": "9",
+                        "file": "syntax_expression.vbs",
+                        "parent": {
+                            "_type": "MemberAccess",
+                            "child": {
+                                "_type": "Identifier",
+                                "end_column": "24",
+                                "end_line": "9",
+                                "file": "syntax_expression.vbs",
+                                "name": "v4",
+                                "start_column": "22",
+                                "start_line": "9"
+                            },
+                            "end_column": "24",
+                            "end_line": "9",
+                            "file": "syntax_expression.vbs",
+                            "parent": {
+                                "_type": "IndexExpr",
+                                "arguments": {
+                                    "_type": "ArgList",
+                                    "arguments": [],
+                                    "end_column": "None",
+                                    "end_line": "None",
+                                    "file": "None",
+                                    "start_column": "None",
+                                    "start_line": "None"
+                                },
+                                "end_column": "21",
+                                "end_line": "9",
+                                "expression": {
+                                    "_type": "MemberAccess",
+                                    "child": {
+                                        "_type": "Identifier",
+                                        "end_column": "19",
+                                        "end_line": "9",
+                                        "file": "syntax_expression.vbs",
+                                        "name": "m3",
+                                        "start_column": "17",
+                                        "start_line": "9"
+                                    },
+                                    "end_column": "19",
+                                    "end_line": "9",
+                                    "file": "syntax_expression.vbs",
+                                    "parent": {
+                                        "_type": "MemberAccess",
+                                        "child": {
+                                            "_type": "Identifier",
+                                            "end_column": "16",
+                                            "end_line": "9",
+                                            "file": "syntax_expression.vbs",
+                                            "name": "o2",
+                                            "start_column": "14",
+                                            "start_line": "9"
+                                        },
+                                        "end_column": "16",
+                                        "end_line": "9",
+                                        "file": "syntax_expression.vbs",
+                                        "parent": {
+                                            "_type": "Identifier",
+                                            "end_column": "13",
+                                            "end_line": "9",
+                                            "file": "syntax_expression.vbs",
+                                            "name": "o1",
+                                            "start_column": "11",
+                                            "start_line": "9"
+                                        },
+                                        "start_column": "11",
+                                        "start_line": "9"
+                                    },
+                                    "start_column": "11",
+                                    "start_line": "9"
+                                },
+                                "file": "syntax_expression.vbs",
+                                "start_column": "11",
+                                "start_line": "9"
+                            },
+                            "start_column": "11",
+                            "start_line": "9"
+                        },
+                        "start_column": "11",
+                        "start_line": "9"
+                    },
+                    "file": "syntax_expression.vbs",
+                    "start_column": "11",
+                    "start_line": "9"
+                },
+                "operator": "+",
+                "right": {
+                    "_type": "MemberAccess",
+                    "child": {
+                        "_type": "Identifier",
+                        "end_column": "49",
+                        "end_line": "9",
+                        "file": "syntax_expression.vbs",
+                        "name": "v3",
+                        "start_column": "47",
+                        "start_line": "9"
+                    },
+                    "end_column": "49",
+                    "end_line": "9",
+                    "file": "syntax_expression.vbs",
+                    "parent": {
+                        "_type": "MemberAccess",
+                        "child": {
+                            "_type": "Identifier",
+                            "end_column": "46",
+                            "end_line": "9",
+                            "file": "syntax_expression.vbs",
+                            "name": "v2",
+                            "start_column": "44",
+                            "start_line": "9"
+                        },
+                        "end_column": "46",
+                        "end_line": "9",
+                        "file": "syntax_expression.vbs",
+                        "parent": {
+                            "_type": "IndexExpr",
+                            "arguments": {
+                                "_type": "ArgList",
+                                "arguments": [],
+                                "end_column": "None",
+                                "end_line": "None",
+                                "file": "None",
+                                "start_column": "None",
+                                "start_line": "None"
+                            },
+                            "end_column": "43",
+                            "end_line": "9",
+                            "expression": {
+                                "_type": "Identifier",
+                                "end_column": "41",
+                                "end_line": "9",
+                                "file": "syntax_expression.vbs",
+                                "name": "f1",
+                                "start_column": "39",
+                                "start_line": "9"
+                            },
+                            "file": "syntax_expression.vbs",
+                            "start_column": "39",
+                            "start_line": "9"
+                        },
+                        "start_column": "39",
+                        "start_line": "9"
+                    },
+                    "start_column": "11",
+                    "start_line": "9"
+                },
+                "start_column": "11",
+                "start_line": "9"
+            }
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "30",
+            "end_line": "10",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "10",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "10"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "10",
+            "type": "None",
+            "value": {
+                "_type": "IndexExpr",
+                "arguments": {
+                    "_type": "ArgList",
+                    "arguments": [
+                        {
+                            "_type": "Arg",
+                            "byval": "False",
+                            "end_column": "29",
+                            "end_line": "10",
+                            "file": "syntax_expression.vbs",
+                            "name": "None",
+                            "start_column": "21",
+                            "start_line": "10",
+                            "value": {
+                                "_type": "MemberAccess",
+                                "child": {
+                                    "_type": "Identifier",
+                                    "end_column": "29",
+                                    "end_line": "10",
+                                    "file": "syntax_expression.vbs",
+                                    "name": "Read",
+                                    "start_column": "25",
+                                    "start_line": "10"
+                                },
+                                "end_column": "29",
+                                "end_line": "10",
+                                "file": "syntax_expression.vbs",
+                                "parent": {
+                                    "_type": "Identifier",
+                                    "end_column": "24",
+                                    "end_line": "10",
+                                    "file": "syntax_expression.vbs",
+                                    "name": "plt",
+                                    "start_column": "21",
+                                    "start_line": "10"
+                                },
+                                "start_column": "21",
+                                "start_line": "10"
+                            }
+                        }
+                    ],
+                    "end_column": "29",
+                    "end_line": "10",
+                    "file": "syntax_expression.vbs",
+                    "start_column": "21",
+                    "start_line": "10"
+                },
+                "end_column": "30",
+                "end_line": "10",
+                "expression": {
+                    "_type": "MemberAccess",
+                    "child": {
+                        "_type": "Identifier",
+                        "end_column": "20",
+                        "end_line": "10",
+                        "file": "syntax_expression.vbs",
+                        "name": "Write",
+                        "start_column": "15",
+                        "start_line": "10"
+                    },
+                    "end_column": "20",
+                    "end_line": "10",
+                    "file": "syntax_expression.vbs",
+                    "parent": {
+                        "_type": "Identifier",
+                        "end_column": "14",
+                        "end_line": "10",
+                        "file": "syntax_expression.vbs",
+                        "name": "obj",
+                        "start_column": "11",
+                        "start_line": "10"
+                    },
+                    "start_column": "11",
+                    "start_line": "10"
+                },
+                "file": "syntax_expression.vbs",
+                "start_column": "11",
+                "start_line": "10"
+            }
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "19",
+            "end_line": "11",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "11",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "11"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "11",
+            "type": "None",
+            "value": {
+                "_type": "UnOp",
+                "argument": {
+                    "_type": "Identifier",
+                    "end_column": "19",
+                    "end_line": "11",
+                    "file": "syntax_expression.vbs",
+                    "name": "True",
+                    "start_column": "11",
+                    "start_line": "11"
+                },
+                "end_column": "19",
+                "end_line": "11",
+                "file": "syntax_expression.vbs",
+                "operator": "Not",
+                "start_column": "11",
+                "start_line": "11"
+            }
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "41",
+            "end_line": "12",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "12",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "12"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "12",
+            "type": "None",
+            "value": {
+                "_type": "BinOp",
+                "end_column": "41",
+                "end_line": "12",
+                "file": "syntax_expression.vbs",
+                "left": {
+                    "_type": "UnOp",
+                    "argument": {
+                        "_type": "UnOp",
+                        "argument": {
+                            "_type": "BinOp",
+                            "end_column": "41",
+                            "end_line": "12",
+                            "file": "syntax_expression.vbs",
+                            "left": {
+                                "_type": "Identifier",
+                                "end_column": "26",
+                                "end_line": "12",
+                                "file": "syntax_expression.vbs",
+                                "name": "a",
+                                "start_column": "20",
+                                "start_line": "12"
+                            },
+                            "operator": "Or",
+                            "right": {
+                                "_type": "Identifier",
+                                "end_column": "26",
+                                "end_line": "12",
+                                "file": "syntax_expression.vbs",
+                                "name": "b",
+                                "start_column": "20",
+                                "start_line": "12"
+                            },
+                            "start_column": "11",
+                            "start_line": "12"
+                        },
+                        "end_column": "41",
+                        "end_line": "12",
+                        "file": "syntax_expression.vbs",
+                        "operator": "Not",
+                        "start_column": "11",
+                        "start_line": "12"
+                    },
+                    "end_column": "41",
+                    "end_line": "12",
+                    "file": "syntax_expression.vbs",
+                    "operator": "Not",
+                    "start_column": "11",
+                    "start_line": "12"
+                },
+                "operator": "And",
+                "right": {
+                    "_type": "BinOp",
+                    "end_column": "41",
+                    "end_line": "12",
+                    "file": "syntax_expression.vbs",
+                    "left": {
+                        "_type": "Identifier",
+                        "end_column": "40",
+                        "end_line": "12",
+                        "file": "syntax_expression.vbs",
+                        "name": "c",
+                        "start_column": "33",
+                        "start_line": "12"
+                    },
+                    "operator": "Xor",
+                    "right": {
+                        "_type": "Identifier",
+                        "end_column": "40",
+                        "end_line": "12",
+                        "file": "syntax_expression.vbs",
+                        "name": "b",
+                        "start_column": "33",
+                        "start_line": "12"
+                    },
+                    "start_column": "11",
+                    "start_line": "12"
+                },
+                "start_column": "11",
+                "start_line": "12"
+            }
+        },
+        {
+            "_type": "VarDec",
+            "end_column": "21",
+            "end_line": "13",
+            "file": "syntax_expression.vbs",
+            "identifier": {
+                "_type": "Identifier",
+                "end_column": "8",
+                "end_line": "13",
+                "file": "syntax_expression.vbs",
+                "name": "var",
+                "start_column": "5",
+                "start_line": "13"
+            },
+            "new": "False",
+            "start_column": "1",
+            "start_line": "13",
+            "type": "None",
+            "value": {
+                "_type": "UnOp",
+                "argument": {
+                    "_type": "BinOp",
+                    "end_column": "21",
+                    "end_line": "13",
+                    "file": "syntax_expression.vbs",
+                    "left": {
+                        "_type": "Identifier",
+                        "end_column": "21",
+                        "end_line": "13",
+                        "file": "syntax_expression.vbs",
+                        "name": "a",
+                        "start_column": "11",
+                        "start_line": "13"
+                    },
+                    "operator": "<=",
+                    "right": {
+                        "_type": "Identifier",
+                        "end_column": "21",
+                        "end_line": "13",
+                        "file": "syntax_expression.vbs",
+                        "name": "b",
+                        "start_column": "11",
+                        "start_line": "13"
+                    },
+                    "start_column": "11",
+                    "start_line": "13"
+                },
+                "end_column": "21",
+                "end_line": "13",
+                "file": "syntax_expression.vbs",
+                "operator": "Not",
+                "start_column": "11",
+                "start_line": "13"
+            }
         }
-    ]
+    ],
+    "end_column": "21",
+    "end_line": "13",
+    "file": "syntax_expression.vbs",
+    "start_column": "1",
+    "start_line": "1"
 }

@@ -1,16 +1,16 @@
 """Define parts of AST nodes, useful for block statements."""
 
 from abc import abstractmethod, ABC
-from typing import List, Union
+from typing import List
 
 from .abstract_syntax_tree import (
+    AST,
     For,
     ElseIf,
     If,
     Block,
     ProcDef,
     FunDef,
-    Statement,
 )
 
 
@@ -113,12 +113,12 @@ class PartialBlock:
     """
 
     elements: List[BlockElement]
-    statements_blocks: List[List[Union[Statement, Block]]]
+    statements_blocks: List[List[AST]]
 
     def __init__(
         self,
         elements: List[BlockElement] = None,
-        statements_blocks: List[List[Statement]] = None,
+        statements_blocks: List[List[AST]] = None,
     ) -> None:
         super().__init__()
         self.elements = elements if elements is not None else []

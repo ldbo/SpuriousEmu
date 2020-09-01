@@ -1,10 +1,15 @@
 """Definition of the nodes of an abstract syntax tree."""
 
+from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Optional, Dict, Any, Union, ClassVar
 
 from .type import Type
 from .visitor import Visitable
+
+
+class Statement:
+    pass
 
 
 ##################
@@ -12,14 +17,20 @@ from .visitor import Visitable
 ##################
 
 
-class AST(Visitable, ABC):
+@dataclass
+class AST(Visitable):
     """Base class of all the nodes of the tree."""
 
-    __ast_nodes_number: int = 0
-    __hash: int
+    __ast_nodes_number: ClassVar[int] = 0
+    __hash: int = field(init=False, repr=False)
 
-    @abstractmethod
-    def __init__(self) -> None:
+    file: Optional[str] = field(default=None, repr=False)
+    start_line: Optional[int] = field(default=None, repr=False)
+    start_column: Optional[int] = field(default=None, repr=False)
+    end_line: Optional[int] = field(default=None, repr=False)
+    end_column: Optional[int] = field(default=None, repr=False)
+
+    def __post_init__(self) -> None:
         self.__hash = AST.__ast_nodes_number
         AST.__ast_nodes_number += 1
 
@@ -57,28 +68,7 @@ class AST(Visitable, ABC):
         return self.__hash
 
 
-class Statement(AST):
-    """
-    Generic statement, usually corresponding to a simple instruction, or the
-    declaration of e.g. a function.
-    """
-
-    file: str
-    line_number: int
-
-    @abstractmethod
-    def __init__(self, file: str = "", line_number: int = 0) -> None:
-        """ Initialize a statement, saving its context. Must be called by
-        child classes.
-
-        :arg file: Name of the source file
-        :arg line_number: Line number of the statement
-        """
-        super().__init__()
-        self.file = file
-        self.line_number = line_number
-
-
+@dataclass
 class Block(AST):
     """
     Sequence of statements, used as is to describe the main scope of a file,
@@ -86,14 +76,12 @@ class Block(AST):
     functions definition, ...).
     """
 
-    # TODO add support for file and line_number
-    body: Optional[List[Union[Statement, "Block"]]]
+    body: List[AST] = field(default_factory=list)
 
-    def __init__(
-        self, body: Optional[List[Union[Statement, "Block"]]] = None
-    ) -> None:
-        super().__init__()
-        self.body = body if body is not None else []
+
+@dataclass
+class Comment(AST):
+    content: str = ""
 
 
 ############################
@@ -101,7 +89,7 @@ class Block(AST):
 ############################
 
 
-class VarDec(Statement):
+class VarDec(AST):
     """
     Single variable declaration, corresponding to a Dim or Const statement
     with a one-member variable list.
@@ -128,7 +116,7 @@ class VarDec(Statement):
 
 
 # TODO implement
-class MultipleVarDec(Statement):
+class MultipleVarDec(AST):
     """
     Variable declaration corresponding to a generic Dim or Const statement
     with potentially multiple variables.
@@ -141,7 +129,15 @@ class MultipleVarDec(Statement):
         self.declarations = declarations
 
 
-class VarAssign(Statement):
+@dataclass
+class Let(AST):
+    """Let assignment. variable must be an l-value"""
+
+    variable: "Expression" = field(default_factory="Expression")
+    value: "Expression" = field(default_factory="Expression")
+
+
+class VarAssign(AST):
     """Variable assignment."""
 
     variable: Union["Get", "Identifier"]
@@ -192,25 +188,33 @@ class ProcDef(Block):
 ###########################
 
 
-class Expression(Statement):
+@dataclass
+class Expression(AST):
     """
     Root of an expression tree, made of binary and unary operators, with
     literals, identifiers and function calls as leafs.
     """
 
-    @abstractmethod
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
+    pass
 
 
+@dataclass
 class Identifier(Expression):
     """Identifier of a variable or function."""
 
-    name: str
+    name: str = ""
 
-    def __init__(self, name: str, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.name = name
+    # def __init__(self, name: str, **kwargs) -> None:
+    #     super().__init__(**kwargs)
+    #     self.name = name
+
+
+@dataclass
+class MemberAccess(Expression):
+    """Recursive member access (.) operation"""
+
+    parent: Expression = field(default_factory=Expression)
+    child: Identifier = field(default_factory=Identifier)
 
 
 class Get(Expression):
@@ -230,25 +234,38 @@ class Get(Expression):
         self.child = child
 
 
+@dataclass
 class Literal(Expression):
     """Literal value : integer, double, boolean, string, ..."""
 
-    type: Type
-    value: Union[int, float, bool, str]
-
-    def __init__(
-        self, type: Type, value: Union[int, float, bool, str], **kwargs
-    ) -> None:
-        super().__init__(**kwargs)
-        self.value = value
-        self.type = type
+    vba_type: Type = field(default_factory=Type.Integer)
+    value: Union[int, float, bool, str] = field(default=0)
 
     @staticmethod
     def from_value(value) -> "Literal":
         return Literal(value.base_type, value.value)
 
 
-class ArgListCall(Statement):
+@dataclass
+class Arg(AST):
+    """
+    Argument in a list of arguments, be it named or anonymous, can also be
+    empty.
+    """
+
+    value: Optional[Expression] = None
+    name: Optional[str] = None
+    byval: bool = False
+
+
+@dataclass
+class ArgList(AST):
+    """Arguments list"""
+
+    arguments: List[Arg] = field(default_factory=[])
+
+
+class ArgListCall(AST):
     """List of arguments, used by function calls"""
 
     args: List["Expression"]
@@ -258,7 +275,7 @@ class ArgListCall(Statement):
         self.args = args
 
 
-class ArgListDef(Statement):
+class ArgListDef(AST):
     """List of arguments, used by function declarations"""
 
     args: List[Identifier]
@@ -282,32 +299,29 @@ class FunCall(Expression):
         self.arguments = arguments
 
 
+@dataclass
+class IndexExpr(Expression):
+    """Ue of subscripting operator ( )"""
+
+    expression: Expression = field(default_factory=Expression)
+    arguments: ArgList = field(default_factory=ArgList)
+
+
+@dataclass
 class UnOp(Expression):
     """Unary operator"""
 
-    operator: str
-    argument: Expression
-
-    def __init__(self, operator: str, argument: Expression, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.operator = operator
-        self.argument = argument
+    operator: Optional[str] = None
+    argument: Expression = field(default_factory=Expression)
 
 
+@dataclass
 class BinOp(Expression):
     """Binary operator"""
 
-    operator: str
-    left: Expression
-    right: Expression
-
-    def __init__(
-        self, operator: str, left: Expression, right: Expression, **kwargs
-    ) -> None:
-        super().__init__(**kwargs)
-        self.operator = operator
-        self.left = left
-        self.right = right
+    operator: Optional[str] = None
+    left: Expression = field(default_factory=Expression)
+    right: Expression = field(default_factory=Expression)
 
 
 ##########################
@@ -315,57 +329,31 @@ class BinOp(Expression):
 ##########################
 
 
+@dataclass
 class ElseIf(Block):
     """Single condition/action block, used internally by If"""
 
-    condition: Expression
-
-    def __init__(self, condition: Expression, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.condition = condition
+    condition: Expression = field(default_factory=Expression)
 
 
+@dataclass
 class If(Block):
     """If statement"""
 
-    condition: Expression
-    elsifs: List[ElseIf]
-    else_block: Optional[Block]
-
-    def __init__(
-        self,
-        condition: Expression,
-        elsifs: Optional[List[ElseIf]] = None,
-        else_block: Optional[Block] = None,
-        **kwargs,
-    ) -> None:
-        super().__init__(**kwargs)
-        self.condition = condition
-        self.elsifs = elsifs if elsifs is not None else []
-        self.else_block = else_block
+    condition: Expression = field(default_factory=Expression)
+    elsifs: List[ElseIf] = field(default_factory=list)
+    else_block: Optional[Block] = None
 
 
+@dataclass
 class For(Block):
     """For statement with a counter"""
 
-    counter: Identifier
-    start: Expression
-    end: Expression
-    step: Optional[Expression]
-
-    def __init__(
-        self,
-        counter: Identifier,
-        start: Expression,
-        end: Expression,
-        step: Optional[Expression] = None,
-        **kwargs,
-    ) -> None:
-        super().__init__(**kwargs)
-        self.counter = counter
-        self.start = start
-        self.end = end
-        self.step = step
+    counter: Expression = field(default_factory=Expression)
+    start: Expression = field(default_factory=Expression)
+    end: Expression = field(default_factory=Expression)
+    step: Optional[Expression] = None
+    footer_counter: Optional[Expression] = None
 
 
 ####################
@@ -373,7 +361,7 @@ class For(Block):
 ####################
 
 
-class OnError(Statement):
+class OnError(AST):
     """
     On Error statement. If goto is None, corresponds to a Resume Next policy,
     else to a GoTo policy.
@@ -388,7 +376,7 @@ class OnError(Statement):
         self.goto = goto
 
 
-class Resume(Statement):
+class Resume(AST):
     """
     Resume statement. If goto is None, corresponds to Resume or Resume Next,
     else to a GoTo form.
@@ -403,7 +391,7 @@ class Resume(Statement):
         self.goto = goto
 
 
-class ErrorStatement(Statement):
+class ErrorStatement(AST):
     """Error statement."""
 
     number: Literal
