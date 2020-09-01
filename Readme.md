@@ -109,6 +109,10 @@ A timeline of the events can be produced with the `--timeline` flag. It can be m
 emu report --timeline --table --shorten --skip-streaks 10 program.spemu-out
 ```
 
+### Disclaimer
+
+SpuriousEmu was initially started during an internship at the *NATO Cyber Security Centre* during the summer of 2020, and is now developped on my spare time. It is highly experimental, so you may expect it to fail on most real-life samples. 
+
 ## Dependencies
 
 Python 3.8 is used, and SpuriousEmu mainly relies on [PyParsing](https://github.com/pyparsing/pyparsing) for VBA grammar parsing, and [oletools](http://www.decalage.info/python/oletools) to extract VBA macros from Office documents. Report tables are generated using [PrettyTable](https://github.com/jazzband/prettytable).
