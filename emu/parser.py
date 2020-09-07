@@ -153,7 +153,6 @@ class TreeToAST(Transformer):
 
                 break
 
-
         return If(
             condition=condition,
             body=body,
@@ -302,7 +301,18 @@ class TreeToAST(Transformer):
 
     def statement_block(self, tree, meta) -> Block:
         """Remove _NEWLINE"""
-        return Block(body=list(filter(lambda t: t != [], tree)))
+
+        def clean_block(tree):
+            clean = []
+            for element in tree:
+                if isinstance(element, list):
+                    clean.extend(element)
+                else:
+                    clean.append(element)
+
+            return clean
+
+        return Block(body=clean_block(tree))
 
 
 class Parser:

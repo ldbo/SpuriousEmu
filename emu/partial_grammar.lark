@@ -1,0 +1,348 @@
+///////////////////////////
+// Physical Line Grammar //
+///////////////////////////
+
+LINE_TERMINATOR: "\r\n" | "\t" | "\n" | "\u2028" | "\u2029"
+NON_LINE_TERMINATOR_CHARACTER: /(?!\r\n|\t|\n|\u2028|\u2029)/
+
+//////////////////////////
+// Logical Line Grammar //
+//////////////////////////
+
+LINE_CONTINUATION: WSC* UNDERSCORE WSC* LINE_TERMINATOR
+WSC: [TAB_CHARACTER | SPACE_CHARACTER | EOM_CHARACTER | DBCS_WHITESPACE]
+TAB_CHARACTER: "\t"
+SPACE_CHARACTER: " "
+EOM_CHARACTER: "\x19"
+DBCS_WHITESPACE: "\u3000"
+UNDERSCORE: "_"
+
+////////////////////////////
+// Lexical Tokens Grammar //
+////////////////////////////
+
+WS: (WSC | LINE_CONTINUATION)+
+
+SPECIAL_TOKEN: "," | "." | "!" | "#" | "&" | "(" | ")" | "*" | "+" | "-" | "|"
+             | ":" | ";" | "<" | "=" | ">" | "?" | "\\" | "^"
+NO_WS: /(?!\t| |\x19|\u3000)/
+// NO-LINE-CONTINUATION = <a line-continuation is not allowed here>
+EOL:  [WS] LINE_TERMINATOR
+   | SINGLE_QUOTE COMMENT_BODY
+EOS: (EOL | COLON)*
+SINGLE_QUOTE: "'"
+COMMENT_BODY: /.*/ LINE_TERMINATOR
+COLON: ":"
+
+INTEGER: INTEGER_LITERAL ["%" | "&" | "^"]
+INTEGER_LITERAL: DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL
+DECIMAL_LITERAL: DECIMAL_DIGIT+
+OCTAL_LITERAL: "&" ["O" | "o"] OCTAL_DIGIT+
+HEX_LITERAL: "&" ["H" | "h"] HEX_DIGIT+
+OCTAL_DIGIT: /[0-7]/
+DECIMAL_DIGIT: OCTAL_DIGIT | "8" | "9"
+HEX_DIGIT: DECIMAL_DIGIT | /[a-fA-F]/
+
+FLOAT: FLOATING_POINT_LITERAL [FLOATING_POINT_TYPE_SUFFIX]
+     | DECIMAL_LITERAL FLOATING_POINT_TYPE_SUFFIX
+FLOATING_POINT_LITERAL: DECIMAL_LITERAL EXPONENT
+                      | DECIMAL_LITERAL "." [DECIMAL_LITERAL] [EXPONENT]
+                      | "." DECIMAL_LITERAL [EXPONENT]
+EXPONENT: EXPONENT_LETTER [SIGN] DECIMAL_LITERAL
+EXPONENT_LETTER: "d" | "D" | "e" | "E"
+SIGN: "+" | "-"
+FLOATING_POINT_TYPE_SUFFIX: "!" | "#" | "@"
+
+STRING: DOUBLE_QUOTE STRING_CHARACTER* DOUBLE_QUOTE
+DOUBLE_QUOTE: /"/
+STRING_CHARACTER: /[^"]/ | /""/
+
+LEXICAL_IDENTIFIER: LATIN_IDENTIFIER
+LATIN_IDENTIFIER: FIRST_LATIN_IDENTIFIER_CHARACTER SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER*
+FIRST_LATIN_IDENTIFIER_CHARACTER: /[a-zA-Z]/
+SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER: FIRST_LATIN_IDENTIFIER_CHARACTER
+                                     | DECIMAL_DIGIT
+                                     | UNDERSCORE
+
+
+RESERVED_IDENTIFIER: STATEMENT_KEYWORD | MARKER_KEYWORD | OPERATOR_IDENTIFIER
+                   | SPECIAL_FORM | RESERVED_NAME | LITERAL_IDENTIFIER
+                   | REM_KEYWORD | RESERVED_FOR_IMPLEMENTATION_USE
+                   | FUTURE_RESERVED
+
+IDENTIFIER: LEXICAL_IDENTIFIER
+
+STATEMENT_KEYWORD: "Call" | "Case" |"Close" | "Const"| "Declare" | "DefBool"
+                 | "DefByte" | "DefCur" | "DefDate" | "DefDbl" | "DefInt"
+                 | "DefLng" | "DefLngLng" | "DefLngPtr" | "DefObj" | "DefSng"
+                 | "DefStr" | "DefVar" | "Dim" | "Do" | "Else" | "ElseIf"
+                 | "End" | "EndIf" | "Enum" | "Erase" | "Event" | "Exit" | "For"
+                 | "Friend" | "Function" | "Get" | "Global" | "GoSub" | "GoTo"
+                 | "If" | "Implements"| "Input" | "Let" | "Lock" | "Loop"
+                 | "LSet" | "Next" | "On" | "Open" | "Option" | "Print"
+                 | "Private" | "Public" | "Put" | "RaiseEvent" | "ReDim"
+                 | "Resume" | "Return" | "RSet" | "Seek" | "Select" | "Set"
+                 | "Static" | "Stop" | "Sub" | "Type" | "Unlock" | "Wend"
+                 | "While" | "With" | "Write"
+
+REM_KEYWORD: "Rem"
+MARKER_KEYWORD: "Any" | "As" | "ByRef" | "ByVal " | "Case" | "Each" | "Else"
+              | "In"| "New" | "Shared" | "Until" | "WithEvents" | "Write"
+              | "Optional" | "ParamArray" | "Preserve" | "Spc" | "Tab" | "Then"
+              | "To"
+
+OPERATOR_IDENTIFIER: "AddressOf" | "And" | "Eqv" | "Imp" | "Is" | "Like"
+                   | "New" | "Mod" | "Not" | "Or" | "TypeOf" | "Xor"
+
+RESERVED_NAME: "Abs" | "CBool" | "CByte" | "CCur" | "CDate" | "CDbl" | "CDec"
+             | "CInt" | "CLng" | "CLngLng" | "CLngPtr" | "CSng" | "CStr"
+             | "CVar" | "CVErr" | "Date" | "Debug" | "DoEvents" | "Fix" | "Int"
+             | "Len" | "LenB" | "Me" | "PSet" | "Scale" | "Sgn" | "String"
+
+SPECIAL_FORM: "Array" | "Circle" | "Input" | "InputB" | "LBound" | "Scale"
+            | "UBound"
+
+RESERVED_TYPE_IDENTIFIER: "Boolean" | "Byte" | "Currency" | "Date" | "Double"
+                        | "Integer" | "Long" | "LongLong" | "LongPtr" | "Single"
+                        | "String" | "Variant"
+
+LITERAL_IDENTIFIER: BOOLEAN_LITERAL_IDENTIFIER | OBJECT_LITERAL_IDENTIFIER
+                  | VARIANT_LITERAL_IDENTIFIER
+BOOLEAN_LITERAL_IDENTIFIER: "true" | "false"
+OBJECT_LITERAL_IDENTIFIER: "nothing"
+VARIANT_LITERAL_IDENTIFIER: "empty" | "null"
+
+RESERVED_FOR_IMPLEMENTATION_USE: "Attribute" | "LINEINPUT" | "VB_Base"
+                               | "VB_Control" | "VB_Creatable"
+                               | "VB_Customizable" | "VB_Description"
+                               | "VB_Exposed" | "VB_Ext_KEY "
+                               | "VB_GlobalNameSpace" | "VB_HelpID"
+                               | "VB_Invoke_Func" | "VB_Invoke_Property "
+                               | "VB_Invoke_PropertyPut"
+                               | "VB_Invoke_PropertyPutRefVB_MemberFlags"
+                               | "VB_Name" | "VB_PredeclaredId" | "VB_ProcData"
+                               | "VB_TemplateDerived" | "VB_UserMemId"
+                               | "VB_VarDescription" | "VB_VarHelpID"
+                               | "VB_VarMemberFlags" | "VB_VarProcData "
+                               | "VB_VarUserMemId"
+FUTURE_RESERVED: "CDecl" | "Decimal" | "DefDec"
+
+////////////////////
+// Lexical tokens //
+////////////////////
+
+COMMENT: ("'" | "REM ") /[^\n]*/
+_NEWLINE: /\r?\n[\t \f]*/ | ":" // Logical line separator
+eol: COMMENT | _NEWLINE
+
+/////////////////////////
+// Module organisation //
+/////////////////////////
+?program: statement_block
+
+statement_block: eol* (statement eol+)* [statement]
+?statement: declarative
+          | control_statement
+          | left_expression
+
+///////////////
+// Procedure //
+///////////////
+
+subroutine_declaration: subroutine_header
+subroutine_header: procedure_scope ["Static"] "Sub"
+
+procedure_scope: "Global"
+               | "Public"
+               | "Private"
+               | "Friend"
+
+
+// subroutine-declaration = procedure-scope [initial-static]
+// "sub" subroutine-name [procedure-parameters] [trailing-static] EOS
+// [procedure-body EOS]
+// [end-label] "end" "sub" procedure-tail
+// function-declaration = procedure-scope [initial-static]
+// "function" function-name [procedure-parameters] [function-type]
+// [trailing-static] EOS
+// [procedure-body EOS]
+// [end-label] "end" "function" procedure-tail
+// property-get-declaration = procedure-scope [initial-static]
+// "Property" "Get"
+// function-name [procedure-parameters] [function-type] [trailing-static] EOS
+// [procedure-body EOS]
+// [end-label] "end" "property" procedure-tail
+// property-lhs-declaration = procedure-scope [initial-static]
+// "Property" ("Let" / "Set")
+// subroutine-name property-parameters [trailing-static] EOS
+// [procedure-body EOS]
+// [end-label] "end" "property" procedure-tail
+// end-label = statement-label-definition
+// procedure-tail = [WS] LINE-END / single-quote comment-body /
+// ":" rem-statement
+
+
+///////////////
+// Statement //
+///////////////
+
+?declarative: variable_declaration
+            | let_statement
+
+variable_declaration: "Dim" simple_name_expression [AS [NEW] IDENTIFIER] [EQ expression]
+let_statement: ["Let"] left_expression "=" expression
+
+
+/////////////
+// Control //
+/////////////
+
+?control_statement: if_statement
+                  | control_statement_except_multiline_if
+?control_statement_except_multiline_if: call_statement
+                                      | for_statement
+                                      | single_line_if_statement
+
+
+?call_statement: call_statement_keyworded
+               | call_statement_not_keyworded
+// call_statement_with_arguments: ["Call"] (simple_name_expression
+//                                         | member_access_expression
+//                                         | index_expression
+//                                         | with_statement)
+// call_statement_without_arguments: "Calli"
+
+call_statement_keyworded: "Call" (simple_name_expression | member_access_expression | with_expression) "(" argument_list ")"
+call_statement_not_keyworded: (simple_name_expression
+                             | member_access_expression
+                             | with_expression) argument_list
+
+for_statement: for_header eol statement_block for_footer
+for_header: "For" left_expression "=" expression "To" expression ["Step" expression]
+for_footer: "Next" [left_expression]
+
+if_statement: if_header eol statement_block (elseif_block)* [else_block] if_footer
+if_header: "If" expression "Then"
+elseif_block: "ElseIf" expression "Then" eol statement_block
+            | "ElseIf" expression "Then" statement
+else_block: "Else" eol statement_block
+if_footer: ("End If"| "EndIf")
+
+single_line_if_statement: if_with_non_empty_then
+                         | if_with_empty_then
+if_with_non_empty_then: "If" expression "Then" statement [single_line_else_clause]
+if_with_empty_then: "If" expression single_line_else_clause
+single_line_else_clause: "Else" statement
+
+
+with_statement: "With" expression eol statement_block "End" "With"
+
+////////////////
+// Expression //
+////////////////
+
+expression: value_expression
+
+// Operator expression
+?value_expression: logical_imp
+logical_imp: logical_imp IMP logical_eqv
+            | logical_eqv
+logical_eqv: logical_eqv EQV logical_xor
+            | logical_xor
+logical_xor: logical_xor XOR logical_or
+            | logical_or
+logical_or: logical_or OR logical_and
+           | logical_and
+logical_and: logical_and AND logical_not
+            | logical_not
+logical_not: NOT logical_not
+            | relational_expresion
+relational_expresion: relational_expresion RELATIONAL concatenation
+                     | concatenation
+concatenation: concatenation CONCATENATION additive_expression
+              | additive_expression
+additive_expression: additive_expression ADDITIVE modulus
+                    | modulus
+modulus: modulus MOD integer_division
+        | integer_division
+integer_division: integer_division INTEGER_DIVISION mutliplicative_expression
+                 | mutliplicative_expression
+mutliplicative_expression: mutliplicative_expression MULTIPLICATIVE unary_negation
+                          | unary_negation
+unary_negation: MINUS unary_negation
+               | exponentiation
+exponentiation: exponentiation EXPONENTIATION exponentiation
+               | parenthesized_expression
+parenthesized_expression: "(" expression ")"
+                        | primary_expression
+primary_expression: literal
+                   | left_expression
+
+// Literal
+literal: INTEGER
+       | BOOLEAN
+       | STRING
+
+BOOLEAN: "True"
+       | "False"
+
+
+// Left expression
+?left_expression: member_access_expression
+               | index_expression
+               | simple_name_expression
+simple_name_expression: IDENTIFIER
+member_access_expression: left_expression "." simple_name_expression
+index_expression: left_expression "(" argument_list ")"
+
+// Argument list
+argument_list: [positional_argument_list| mixed_argument_list]
+positional_argument_list: (optional_positional_argument ",")* argument_expression
+mixed_argument_list: (optional_positional_argument ",")* named_argument_list
+named_argument_list: named_argument ("," named_argument)*
+optional_positional_argument: [argument_expression]
+named_argument: IDENTIFIER ":=" argument_expression
+argument_expression: [/ByVal/] expression
+                   // | addressof-expression
+
+// Operators
+IMP: "Imp"
+EQV: "Eqv"
+XOR: "Xor"
+OR: "Or"
+AND: "And"
+NOT: "Not"
+RELATIONAL: "=" | "<>" | "<=" | ">=" | "<" | ">" | "Like" | "Is"
+CONCATENATION: "&"
+ADDITIVE: "+" | "-"
+MOD: "Mod"
+INTEGER_DIVISION: "\\"
+MULTIPLICATIVE: "*" | "/"
+MINUS: "-"
+EXPONENTIATION: "^"
+
+
+with_expression: with_member_access_expression
+               | with_dictionnary_access_expression
+with_member_access_expression: "."
+with_dictionnary_access_expression: "!"
+
+// with-expression = with-member-access-expression / with-dictionary-access-expression
+// with-member-access-expression = "." unrestricted-name
+// with-dictionary-access-expression = "!" unrestricted-name
+
+//////////////
+// Keywords //
+//////////////
+AS: "As"
+NEW: "New"
+EQ: "="
+
+// Utilities
+list{element, separator}: [(element separator)* element]
+
+// %import common.WS
+%import common.SIGNED_INT
+%import common.LETTER
+%ignore /[\t \f]+/  // Whitespaces
+%ignore /_[\t \f]*\r?\n/   // Continued line
