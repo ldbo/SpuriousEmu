@@ -1,0 +1,226 @@
+///////////////////////////
+// Physical Line Grammar //
+///////////////////////////
+
+LINE_TERMINATOR: "\r\n" | "\t" | "\n" | "\u2028" | "\u2029"
+
+
+//////////////////////////
+// Logical Line Grammar //
+//////////////////////////
+
+LINE_CONTINUATION: WSC* UNDERSCORE WSC* LINE_TERMINATOR
+WSC: TAB_CHARACTER | SPACE_CHARACTER | EOM_CHARACTER | DBCS_WHITESPACE // TODO: add most-Unicode-class-Zs
+TAB_CHARACTER: "\t"
+SPACE_CHARACTER: " "
+EOM_CHARACTER: "\x19"
+DBCS_WHITESPACE: "\u3000"
+UNDERSCORE: "_"
+
+
+////////////////////////////
+// Lexical Tokens Grammar //
+////////////////////////////
+
+// Separator and special tokens
+
+WS: (WSC | LINE_CONTINUATION)+
+
+SPECIAL_TOKEN: "," | "." | "!" | "#" | "&" | "(" | ")" | "*" | "+" | "-" | "|"
+             | ":" | ";" | "<" | "=" | ">" | "?" | "\\" | "^"
+eol: [WS] (comment | LINE_TERMINATOR)
+eos: (WSC* COLON | eol)+
+eof: [WS] [last_comment | LINE_TERMINATOR]
+comment: SINGLE_QUOTE comment_body LINE_TERMINATOR
+last_comment: SINGLE_QUOTE comment_body [LINE_TERMINATOR]
+SINGLE_QUOTE: "'"
+comment_body: (/./ | WSC)+ // Doesn't work without WSC, LINE_CONTINUATION is
+                           // voluntarily excluded
+COLON: ":"
+
+// Number tokens
+
+INTEGER: INTEGER_LITERAL ["%" | "&" | "^"]
+INTEGER_LITERAL: DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL
+DECIMAL_LITERAL: DECIMAL_DIGIT+
+OCTAL_LITERAL: "&" ["O" | "o"] OCTAL_DIGIT+
+HEX_LITERAL: "&" ["H" | "h"] HEX_DIGIT+
+OCTAL_DIGIT: /[0-7]/
+DECIMAL_DIGIT: OCTAL_DIGIT | "8" | "9"
+HEX_DIGIT: DECIMAL_DIGIT | /[a-fA-F]/
+
+FLOAT: FLOATING_POINT_LITERAL [FLOATING_POINT_TYPE_SUFFIX]
+     | DECIMAL_LITERAL FLOATING_POINT_TYPE_SUFFIX
+FLOATING_POINT_LITERAL: DECIMAL_LITERAL EXPONENT
+                      | DECIMAL_LITERAL "." [DECIMAL_LITERAL] [EXPONENT]
+                      | "." DECIMAL_LITERAL [EXPONENT]
+EXPONENT: EXPONENT_LETTER [SIGN] DECIMAL_LITERAL
+EXPONENT_LETTER: "d" | "D" | "e" | "E"
+SIGN: "+" | "-"
+FLOATING_POINT_TYPE_SUFFIX: "!" | "#" | "@"
+
+// Date tokens
+
+date_or_time: (date_value WSC+ time_value)
+            | date_value
+            | time_value
+
+date_value: left_date_value date_separator middle_date_value [date_separator right_date_value]
+left_date_value: DECIMAL_LITERAL
+               | month_name
+middle_date_value: DECIMAL_LITERAL
+                 | month_name
+right_date_value: DECIMAL_LITERAL
+                | month_name
+date_separator: WSC+
+              | WSC+ ("/" | "-" | ",") WSC+
+month_name: english_month_name | english_month_abbreviation
+english_month_name: "january" | "february" | "march" | "april" | "may" | "june"
+                  | "august" | "september" | "october" | "november" | "december"
+english_month_abbreviation: "jan" | "feb" | "mar" | "apr" | "jun" | "jul"
+                          | "aug" | "sep" | "oct" | "nov" | "dec"
+time_value: hour_value ampm
+          | hour_value time_separator minute_value [time_separator second_value] [ampm]
+hour_value: DECIMAL_LITERAL
+minute_value: DECIMAL_LITERAL
+second_value: DECIMAL_LITERAL
+time_separator: WSC+ (":" | ".") WSC+
+ampm: WSC+ ("am" | "pm" | "a" | "p")
+
+// String tokens
+
+STRING: DOUBLE_QUOTE STRING_CHARACTER* DOUBLE_QUOTE
+DOUBLE_QUOTE: /"/
+STRING_CHARACTER: /[^"]/ | /""/
+
+// Identifier tokens
+
+LEXICAL_IDENTIFIER: LATIN_IDENTIFIER // TODO: handle non-latin identifiers
+LATIN_IDENTIFIER: FIRST_LATIN_IDENTIFIER_CHARACTER SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER*
+FIRST_LATIN_IDENTIFIER_CHARACTER: /[a-zA-Z]/
+SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER: FIRST_LATIN_IDENTIFIER_CHARACTER
+                                     | DECIMAL_DIGIT
+                                     | UNDERSCORE
+
+
+RESERVED_IDENTIFIER: STATEMENT_KEYWORD | MARKER_KEYWORD | OPERATOR_IDENTIFIER
+                   | SPECIAL_FORM | RESERVED_NAME | LITERAL_IDENTIFIER
+                   | REM_KEYWORD | RESERVED_FOR_IMPLEMENTATION_USE
+                   | FUTURE_RESERVED
+
+IDENTIFIER: RESERVED_IDENTIFIER // A reserved identifier will be matched first
+          | LEXICAL_IDENTIFIER
+
+STATEMENT_KEYWORD: "Call" | "Case" |"Close" | "Const"| "Declare" | "DefBool"
+                 | "DefByte" | "DefCur" | "DefDate" | "DefDbl" | "DefInt"
+                 | "DefLng" | "DefLngLng" | "DefLngPtr" | "DefObj" | "DefSng"
+                 | "DefStr" | "DefVar" | "Dim" | "Do" | "Else" | "ElseIf"
+                 | "End" | "EndIf" | "Enum" | "Erase" | "Event" | "Exit" | "For"
+                 | "Friend" | "Function" | "Get" | "Global" | "GoSub" | "GoTo"
+                 | "If" | "Implements"| "Input" | "Let" | "Lock" | "Loop"
+                 | "LSet" | "Next" | "On" | "Open" | "Option" | "Print"
+                 | "Private" | "Public" | "Put" | "RaiseEvent" | "ReDim"
+                 | "Resume" | "Return" | "RSet" | "Seek" | "Select" | "Set"
+                 | "Static" | "Stop" | "Sub" | "Type" | "Unlock" | "Wend"
+                 | "While" | "With" | "Write"
+
+REM_KEYWORD: "Rem"
+MARKER_KEYWORD: "Any" | "As" | "ByRef" | "ByVal " | "Case" | "Each" | "Else"
+              | "In"| "New" | "Shared" | "Until" | "WithEvents" | "Write"
+              | "Optional" | "ParamArray" | "Preserve" | "Spc" | "Tab" | "Then"
+              | "To"
+
+OPERATOR_IDENTIFIER: "AddressOf" | "And" | "Eqv" | "Imp" | "Is" | "Like"
+                   | "New" | "Mod" | "Not" | "Or" | "TypeOf" | "Xor"
+
+RESERVED_NAME: "Abs" | "CBool" | "CByte" | "CCur" | "CDate" | "CDbl" | "CDec"
+             | "CInt" | "CLng" | "CLngLng" | "CLngPtr" | "CSng" | "CStr"
+             | "CVar" | "CVErr" | "Date" | "Debug" | "DoEvents" | "Fix" | "Int"
+             | "Len" | "LenB" | "Me" | "PSet" | "Scale" | "Sgn" | "String"
+
+SPECIAL_FORM: "Array" | "Circle" | "Input" | "InputB" | "LBound" | "Scale"
+            | "UBound"
+
+RESERVED_TYPE_IDENTIFIER: "Boolean" | "Byte" | "Currency" | "Date" | "Double"
+                        | "Integer" | "Long" | "LongLong" | "LongPtr" | "Single"
+                        | "String" | "Variant"
+
+LITERAL_IDENTIFIER: BOOLEAN_LITERAL_IDENTIFIER | OBJECT_LITERAL_IDENTIFIER
+                  | VARIANT_LITERAL_IDENTIFIER
+BOOLEAN_LITERAL_IDENTIFIER: "true" | "false"
+OBJECT_LITERAL_IDENTIFIER: "nothing"
+VARIANT_LITERAL_IDENTIFIER: "empty" | "null"
+
+RESERVED_FOR_IMPLEMENTATION_USE: "Attribute" | "LINEINPUT" | "VB_Base"
+                               | "VB_Control" | "VB_Creatable"
+                               | "VB_Customizable" | "VB_Description"
+                               | "VB_Exposed" | "VB_Ext_KEY "
+                               | "VB_GlobalNameSpace" | "VB_HelpID"
+                               | "VB_Invoke_Func" | "VB_Invoke_Property "
+                               | "VB_Invoke_PropertyPut"
+                               | "VB_Invoke_PropertyPutRefVB_MemberFlags"
+                               | "VB_Name" | "VB_PredeclaredId" | "VB_ProcData"
+                               | "VB_TemplateDerived" | "VB_UserMemId"
+                               | "VB_VarDescription" | "VB_VarHelpID"
+                               | "VB_VarMemberFlags" | "VB_VarProcData "
+                               | "VB_VarUserMemId"
+FUTURE_RESERVED: "CDecl" | "Decimal" | "DefDec"
+
+FOREIGN_NAME: "[" FOREIGN_IDENTIFIER "]"
+FOREIGN_IDENTIFIER: /.+/
+
+BUILTIN_TYPE: RESERVED_TYPE_IDENTIFIER
+            | "[" RESERVED_TYPE_IDENTIFIER "]"
+            | "object"
+            | "[object]"
+
+TYPED_NAME: IDENTIFIER TYPE_SUFFIX
+TYPE_SUFFIX: "%" | "&" | "^" | "!" | "#" | "@" | "$"
+
+
+//////////////////////
+// Module Structure //
+//////////////////////
+
+module: procedural_module
+      | class_module
+
+procedural_module: procedural_module_header procedural_module_body
+class_module: class_module_header class_module_body
+
+// Header
+procedural_module_header: ATTRIBUTE WS "VB_Name" WS ATTR_EQ WS QUOTED_IDENTIFIER eol
+class_module_header: class_attr+
+class_attr: ATTRIBUTE ("VB_Name" ATTR_EQ QUOTED_IDENTIFIER
+                     | "VB_Creatable" ATTR_EQ "False"
+                     | "VB_PredeclaredId" ATTR_EQ "False"
+                     | "VB_Exposed" ATTR_EQ BOOLEAN_LITERAL_IDENTIFIER
+                     | "VB_Customizable" ATTR_EQ BOOLEAN_LITERAL_IDENTIFIER)
+
+ATTRIBUTE: "Attribute"
+ATTR_EQ: "="
+QUOTED_IDENTIFIER: DOUBLE_QUOTE IDENTIFIER DOUBLE_QUOTE
+
+// Body
+// procedural_module_body: procedural_module_declaration_section procedural_module_code_section
+// class_module_body: class_module_declaration_section class_module_code_section
+
+UNRESTRICTED_NAME: NAME
+                 | RESERVED_IDENTIFIER
+NAME: UNTYPED_NAME
+    | TYPED_NAME
+UNTYPED_NAME: IDENTIFIER
+            | FOREIGN_IDENTIFIER
+
+// Declaration section
+
+
+// Bancal
+
+// module: statement_block
+procedural_module_body: statement_block
+class_module_body: statement_block
+
+statement_block: eol* (statement eos+)* (statement) eof
+
+statement: "Plop"
