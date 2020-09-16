@@ -315,6 +315,14 @@ class TreeToAST(Transformer):
         return Block(body=clean_block(tree))
 
 
+class LexerDebugger:
+    always_accept = tuple()
+
+    def process(self, stream):
+        for token in stream:
+            print(f'<{repr(str(token))}> {token.type}')
+            yield token
+
 class Parser:
     def __init__(self) -> None:
         """Load the grammar from 'grammar.lark'."""
@@ -325,8 +333,12 @@ class Parser:
         self.parser = Lark(
             grammar,
             parser="lalr",
-            start="program",
+            start="module",
+            debug=True,
+            cache=True,
+            keep_all_tokens=True,
             propagate_positions=True,
+            postlex=LexerDebugger()
         )
 
     def parse(self, content: str, filename: Optional[str] = None) -> AST:
@@ -339,7 +351,7 @@ class Parser:
         """
         try:
             tree = self.parser.parse(content)
-            # return tree
+            return tree.pretty()
             ast = TreeToAST(filename).transform(tree)
             return ast
         except UnexpectedInput as e:

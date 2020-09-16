@@ -2,7 +2,7 @@ from collections import deque
 from typing import Tuple, Dict, Any
 
 import networkx as nx
-import matplotlib
+# import matplotlib
 
 from emu import syntax
 from tests.test import assert_correct_function, SourceFile, Result
@@ -22,6 +22,10 @@ def parsing_show(vbs: SourceFile) -> Result:
     ast = parser.parse_file(vbs)
     display_digraph(*build_digraph_from_ast(ast))
     return ast
+
+def exp_parsing(vbs: SourceFile) -> Result:
+    parser = Parser()
+    print(parser.parse_file(vbs))
 
 
 def build_digraph_from_ast(
@@ -55,10 +59,10 @@ def build_digraph_from_ast(
     return graph, labels
 
 
-def display_digraph(graph: nx.DiGraph, labels: Dict[Any, str]) -> None:
-    pos = nx.drawing.nx_pydot.graphviz_layout(graph, prog="dot")
-    nx.draw(graph, pos, labels=labels)
-    matplotlib.pyplot.show()
+# def display_digraph(graph: nx.DiGraph, labels: Dict[Any, str]) -> None:
+#     pos = nx.drawing.nx_pydot.graphviz_layout(graph, prog="dot")
+#     nx.draw(graph, pos, labels=labels)
+#     matplotlib.pyplot.show()
 
 
 def test_expression():
@@ -81,5 +85,5 @@ def test_loop_conditional():
 #     assert_correct_function("syntax_type", parsing)
 
 
-# def test_exp():
-#     run_function("syntax_expression", exp_parsing)
+def test_exp():
+    run_function("plop", exp_parsing)

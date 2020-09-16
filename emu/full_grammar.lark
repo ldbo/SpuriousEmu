@@ -34,7 +34,7 @@ eof: [WS] [last_comment | LINE_TERMINATOR]
 comment: SINGLE_QUOTE COMMENT_BODY LINE_TERMINATOR
 last_comment: SINGLE_QUOTE COMMENT_BODY [LINE_TERMINATOR]
 SINGLE_QUOTE: "'"
-COMMENT_BODY.10: /.+/ // Doesn't work without WSC, LINE_CONTINUATION is
+COMMENT_BODY.-10: (/./ | WSC)+ // Doesn't work without WSC, LINE_CONTINUATION is
                            // voluntarily excluded
 COLON: ":"
 
