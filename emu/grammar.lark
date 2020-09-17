@@ -15,7 +15,7 @@ LINE_TERMINATOR: "\r\n" | "\t" | "\n" | "\u2028" | "\u2029"
 // Blanks
 WSCS: WSC+
 WSC: TAB_CHARACTER | SPACE | EOM | DBCS_WHITESPACE // TODO: add most-Unicode-class-Zs
-LINE_CONTINUATION: WSCS UNDERSCORE WSC* LINE_TERMINATOR
+LINE_CONTINUATION: UNDERSCORE WSC* LINE_TERMINATOR
 TAB_CHARACTER: "\t"
 SPACE: " "
 EOM: "\x19"
@@ -52,11 +52,11 @@ FLOATING_POINT_TYPE_SUFFIX: EXCLAMATION | SHARP | AT
 
 // Date tokens
 
-DATE_OR_TIME: (DATE_VALUE WSCS TIME_VALUE)
-            | DATE_VALUE
-            | TIME_VALUE
+date_or_time: (date_value WSCS time_value)
+            | date_value
+            | time_value
 
-DATE_VALUE: LEFT_DATE_VALUE DATE_SEPARATOR MIDDLE_DATE_VALUE [DATE_SEPARATOR RIGHT_DATE_VALUE]
+date_value: LEFT_DATE_VALUE DATE_SEPARATOR MIDDLE_DATE_VALUE [DATE_SEPARATOR RIGHT_DATE_VALUE]
 LEFT_DATE_VALUE: DECIMAL_LITERAL
                | MONTH_NAME
 MIDDLE_DATE_VALUE: DECIMAL_LITERAL
@@ -67,7 +67,7 @@ DATE_SEPARATOR: WSCS
               | WSCS (SLASH | MINUS | COMMA) WSCS
 MONTH_NAME: JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | AUGUST | SEPTEMBER
           | OCTOBER | NOVEMBER | DECEMBER
-TIME_VALUE: HOUR_VALUE AMPM
+time_value: HOUR_VALUE AMPM
           | HOUR_VALUE TIME_SEPARATOR MINUTE_VALUE [TIME_SEPARATOR SECOND_VALUE] [AMPM]
 HOUR_VALUE: DECIMAL_LITERAL
 MINUTE_VALUE: DECIMAL_LITERAL
@@ -337,14 +337,15 @@ PTRSAFE: "PtrSafe"
 TEXT: "Text"
 
 
-///////////////////////////////////  RULES   ///////////////////////////////////
+//////////////////////////////////  RULES   ////////////////////////////////////
 
 
 //////////////////////////
 // Logical Line Grammar //
 //////////////////////////
 
-ws: (WSC | LINE_CONTINUATION)+
+ws: WSCS [ws_line_continuation]
+ws_line_continuation: WSCS LINE_CONTINUATION+
 
 ////////////////////////////
 // Lexical Tokens Grammar //
@@ -433,7 +434,8 @@ class_attr: ATTRIBUTE (VB_NAME EQ quoted_identifier
                      | VB_EXPOSED EQ boolean_literal_identifier
                      | VB_CUSTOMIZABLE EQ boolean_literal_identifier)
 
-quoted_identifier: DOUBLE_QUOTE identifier DOUBLE_QUOTE
+// Check that the content is an identifier on runtime
+quoted_identifier: STRING
 
 /////////////////
 // Module Body //
@@ -442,8 +444,7 @@ quoted_identifier: DOUBLE_QUOTE identifier DOUBLE_QUOTE
 procedural_module_body: procedural_module_declaration_section procedural_module_code_section
 class_module_body: class_module_declaration_section class_module_code_section
 
-unrestricted_name: name
-                 | reserved_identifier
+// There is no unrestricted_name, validity is checked on runtime
 name: untyped_name
     | typed_name
 untyped_name: identifier
@@ -674,7 +675,7 @@ statement_label_list: statement_label [ws COMMA ws statement_label]
 identifier_statement_label: identifier // TODO: add static semantic
 line_number_label: INTEGER
 
-rem_statement: REM ws COMMENT_BODY
+rem_statement: REM WSCS COMMENT_BODY // TODO: verify that ws does not work
 
 // 5.4.2 Control statements
 
@@ -790,7 +791,7 @@ expression: value_expression
 
 literal_expression.2: INTEGER
                   | FLOAT
-                  | DATE_OR_TIME
+                  | date_or_time
                   | STRING
                   | literal_identifier [type_suffix]
 
@@ -842,10 +843,10 @@ l_expression: instance_expression
             | dictionary_access_expression
             | with_expression
 
-simple_name_expression: name
+simple_name_expression: name // Restricted name
 instance_expression: ME
-member_access_expression: l_expression DOT unrestricted_name
-                        | l_expression LINE_CONTINUATION DOT unrestricted_name
+member_access_expression: l_expression DOT name // Unrestricted name
+                        | l_expression ws_line_continuation DOT name // Unrestricted name
                         | simple_name_expression
 index_expression: l_expression ws LPAREN ws argument_list ws RPAREN
 
@@ -853,18 +854,18 @@ argument_list: [positional_argument_list | mixed_argument_list]
 positional_argument_list: ([argument_expression ws] COMMA ws)* argument_expression
 mixed_argument_list: ([argument_expression ws] COMMA ws)* named_argument_list
 named_argument_list: named_argument (ws COMMA ws named_argument)*
-named_argument: unrestricted_name ws AFFECTATION ws argument_expression
+named_argument: name ws AFFECTATION ws argument_expression // Unrestricted name
 argument_expression: [BYVAL ws] expression
                    | addressof_expression
 
-dictionary_access_expression: l_expression  EXCLAMATION unrestricted_name
-                            | l_expression LINE_CONTINUATION EXCLAMATION unrestricted_name
-                            | l_expression LINE_CONTINUATION EXCLAMATION LINE_CONTINUATION unrestricted_name
+dictionary_access_expression: l_expression  EXCLAMATION name // Unrestricted name
+                            | l_expression ws_line_continuation EXCLAMATION name // Unrestricted name
+                            | l_expression ws_line_continuation EXCLAMATION ws_line_continuation name // Unrestricted name
 
 with_expression: with_member_access_expression
                | with_dictionary_access_expression
-with_member_access_expression: DOT ws unrestricted_name
-with_dictionary_access_expression: EXCLAMATION ws unrestricted_name
+with_member_access_expression: DOT ws name // Unrestricted name
+with_dictionary_access_expression: EXCLAMATION ws name // Unrestricted name
 
 // 5.6.16 Constrained expressions
 
