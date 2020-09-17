@@ -1,6 +1,5 @@
-////////////
-// Tokens //
-////////////
+///////////////////////////////////  TOKENS  ///////////////////////////////////
+
 
 ///////////////////////////
 // Physical Line Grammar //
@@ -14,15 +13,14 @@ LINE_TERMINATOR: "\r\n" | "\t" | "\n" | "\u2028" | "\u2029"
 //////////////////////////
 
 // Blanks
-WS: (WSC | LINE_CONTINUATION)+
+WSCS: WSC+
 WSC: TAB_CHARACTER | SPACE | EOM | DBCS_WHITESPACE // TODO: add most-Unicode-class-Zs
-LINE_CONTINUATION: WSC* UNDERSCORE WSC* LINE_TERMINATOR
+LINE_CONTINUATION: WSCS UNDERSCORE WSC* LINE_TERMINATOR
 TAB_CHARACTER: "\t"
 SPACE: " "
 EOM: "\x19"
 DBCS_WHITESPACE: "\u3000"
 UNDERSCORE: "_"
-
 
 // Comment
 COMMENT_BODY: /.+/
@@ -54,7 +52,7 @@ FLOATING_POINT_TYPE_SUFFIX: EXCLAMATION | SHARP | AT
 
 // Date tokens
 
-DATE_OR_TIME: (DATE_VALUE WSC+ TIME_VALUE)
+DATE_OR_TIME: (DATE_VALUE WSCS TIME_VALUE)
             | DATE_VALUE
             | TIME_VALUE
 
@@ -65,8 +63,8 @@ MIDDLE_DATE_VALUE: DECIMAL_LITERAL
                  | MONTH_NAME
 RIGHT_DATE_VALUE: DECIMAL_LITERAL
                 | MONTH_NAME
-DATE_SEPARATOR: WSC+
-              | WSC+ (SLASH | MINUS | COMMA) WSC+
+DATE_SEPARATOR: WSCS
+              | WSCS (SLASH | MINUS | COMMA) WSCS
 MONTH_NAME: JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | AUGUST | SEPTEMBER
           | OCTOBER | NOVEMBER | DECEMBER
 TIME_VALUE: HOUR_VALUE AMPM
@@ -74,8 +72,8 @@ TIME_VALUE: HOUR_VALUE AMPM
 HOUR_VALUE: DECIMAL_LITERAL
 MINUTE_VALUE: DECIMAL_LITERAL
 SECOND_VALUE: DECIMAL_LITERAL
-TIME_SEPARATOR: WSC+ (COLON | DOT) WSC+
-AMPM: WSC+ ("am" | "pm" | "a" | "p")
+TIME_SEPARATOR: WSCS (COLON | DOT) WSCS
+AMPM: WSCS ("am" | "pm" | "a" | "p")
 
 JANUARY: "january" | "jan"
 FEBRUARY: "february" | "feb"
@@ -104,70 +102,8 @@ SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER: FIRST_LATIN_IDENTIFIER_CHARACTER
                                      | DECIMAL_DIGIT
                                      | UNDERSCORE
 
-
-RESERVED_IDENTIFIER: STATEMENT_KEYWORD | MARKER_KEYWORD | OPERATOR_IDENTIFIER
-                   | SPECIAL_FORM | RESERVED_NAME | LITERAL_IDENTIFIER
-                   | REM | RESERVED_FOR_IMPLEMENTATION_USE | FUTURE_RESERVED
-
-IDENTIFIER: RESERVED_IDENTIFIER // A reserved identifier will be matched first
-          | LEXICAL_IDENTIFIER
-
-STATEMENT_KEYWORD: CALL | CASE | CLOSE | CONST| DECLARE | DEFBOOL | DEFBYTE
-                 | DEFCUR | DEFDATE | DEFDBL | DEFINT | DEFLNG | DEFLNGLNG
-                 | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DIM | DO
-                 | ELSE | ELSEIF | END | ENDIF | ENUM | ERASE | EVENT | EXIT
-                 | FOR | FRIEND | FUNCTION | GET | GLOBAL | GOSUB | GOTO | IF
-                 | IMPLEMENTS| INPUT | LET | LOCK | LOOP | LSET | NEXT | ON
-                 | OPEN | OPTION | PRINT | PRIVATE | PUBLIC | PUT | RAISEEVENT
-                 | REDIM | RESUME | RETURN | RSET | SEEK | SELECT | SET | STATIC
-                 | STOP | SUB | TYPE | UNLOCK | WEND | WHILE | WITH | WRITE
-
-MARKER_KEYWORD: ANY | AS | BYREF | BYVAL |CASE | EACH | ELSE | IN | NEW | SHARED
-              | UNTIL | WITHEVENTS | WRITE | OPTIONAL | PARAMARRAY | PRESERVE
-              | SPC | TAB | THEN | TO
-
-OPERATOR_IDENTIFIER: ADDRESSOF | AND | EQV | IMP | IS | LIKE | NEW | MOD | NOT
-                   | OR | TYPEOF | XOR
-
-RESERVED_NAME: ABS | CBOOL | CBYTE | CCUR | CDATE | CDBL | CDEC | CINT | CLNG
-             | CLNGLNG | CLNGPTR | CSNG | CSTR | CVAR | CVERR | DATE | DEBUG
-             | DOEVENTS | FIX | INT | LEN | LENB | ME | PSET | SCALE | SGN
-             | STRING
-
-SPECIAL_FORM: ARRAY | CIRCLE | INPUT | INPUTB | LBOUND | SCALE | UBOUND
-
-RESERVED_TYPE_IDENTIFIER: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
-                        | LONG | LONGLONG | LONGPTR | SINGLE | STRING | VARIANT
-
-LITERAL_IDENTIFIER: BOOLEAN_LITERAL_IDENTIFIER | OBJECT_LITERAL_IDENTIFIER
-                  | VARIANT_LITERAL_IDENTIFIER
-BOOLEAN_LITERAL_IDENTIFIER: TRUE | FALSE
-OBJECT_LITERAL_IDENTIFIER: NOTHING
-VARIANT_LITERAL_IDENTIFIER: EMPTY | NULL
-
-RESERVED_FOR_IMPLEMENTATION_USE: ATTRIBUTE | LINEINPUT | VB_BASE | VB_CONTROL
-                               | VB_CREATABLE | VB_CUSTOMIZABLE | VB_DESCRIPTION
-                               | VB_EXPOSED | VB_EXT_KEY | VB_GLOBALNAMESPACE
-                               | VB_HELPID | VB_INVOKE_FUNC | VB_INVOKE_PROPERTY
-                               | VB_INVOKE_PROPERTYPUT
-                               | VB_INVOKE_PROPERTYPUTREF | VB_MEMBERFLAGS
-                               | VB_NAME | VB_PREDECLAREDID | VB_PROCDATA
-                               | VB_TEMPLATEDERIVED | VB_USERMEMID
-                               | VB_VARDESCRIPTION | VB_VARHELPID
-                               | VB_VARMEMBERFLAGS | VB_VARPROCDATA
-                               | VB_VARUSERMEMID
-FUTURE_RESERVED: CDECL | DECIMAL | DEFDEC
-
 FOREIGN_NAME: LBRACKET FOREIGN_IDENTIFIER RBRACKET
 FOREIGN_IDENTIFIER: /.+/
-
-BUILTIN_TYPE: RESERVED_TYPE_IDENTIFIER
-            | LBRACKET RESERVED_TYPE_IDENTIFIER RBRACKET
-            | OBJECT
-
-TYPED_NAME: IDENTIFIER TYPE_SUFFIX
-TYPE_SUFFIX: PERCENT | AMP | CARET | EXCLAMATION | SHARP | AT | DOLLAR
-
 
 // Punctuation
 COMMA: ","
@@ -401,16 +337,81 @@ PTRSAFE: "PtrSafe"
 TEXT: "Text"
 
 
+///////////////////////////////////  RULES   ///////////////////////////////////
+
+
+//////////////////////////
+// Logical Line Grammar //
+//////////////////////////
+
+ws: (WSC | LINE_CONTINUATION)+
+
 ////////////////////////////
 // Lexical Tokens Grammar //
 ////////////////////////////
 
 // Separators
-eol: [WS] (comment | LINE_TERMINATOR)
+eol: [ws] (comment | LINE_TERMINATOR)
 eos: (WSC* COLON | eol)+
-eof: [WS] [last_comment | LINE_TERMINATOR]
+eof: [ws] [last_comment | LINE_TERMINATOR]
 comment: SINGLE_QUOTE COMMENT_BODY LINE_TERMINATOR
 last_comment: SINGLE_QUOTE COMMENT_BODY [LINE_TERMINATOR]
+
+
+reserved_identifier: most_reserved | literal_identifier | REM
+                   | reserved_for_implementation_use | future_reserved
+
+identifier: LEXICAL_IDENTIFIER // TODO: Verify that we don't care if it's reserved or not
+// identifier: reserved_identifier // A reserved identifier will be matched first
+//           | LEXICAL_IDENTIFIER
+
+most_reserved: ABS | ADDRESSOF | AND | ANY | ARRAY | AS | BYREF | BYVAL | CALL
+             | CASE | CBOOL | CBYTE | CCUR | CDATE | CDBL | CDEC | CINT | CIRCLE
+             | CLNG | CLNGLNG | CLNGPTR | CLOSE | CONST | CSNG | CSTR | CVAR
+             | CVERR | DATE | DEBUG | DECLARE | DEFBOOL | DEFBYTE | DEFCUR
+             | DEFDATE | DEFDBL | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR
+             | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DIM | DO | DOEVENTS | EACH
+             | ELSE | ELSEIF | END | ENDIF | ENUM | EQV | ERASE | EVENT | EXIT
+             | FIX | FOR | FRIEND | FUNCTION | GET | GLOBAL | GOSUB | GOTO | IF
+             | IMP | IMPLEMENTS | IN | INPUT | INPUTB | INT | IS | LBOUND | LEN
+             | LENB | LET | LIKE | LOCK | LOOP | LSET | ME | MOD | NEW | NEXT
+             | NOT | ON | OPEN | OPTION | OPTIONAL | OR | PARAMARRAY | PRESERVE
+             | PRINT | PRIVATE | PSET | PUBLIC | PUT | RAISEEVENT | REDIM
+             | RESUME | RETURN | RSET | SCALE | SEEK | SELECT | SET | SGN
+             | SHARED | SPC | STATIC | STOP | STRING_KW | SUB | TAB | THEN | TO
+             | TYPE | TYPEOF | UBOUND | UNLOCK | UNTIL | WEND | WHILE | WITH
+             | WITHEVENTS | WRITE | XOR
+
+reserved_type_identifier: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
+                        | LONG | LONGLONG | LONGPTR | SINGLE | STRING_KW
+                        | VARIANT
+
+literal_identifier: boolean_literal_identifier
+                  | object_literal_identifier
+                  | variant_literal_identifier
+boolean_literal_identifier: TRUE | FALSE
+object_literal_identifier: NOTHING
+variant_literal_identifier: EMPTY | NULL
+
+reserved_for_implementation_use: ATTRIBUTE | LINEINPUT | VB_BASE | VB_CONTROL
+                               | VB_CREATABLE | VB_CUSTOMIZABLE | VB_DESCRIPTION
+                               | VB_EXPOSED | VB_EXT_KEY | VB_GLOBALNAMESPACE
+                               | VB_HELPID | VB_INVOKE_FUNC | VB_INVOKE_PROPERTY
+                               | VB_INVOKE_PROPERTYPUT
+                               | VB_INVOKE_PROPERTYPUTREF | VB_MEMBERFLAGS
+                               | VB_NAME | VB_PREDECLAREDID | VB_PROCDATA
+                               | VB_TEMPLATEDERIVED | VB_USERMEMID
+                               | VB_VARDESCRIPTION | VB_VARHELPID
+                               | VB_VARMEMBERFLAGS | VB_VARPROCDATA
+                               | VB_VARUSERMEMID
+future_reserved: CDECL | DECIMAL | DEFDEC
+
+builtin_type: reserved_type_identifier
+            | LBRACKET reserved_type_identifier RBRACKET
+            | OBJECT
+
+typed_name: identifier type_suffix
+type_suffix: PERCENT | AMP | CARET | EXCLAMATION | SHARP | AT | DOLLAR
 
 
 //////////////////////
@@ -424,15 +425,15 @@ procedural_module: procedural_module_header procedural_module_body
 class_module: class_module_header class_module_body
 
 // Header
-procedural_module_header: ATTRIBUTE WS VB_NAME WS EQ WS QUOTED_IDENTIFIER eol
+procedural_module_header: ATTRIBUTE ws VB_NAME ws EQ ws quoted_identifier eol
 class_module_header: class_attr+
-class_attr: ATTRIBUTE (VB_NAME EQ QUOTED_IDENTIFIER
+class_attr: ATTRIBUTE (VB_NAME EQ quoted_identifier
                      | VB_CREATABLE EQ FALSE
                      | VB_PREDECLAREDID EQ FALSE
-                     | VB_EXPOSED EQ BOOLEAN_LITERAL_IDENTIFIER
-                     | VB_CUSTOMIZABLE EQ BOOLEAN_LITERAL_IDENTIFIER)
+                     | VB_EXPOSED EQ boolean_literal_identifier
+                     | VB_CUSTOMIZABLE EQ boolean_literal_identifier)
 
-QUOTED_IDENTIFIER: DOUBLE_QUOTE IDENTIFIER DOUBLE_QUOTE
+quoted_identifier: DOUBLE_QUOTE identifier DOUBLE_QUOTE
 
 /////////////////
 // Module Body //
@@ -441,11 +442,11 @@ QUOTED_IDENTIFIER: DOUBLE_QUOTE IDENTIFIER DOUBLE_QUOTE
 procedural_module_body: procedural_module_declaration_section procedural_module_code_section
 class_module_body: class_module_declaration_section class_module_code_section
 
-UNRESTRICTED_NAME: NAME
-                 | RESERVED_IDENTIFIER
-NAME: UNTYPED_NAME
-    | TYPED_NAME
-UNTYPED_NAME: IDENTIFIER
+unrestricted_name: name
+                 | reserved_identifier
+name: untyped_name
+    | typed_name
+untyped_name: identifier
             | FOREIGN_NAME
 
 // 5.2 Declaration section
@@ -486,16 +487,16 @@ common_option_directive: option_compare_directive
                        | option_explicit_directive
                        | rem_statement
 
-option_compare_directive: OPTION WS COMPARE WS (BINARY | TEXT)
-option_base_directive: OPTION WS BASE WS INTEGER
-option_explicit_directive: OPTION WS EXPLICIT
-option_private_directive: OPTION WS PRIVATE WS MODULE
+option_compare_directive: OPTION ws COMPARE ws (BINARY | TEXT)
+option_base_directive: OPTION ws BASE ws INTEGER
+option_explicit_directive: OPTION ws EXPLICIT
+option_private_directive: OPTION ws PRIVATE ws MODULE
 
-def_directive: def_type WS letter_spec *(WS COMMA WS letter_spec)
+def_directive: def_type ws letter_spec *(ws COMMA ws letter_spec)
 letter_spec: single_letter
            | letter_range
 single_letter: /[a-zA-Z]/
-letter_range: single_letter WS MINUS WS single_letter
+letter_range: single_letter ws MINUS ws single_letter
 def_type: DEFBOOL | DEFBYTE | DEFCUR | DEFDATE | DEFDBL | DEFINT | DEFLNG
         | DEFLNGLNG | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR
 
@@ -509,89 +510,85 @@ common_module_declaration_element: module_variable_declaration
 
 module_variable_declaration: public_variable_declaration
                            | private_variable_declaration
-global_variable_declaration: GLOBAL WS variable_declaration_list
-public_variable_declaration: PUBLIC WS [SHARED] WS module_variable_declaration_list
-private_variable_declaration: (PRIVATE | DIM) WS [SHARED WS] module_variable_declaration_list
-module_variable_declaration_list: (withevents_variable_dcl | variable_dcl) (WS COMMA WS (withevents_variable_dcl | variable_dcl))*
-variable_declaration_list: variable_dcl (WS COMMA WS variable_dcl)*
+global_variable_declaration: GLOBAL ws variable_declaration_list
+public_variable_declaration: PUBLIC ws [SHARED] ws module_variable_declaration_list
+private_variable_declaration: (PRIVATE | DIM) ws [SHARED ws] module_variable_declaration_list
+module_variable_declaration_list: (withevents_variable_dcl | variable_dcl) (ws COMMA ws (withevents_variable_dcl | variable_dcl))*
+variable_declaration_list: variable_dcl (ws COMMA ws variable_dcl)*
 
 variable_dcl: typed_variable_dcl | untyped_variable_dcl
-typed_variable_dcl: TYPED_NAME [WS array_dim]
-untyped_variable_dcl: IDENTIFIER [WS (array_clause | as_clause)]
-array_clause: array_dim [WS as_clause]
+typed_variable_dcl: typed_name [ws array_dim]
+untyped_variable_dcl: identifier [ws (array_clause | as_clause)]
+array_clause: array_dim [ws as_clause]
 as_clause: as_auto_object | as_type
 
-withevents_variable_dcl: WITHEVENTS WS IDENTIFIER WS AS WS class_type_name
+withevents_variable_dcl: WITHEVENTS ws identifier ws AS ws class_type_name
 class_type_name: defined_type_expression
 
-array_dim: LPAREN [WS bounds_list WS] RPAREN
-bounds_list: dim_spec *(WS COMMA WS dim_spec)
-dim_spec: [constant_expression WS TO WS] constant_expression
+array_dim: LPAREN [ws bounds_list ws] RPAREN
+bounds_list: dim_spec *(ws COMMA ws dim_spec)
+dim_spec: [constant_expression ws TO ws] constant_expression
 
-as_auto_object: AS WS NEW WS class_type_name
-as_type: AS WS type_spec
+as_auto_object: AS ws NEW ws class_type_name
+as_type: AS ws type_spec
 type_spec: fixed_length_string_spec
          | type_expression
-fixed_length_string_spec: STRING WS MUL WS string_length
+fixed_length_string_spec: STRING_KW ws MUL ws string_length
 string_length: simple_name_expression
              | INTEGER
 
-public_const_declaration: (GLOBAL | PUBLIC) WS module_const_declaration
-private_const_declaration: [PRIVATE WS] module_const_declaration
+public_const_declaration: (GLOBAL | PUBLIC) ws module_const_declaration
+private_const_declaration: [PRIVATE ws] module_const_declaration
 module_const_declaration: const_declaration
-const_declaration: CONST WS const_item_list
-const_item_list: const_item (WS COMMA WS const_item)*
+const_declaration: CONST ws const_item_list
+const_item_list: const_item (ws COMMA ws const_item)*
 const_item: typed_name_const_item
           | untyped_name_const_item
-typed_name_const_item: TYPED_NAME WS EQ WS constant_expression
-untyped_name_const_item: IDENTIFIER [WS const_as_clause] WS EQ WS constant_expression
-const_as_clause: AS WS BUILTIN_TYPE
+typed_name_const_item: typed_name ws EQ ws constant_expression
+untyped_name_const_item: identifier [ws const_as_clause] ws EQ ws constant_expression
+const_as_clause: AS ws builtin_type
 
-public_type_declaration: [(GLOBAL | PUBLIC) WS] udt_declaration
-private_type_declaration: PRIVATE WS udt_declaration
-udt_declaration: TYPE WS UNTYPED_NAME eos udt_member_list eos END WS TYPE
-udt_member_list: WS udt_element *[eos WS udt_element]
+public_type_declaration: [(GLOBAL | PUBLIC) ws] udt_declaration
+private_type_declaration: PRIVATE ws udt_declaration
+udt_declaration: TYPE ws untyped_name eos udt_member_list eos END ws TYPE
+udt_member_list: ws udt_element *[eos ws udt_element]
 udt_element: rem_statement
            | udt_member
 udt_member: reserved_name_member_dcl
           | untyped_name_member_dcl
-untyped_name_member_dcl: IDENTIFIER WS optional_array_clause
-reserved_name_member_dcl: reserved_member_name WS as_clause
-optional_array_clause: [array_dim] WS as_clause
-reserved_member_name: STATEMENT_KEYWORD
-                    | MARKER_KEYWORD
-                    | OPERATOR_IDENTIFIER
-                    | SPECIAL_FORM
-                    | RESERVED_NAME
-                    | LITERAL_IDENTIFIER
-                    | RESERVED_FOR_IMPLEMENTATION_USE
-                    | FUTURE_RESERVED
+untyped_name_member_dcl: identifier ws optional_array_clause
+reserved_name_member_dcl: reserved_member_name ws as_clause
+optional_array_clause: [array_dim] ws as_clause
+reserved_member_name: most_reserved
+                    | literal_identifier
+                    | reserved_for_implementation_use
+                    | future_reserved
 
 
-global_enum_declaration: GLOBAL WS enum_declaration
-public_enum_declaration: [PUBLIC WS] enum_declaration
-private_enum_declaration: PRIVATE WS enum_declaration
-enum_declaration: ENUM WS UNTYPED_NAME eos WS enum_member_list eos WS END WS ENUM
-enum_member_list: WS enum_element *[eos WS enum_element]
+global_enum_declaration: GLOBAL ws enum_declaration
+public_enum_declaration: [PUBLIC ws] enum_declaration
+private_enum_declaration: PRIVATE ws enum_declaration
+enum_declaration: ENUM ws untyped_name eos ws enum_member_list eos ws END ws ENUM
+enum_member_list: ws enum_element *[eos ws enum_element]
 enum_element: rem_statement
             | enum_member
-enum_member: UNTYPED_NAME [WS EQ WS constant_expression]
+enum_member: untyped_name [ws EQ ws constant_expression]
 
-public_external_procedure_declaration: [PUBLIC WS] external_proc_dcl
-private_external_procedure_declaration: PRIVATE WS external_proc_dcl
-external_proc_dcl: DECLARE WS [PTRSAFE WS] (external_sub | external_function)
-external_sub: SUB WS subroutine_name WS lib_info [WS procedure_parameters]
-external_function: FUNCTION WS function_name WS lib_info [WS procedure_parameters] [WS function_type]
-lib_info: lib_clause [WS alias_clause]
-lib_clause: LIB WS STRING
-alias_clause: ALIAS WS STRING
+public_external_procedure_declaration: [PUBLIC ws] external_proc_dcl
+private_external_procedure_declaration: PRIVATE ws external_proc_dcl
+external_proc_dcl: DECLARE ws [PTRSAFE ws] (external_sub | external_function)
+external_sub: SUB ws subroutine_name ws lib_info [ws procedure_parameters]
+external_function: FUNCTION ws function_name ws lib_info [ws procedure_parameters] [ws function_type]
+lib_info: lib_clause [ws alias_clause]
+lib_clause: LIB ws STRING
+alias_clause: ALIAS ws STRING
 
 // Class module declaration
 
-implements_directive: IMPLEMENTS WS class_type_name
+implements_directive: IMPLEMENTS ws class_type_name
 
-event_declaration: [PUBLIC WS] EVENT WS IDENTIFIER [WS event_parameter_list]
-event_parameter_list: LPAREN WS [positional_parameters] WS RPAREN
+event_declaration: [PUBLIC ws] EVENT ws identifier [ws event_parameter_list]
+event_parameter_list: LPAREN ws [positional_parameters] ws RPAREN
 
 // 5.3 Code section
 // procedural_module_code_section: statement_block // TODO Remove
@@ -613,53 +610,48 @@ subroutine_declaration: sub_header eos [procedure_body eos] sub_footer
 function_declaration: function_header eos [procedure_body eos] function_footer
 property_get_declaration: property_get_header [procedure_body eos] property_footer
 property_lhs_declaration: property_lhs_header [procedure_body eos] property_footer
-sub_header: [procedure_scope WS] [STATIC WS] SUB WS subroutine_name [[WS] procedure_parameters] [WS STATIC]
-function_header: [procedure_scope WS] [STATIC WS] FUNCTION WS function_name [[WS] procedure_parameters] [WS function_type] [WS STATIC]
-property_get_header: [procedure_scope WS] [STATIC WS] PROPERTY WS GET WS function_name [[WS] procedure_parameters] [WS function_type] [WS STATIC]
-property_lhs_header: [procedure_scope WS] [STATIC WS] PROPERTY WS (LET | SET) WS subroutine_name procedure_parameters [WS STATIC]
-sub_footer: END WS SUB // TODO: add end_label
-function_footer: END WS FUNCTION // TODO: add end_label
-property_footer: END WS PROPERTY // TODO: add end_label
+sub_header: [procedure_scope ws] [STATIC ws] SUB ws subroutine_name [[ws] procedure_parameters] [ws STATIC]
+function_header: [procedure_scope ws] [STATIC ws] FUNCTION ws function_name [[ws] procedure_parameters] [ws function_type] [ws STATIC]
+property_get_header: [procedure_scope ws] [STATIC ws] PROPERTY ws GET ws function_name [[ws] procedure_parameters] [ws function_type] [ws STATIC]
+property_lhs_header: [procedure_scope ws] [STATIC ws] PROPERTY ws (LET | SET) ws subroutine_name procedure_parameters [ws STATIC]
+sub_footer: END ws SUB // TODO: add end_label
+function_footer: END ws FUNCTION // TODO: add end_label
+property_footer: END ws PROPERTY // TODO: add end_label
 //end_label: statement_label_definition // TODO: add back
 
 procedure_scope: GLOBAL | PUBLIC | PRIVATE | FRIEND
 
-subroutine_name: IDENTIFIER
-               | PREFIXED_NAME
-function_name: TYPED_NAME
+subroutine_name: identifier
+               | lifecycle_handler_name
+function_name: typed_name
              | subroutine_name
-PREFIXED_NAME: LIFECYCLE_HANDLER_NAME
-             | EVENT_HANDLER_NAME
-             | IMPLEMENTED_NAME
+// Removed prefixed name
 
-function_type: AS WS type_expression [WS array_designator]
-array_designator: LPAREN WS RPAREN
+function_type: AS ws type_expression [ws array_designator]
+array_designator: LPAREN ws RPAREN
 
-procedure_parameters: LPAREN WS? [parameter_list] WS RPAREN
-parameter_list: positional_parameters [WS] COMMA [WS] optional_parameters
-              | positional_parameters [[WS] COMMA [WS] param_array]
+procedure_parameters: LPAREN ws? [parameter_list] ws RPAREN
+parameter_list: positional_parameters [ws] COMMA [ws] optional_parameters
+              | positional_parameters [[ws] COMMA [ws] param_array]
               | optional_parameters
               | param_array
-positional_parameters: positional_param (WS COMMA WS positional_param)*
-optional_parameters: optional_param (WS COMMA WS optional_param)
-positional_param: [parameter_mechanism WS] param_dcl
-optional_param: optional_prefix param_dcl [WS default_value]
-param_array: PARAMARRAY WS IDENTIFIER WS LPAREN WS RPAREN [WS AS WS (VARIANT | FOREIGN_VARIANT)]
+positional_parameters: positional_param (ws COMMA ws positional_param)*
+optional_parameters: optional_param (ws COMMA ws optional_param)
+positional_param: [parameter_mechanism ws] param_dcl
+optional_param: optional_prefix param_dcl [ws default_value]
+param_array: PARAMARRAY ws identifier ws LPAREN ws RPAREN [ws AS ws (VARIANT | FOREIGN_VARIANT)]
 param_dcl: untyped_name_param_dcl
          | typed_name_param_dcl
-untyped_name_param_dcl: IDENTIFIER [WS parameter_type]
-typed_name_param_dcl: TYPED_NAME [WS array_designator]
-optional_prefix: OPTIONAL WS parameter_mechanism
-               | parameter_mechanism WS OPTIONAL
+untyped_name_param_dcl: identifier [ws parameter_type]
+typed_name_param_dcl: typed_name [ws array_designator]
+optional_prefix: OPTIONAL ws parameter_mechanism
+               | parameter_mechanism ws OPTIONAL
                | OPTIONAL
 parameter_mechanism: BYVAL | BYREF
-parameter_type: [array_designator WS] AS WS (type_expression | ANY)
-default_value: EQ WS constant_expression
+parameter_type: [array_designator ws] AS ws (type_expression | ANY)
+default_value: EQ ws constant_expression
 
-// TODO
-EVENT_HANDLER_NAME: IDENTIFIER // TODO: add static semantic
-IMPLEMENTED_NAME: IDENTIFIER // TODO: add static semantic
-LIFECYCLE_HANDLER_NAME: CLASS_INITIALIZE | CLASS_TERMINATE
+lifecycle_handler_name: CLASS_INITIALIZE | CLASS_TERMINATE
 
 // 5.4 Procedure bodies and statements
 
@@ -674,15 +666,15 @@ statement: control_statement
          | error_handling_statement
          | file_statement
 
-statement_label_definition: identifier_statement_label WS COLON
-                          | line_number_label [WS COLON]
+statement_label_definition: identifier_statement_label ws COLON
+                          | line_number_label [ws COLON]
 statement_label: identifier_statement_label
                | line_number_label
-statement_label_list: statement_label [WS COMMA WS statement_label]
-identifier_statement_label: IDENTIFIER // TODO: add static semantic
+statement_label_list: statement_label [ws COMMA ws statement_label]
+identifier_statement_label: identifier // TODO: add static semantic
 line_number_label: INTEGER
 
-rem_statement: REM WS COMMENT_BODY
+rem_statement: REM ws COMMENT_BODY
 
 // 5.4.2 Control statements
 
@@ -713,7 +705,7 @@ if_statement: IF
 call_statement: CALL
 while_statement: WHILE
 for_statement: FOR
-exit_for_statement: EXIT WS FOR
+exit_for_statement: EXIT ws FOR
 do_statement: DO
 exit_do_statement: EXIT DO
 single_line_if_statement: IF IF
@@ -762,13 +754,13 @@ error_handling_statement: on_error_statement
                         | resume_statement
                         | error_statement
 
-on_error_statement: ON WS ERROR WS error_behavior
-error_behavior: RESUME WS NEXT
-              | GOTO WS statement_label
+on_error_statement: ON ws ERROR ws error_behavior
+error_behavior: RESUME ws NEXT
+              | GOTO ws statement_label
 
-resume_statement: RESUME [WS (NEXT | statement_label)]
+resume_statement: RESUME [ws (NEXT | statement_label)]
 
-error_statement: ERROR WS error_number
+error_statement: ERROR ws error_number
 error_number: integer_expression
 
 // 5.4.5 File statements
@@ -796,11 +788,11 @@ get_statement: "get"
 expression: value_expression
           | l_expression
 
-literal_expression: INTEGER
+literal_expression.2: INTEGER
                   | FLOAT
                   | DATE_OR_TIME
                   | STRING
-                  | LITERAL_IDENTIFIER [TYPE_SUFFIX]
+                  | literal_identifier [type_suffix]
 
 // 5.6.9 Operator expressions
 value_expression: logical_imp
@@ -832,11 +824,11 @@ unary_negation: MINUS unary_negation
               | exponentiation
 exponentiation: exponentiation CARET exponentiation
               | parenthesized_expression
-parenthesized_expression: LPAREN WS expression WS RPAREN
+parenthesized_expression: LPAREN ws expression ws RPAREN
                         | typeof_is_expression
-typeof_is_expression: TYPEOF WS expression WS IS WS type_expression
+typeof_is_expression: TYPEOF ws expression ws IS ws type_expression
                     | new_expression
-new_expression: NEW WS type_expression
+new_expression: NEW ws type_expression
               | primary_expression
 primary_expression: literal_expression
 
@@ -850,29 +842,29 @@ l_expression: instance_expression
             | dictionary_access_expression
             | with_expression
 
-simple_name_expression: NAME
+simple_name_expression: name
 instance_expression: ME
-member_access_expression: l_expression DOT UNRESTRICTED_NAME
-                        | l_expression LINE_CONTINUATION DOT UNRESTRICTED_NAME
+member_access_expression: l_expression DOT unrestricted_name
+                        | l_expression LINE_CONTINUATION DOT unrestricted_name
                         | simple_name_expression
-index_expression: l_expression WS LPAREN WS argument_list WS RPAREN
+index_expression: l_expression ws LPAREN ws argument_list ws RPAREN
 
 argument_list: [positional_argument_list | mixed_argument_list]
-positional_argument_list: ([argument_expression WS] COMMA WS)* argument_expression
-mixed_argument_list: ([argument_expression WS] COMMA WS)* named_argument_list
-named_argument_list: named_argument (WS COMMA WS named_argument)*
-named_argument: UNRESTRICTED_NAME WS AFFECTATION WS argument_expression
-argument_expression: [BYVAL WS] expression
+positional_argument_list: ([argument_expression ws] COMMA ws)* argument_expression
+mixed_argument_list: ([argument_expression ws] COMMA ws)* named_argument_list
+named_argument_list: named_argument (ws COMMA ws named_argument)*
+named_argument: unrestricted_name ws AFFECTATION ws argument_expression
+argument_expression: [BYVAL ws] expression
                    | addressof_expression
 
-dictionary_access_expression: l_expression  EXCLAMATION UNRESTRICTED_NAME
-                            | l_expression LINE_CONTINUATION EXCLAMATION UNRESTRICTED_NAME
-                            | l_expression LINE_CONTINUATION EXCLAMATION LINE_CONTINUATION UNRESTRICTED_NAME
+dictionary_access_expression: l_expression  EXCLAMATION unrestricted_name
+                            | l_expression LINE_CONTINUATION EXCLAMATION unrestricted_name
+                            | l_expression LINE_CONTINUATION EXCLAMATION LINE_CONTINUATION unrestricted_name
 
 with_expression: with_member_access_expression
                | with_dictionary_access_expression
-with_member_access_expression: DOT WS UNRESTRICTED_NAME
-with_dictionary_access_expression: EXCLAMATION WS UNRESTRICTED_NAME
+with_member_access_expression: DOT ws unrestricted_name
+with_dictionary_access_expression: EXCLAMATION ws unrestricted_name
 
 // 5.6.16 Constrained expressions
 
@@ -881,10 +873,10 @@ boolean_expression: expression // TODO: add static semantic
 integer_expression: expression // TODO: add static semantic
 variable_expression: l_expression // TODO: add static semantic
 bound_variable_expression: l_expression // TODO: add static semantic
-type_expression: BUILTIN_TYPE
+type_expression: builtin_type
                | defined_type_expression
 defined_type_expression: "member_access_expression" // TODO: unquote
-addressof_expression: "AddressOf" // WS procedure_pointer_expression
+addressof_expression: "AddressOfExpr" // ws procedure_pointer_expression
 // procedure_pointer_expression: member_access_expression
 
 
@@ -895,5 +887,3 @@ addressof_expression: "AddressOf" // WS procedure_pointer_expression
 
 statement_list{repeated_statement}: WSC* (repeated_statement eos+)*  repeated_statement
 // statement_block: eol* (statement eos+)* statement eof
-
-// statement: "Plop"
