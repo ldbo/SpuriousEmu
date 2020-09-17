@@ -238,39 +238,8 @@ TAB: "Tab"
 THEN: "Then"
 TO: "To"
 
-ABS: "Abs"
-CBOOL: "CBool"
-CBYTE: "CByte"
-CCUR: "CCur"
-CDATE: "CDate"
-CDBL: "CDbl"
-CDEC: "CDec"
-CINT: "CInt"
-CLNG: "CLng"
-CLNGLNG: "CLngLng"
-CLNGPTR: "CLngPtr"
-CSNG: "CSng"
-CSTR: "CStr"
-CVAR: "CVar"
-CVERR: "CVErr"
 DATE: "Date"
-DEBUG: "Debug"
-DOEVENTS: "DoEvents"
-FIX: "Fix"
-INT: "Int"
-LEN: "Len"
-LENB: "LenB"
 ME: "Me"
-PSET: "PSet"
-SCALE: "Scale"
-SGN: "Sgn"
-STRING_KW: "String"
-
-ARRAY: "Array"
-CIRCLE: "Circle"
-INPUTB: "InputB"
-LBOUND: "LBound"
-UBOUND: "UBound"
 
 BOOLEAN: "Boolean"
 BYTE: "Byte"
@@ -281,6 +250,7 @@ LONG: "Long"
 LONGLONG: "LongLong"
 LONGPTR: "LongPtr"
 SINGLE: "Single"
+STRING_KW: "String"
 VARIANT: "Variant"
 FOREIGN_VARIANT: "[Variant]"
 
@@ -316,10 +286,6 @@ VB_VARHELPID:  "VB_VarHelpID"
 VB_VARMEMBERFLAGS:  "VB_VarMemberFlags"
 VB_VARPROCDATA:  "VB_VarProcData "
 VB_VARUSERMEMID:  "VB_VarUserMemId"
-
-CDECL: "CDecl"
-DECIMAL: "Decimal"
-DEFDEC: "DefDec"
 
 ALIAS: "Alias"
 BASE: "Base"
@@ -359,31 +325,13 @@ comment: SINGLE_QUOTE COMMENT_BODY LINE_TERMINATOR
 last_comment: SINGLE_QUOTE COMMENT_BODY [LINE_TERMINATOR]
 
 
-reserved_identifier: most_reserved | literal_identifier | REM
-                   | reserved_for_implementation_use | future_reserved
-
+// Identifiers
 identifier: LEXICAL_IDENTIFIER // TODO: Verify that we don't care if it's reserved or not
 // identifier: reserved_identifier // A reserved identifier will be matched first
 //           | LEXICAL_IDENTIFIER
 
-most_reserved: ABS | ADDRESSOF | AND | ANY | ARRAY | AS | BYREF | BYVAL | CALL
-             | CASE | CBOOL | CBYTE | CCUR | CDATE | CDBL | CDEC | CINT | CIRCLE
-             | CLNG | CLNGLNG | CLNGPTR | CLOSE | CONST | CSNG | CSTR | CVAR
-             | CVERR | DATE | DEBUG | DECLARE | DEFBOOL | DEFBYTE | DEFCUR
-             | DEFDATE | DEFDBL | DEFINT | DEFLNG | DEFLNGLNG | DEFLNGPTR
-             | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DIM | DO | DOEVENTS | EACH
-             | ELSE | ELSEIF | END | ENDIF | ENUM | EQV | ERASE | EVENT | EXIT
-             | FIX | FOR | FRIEND | FUNCTION | GET | GLOBAL | GOSUB | GOTO | IF
-             | IMP | IMPLEMENTS | IN | INPUT | INPUTB | INT | IS | LBOUND | LEN
-             | LENB | LET | LIKE | LOCK | LOOP | LSET | ME | MOD | NEW | NEXT
-             | NOT | ON | OPEN | OPTION | OPTIONAL | OR | PARAMARRAY | PRESERVE
-             | PRINT | PRIVATE | PSET | PUBLIC | PUT | RAISEEVENT | REDIM
-             | RESUME | RETURN | RSET | SCALE | SEEK | SELECT | SET | SGN
-             | SHARED | SPC | STATIC | STOP | STRING_KW | SUB | TAB | THEN | TO
-             | TYPE | TYPEOF | UBOUND | UNLOCK | UNTIL | WEND | WHILE | WITH
-             | WITHEVENTS | WRITE | XOR
 
-reserved_type_identifier: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
+RESERVED_TYPE_IDENTIFIER: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
                         | LONG | LONGLONG | LONGPTR | SINGLE | STRING_KW
                         | VARIANT
 
@@ -394,21 +342,8 @@ boolean_literal_identifier: TRUE | FALSE
 object_literal_identifier: NOTHING
 variant_literal_identifier: EMPTY | NULL
 
-reserved_for_implementation_use: ATTRIBUTE | LINEINPUT | VB_BASE | VB_CONTROL
-                               | VB_CREATABLE | VB_CUSTOMIZABLE | VB_DESCRIPTION
-                               | VB_EXPOSED | VB_EXT_KEY | VB_GLOBALNAMESPACE
-                               | VB_HELPID | VB_INVOKE_FUNC | VB_INVOKE_PROPERTY
-                               | VB_INVOKE_PROPERTYPUT
-                               | VB_INVOKE_PROPERTYPUTREF | VB_MEMBERFLAGS
-                               | VB_NAME | VB_PREDECLAREDID | VB_PROCDATA
-                               | VB_TEMPLATEDERIVED | VB_USERMEMID
-                               | VB_VARDESCRIPTION | VB_VARHELPID
-                               | VB_VARMEMBERFLAGS | VB_VARPROCDATA
-                               | VB_VARUSERMEMID
-future_reserved: CDECL | DECIMAL | DEFDEC
-
-builtin_type: reserved_type_identifier
-            | LBRACKET reserved_type_identifier RBRACKET
+builtin_type: RESERVED_TYPE_IDENTIFIER
+            | LBRACKET RESERVED_TYPE_IDENTIFIER RBRACKET
             | OBJECT
 
 typed_name: identifier type_suffix
@@ -521,7 +456,8 @@ variable_dcl: typed_variable_dcl | untyped_variable_dcl
 typed_variable_dcl: typed_name [ws array_dim]
 untyped_variable_dcl: identifier [ws (array_clause | as_clause)]
 array_clause: array_dim [ws as_clause]
-as_clause: as_auto_object | as_type
+as_clause: as_auto_object
+         | as_type
 
 withevents_variable_dcl: WITHEVENTS ws identifier ws AS ws class_type_name
 class_type_name: defined_type_expression
@@ -555,16 +491,7 @@ udt_declaration: TYPE ws untyped_name eos udt_member_list eos END ws TYPE
 udt_member_list: ws udt_element *[eos ws udt_element]
 udt_element: rem_statement
            | udt_member
-udt_member: reserved_name_member_dcl
-          | untyped_name_member_dcl
-untyped_name_member_dcl: identifier ws optional_array_clause
-reserved_name_member_dcl: reserved_member_name ws as_clause
-optional_array_clause: [array_dim] ws as_clause
-reserved_member_name: most_reserved
-                    | literal_identifier
-                    | reserved_for_implementation_use
-                    | future_reserved
-
+udt_member: identifier ws [array_dim ws] as_clause
 
 global_enum_declaration: GLOBAL ws enum_declaration
 public_enum_declaration: [PUBLIC ws] enum_declaration
@@ -789,7 +716,7 @@ get_statement: "get"
 expression: value_expression
           | l_expression
 
-literal_expression.2: INTEGER
+literal_expression: INTEGER
                   | FLOAT
                   | date_or_time
                   | STRING
@@ -877,7 +804,7 @@ bound_variable_expression: l_expression // TODO: add static semantic
 type_expression: builtin_type
                | defined_type_expression
 defined_type_expression: "member_access_expression" // TODO: unquote
-addressof_expression: "AddressOfExpr" // ws procedure_pointer_expression
+addressof_expression: ADDRESSOF // ws procedure_pointer_expression
 // procedure_pointer_expression: member_access_expression
 
 
