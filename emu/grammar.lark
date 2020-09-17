@@ -2,13 +2,172 @@
 // Tokens //
 ////////////
 
-// Blanks
+///////////////////////////
+// Physical Line Grammar //
+///////////////////////////
+
 LINE_TERMINATOR: "\r\n" | "\t" | "\n" | "\u2028" | "\u2029"
+
+
+//////////////////////////
+// Logical Line Grammar //
+//////////////////////////
+
+// Blanks
+WS: (WSC | LINE_CONTINUATION)+
+WSC: TAB_CHARACTER | SPACE | EOM | DBCS_WHITESPACE // TODO: add most-Unicode-class-Zs
+LINE_CONTINUATION: WSC* UNDERSCORE WSC* LINE_TERMINATOR
 TAB_CHARACTER: "\t"
 SPACE: " "
 EOM: "\x19"
 DBCS_WHITESPACE: "\u3000"
 UNDERSCORE: "_"
+
+
+// Comment
+COMMENT_BODY: /.+/
+
+////////////////////////////
+// Lexical Tokens Grammar //
+////////////////////////////
+
+// Number tokens
+
+INTEGER: INTEGER_LITERAL [PERCENT | AMP | CARET]
+INTEGER_LITERAL: DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL
+DECIMAL_LITERAL: DECIMAL_DIGIT+
+OCTAL_LITERAL: AMP ["O" | "o"] OCTAL_DIGIT+
+HEX_LITERAL: AMP ["H" | "h"] HEX_DIGIT+
+OCTAL_DIGIT: /[0-7]/
+DECIMAL_DIGIT: OCTAL_DIGIT | "8" | "9"
+HEX_DIGIT: DECIMAL_DIGIT | /[a-fA-F]/
+
+FLOAT: FLOATING_POINT_LITERAL [FLOATING_POINT_TYPE_SUFFIX]
+     | DECIMAL_LITERAL FLOATING_POINT_TYPE_SUFFIX
+FLOATING_POINT_LITERAL: DECIMAL_LITERAL EXPONENT
+                      | DECIMAL_LITERAL DOT [DECIMAL_LITERAL] [EXPONENT]
+                      | DOT DECIMAL_LITERAL [EXPONENT]
+EXPONENT: EXPONENT_LETTER [SIGN] DECIMAL_LITERAL
+EXPONENT_LETTER: "d" | "D" | "e" | "E"
+SIGN: "+" | "-"
+FLOATING_POINT_TYPE_SUFFIX: EXCLAMATION | SHARP | AT
+
+// Date tokens
+
+DATE_OR_TIME: (DATE_VALUE WSC+ TIME_VALUE)
+            | DATE_VALUE
+            | TIME_VALUE
+
+DATE_VALUE: LEFT_DATE_VALUE DATE_SEPARATOR MIDDLE_DATE_VALUE [DATE_SEPARATOR RIGHT_DATE_VALUE]
+LEFT_DATE_VALUE: DECIMAL_LITERAL
+               | MONTH_NAME
+MIDDLE_DATE_VALUE: DECIMAL_LITERAL
+                 | MONTH_NAME
+RIGHT_DATE_VALUE: DECIMAL_LITERAL
+                | MONTH_NAME
+DATE_SEPARATOR: WSC+
+              | WSC+ (SLASH | MINUS | COMMA) WSC+
+MONTH_NAME: JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | AUGUST | SEPTEMBER
+          | OCTOBER | NOVEMBER | DECEMBER
+TIME_VALUE: HOUR_VALUE AMPM
+          | HOUR_VALUE TIME_SEPARATOR MINUTE_VALUE [TIME_SEPARATOR SECOND_VALUE] [AMPM]
+HOUR_VALUE: DECIMAL_LITERAL
+MINUTE_VALUE: DECIMAL_LITERAL
+SECOND_VALUE: DECIMAL_LITERAL
+TIME_SEPARATOR: WSC+ (COLON | DOT) WSC+
+AMPM: WSC+ ("am" | "pm" | "a" | "p")
+
+JANUARY: "january" | "jan"
+FEBRUARY: "february" | "feb"
+MARCH: "march" | "mar"
+APRIL: "april" | "apr"
+MAY: "may" | "jun"
+JUNE: "june" | "jul"
+AUGUST: "august" | "aug"
+SEPTEMBER: "september" | "sep"
+OCTOBER: "october" | "oct"
+NOVEMBER: "november" | "nov"
+DECEMBER: "december" | "dec"
+
+// String tokens
+
+STRING: DOUBLE_QUOTE STRING_CHARACTER* DOUBLE_QUOTE
+STRING_CHARACTER: /[^"]/ | /""/
+
+// Identifier tokens
+
+LEXICAL_IDENTIFIER: LATIN_IDENTIFIER // TODO: handle non-latin identifiers
+                                     // TODO: add case insensitivity
+LATIN_IDENTIFIER: FIRST_LATIN_IDENTIFIER_CHARACTER SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER*
+FIRST_LATIN_IDENTIFIER_CHARACTER: /[a-zA-Z]/
+SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER: FIRST_LATIN_IDENTIFIER_CHARACTER
+                                     | DECIMAL_DIGIT
+                                     | UNDERSCORE
+
+
+RESERVED_IDENTIFIER: STATEMENT_KEYWORD | MARKER_KEYWORD | OPERATOR_IDENTIFIER
+                   | SPECIAL_FORM | RESERVED_NAME | LITERAL_IDENTIFIER
+                   | REM | RESERVED_FOR_IMPLEMENTATION_USE | FUTURE_RESERVED
+
+IDENTIFIER: RESERVED_IDENTIFIER // A reserved identifier will be matched first
+          | LEXICAL_IDENTIFIER
+
+STATEMENT_KEYWORD: CALL | CASE | CLOSE | CONST| DECLARE | DEFBOOL | DEFBYTE
+                 | DEFCUR | DEFDATE | DEFDBL | DEFINT | DEFLNG | DEFLNGLNG
+                 | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DIM | DO
+                 | ELSE | ELSEIF | END | ENDIF | ENUM | ERASE | EVENT | EXIT
+                 | FOR | FRIEND | FUNCTION | GET | GLOBAL | GOSUB | GOTO | IF
+                 | IMPLEMENTS| INPUT | LET | LOCK | LOOP | LSET | NEXT | ON
+                 | OPEN | OPTION | PRINT | PRIVATE | PUBLIC | PUT | RAISEEVENT
+                 | REDIM | RESUME | RETURN | RSET | SEEK | SELECT | SET | STATIC
+                 | STOP | SUB | TYPE | UNLOCK | WEND | WHILE | WITH | WRITE
+
+MARKER_KEYWORD: ANY | AS | BYREF | BYVAL |CASE | EACH | ELSE | IN | NEW | SHARED
+              | UNTIL | WITHEVENTS | WRITE | OPTIONAL | PARAMARRAY | PRESERVE
+              | SPC | TAB | THEN | TO
+
+OPERATOR_IDENTIFIER: ADDRESSOF | AND | EQV | IMP | IS | LIKE | NEW | MOD | NOT
+                   | OR | TYPEOF | XOR
+
+RESERVED_NAME: ABS | CBOOL | CBYTE | CCUR | CDATE | CDBL | CDEC | CINT | CLNG
+             | CLNGLNG | CLNGPTR | CSNG | CSTR | CVAR | CVERR | DATE | DEBUG
+             | DOEVENTS | FIX | INT | LEN | LENB | ME | PSET | SCALE | SGN
+             | STRING
+
+SPECIAL_FORM: ARRAY | CIRCLE | INPUT | INPUTB | LBOUND | SCALE | UBOUND
+
+RESERVED_TYPE_IDENTIFIER: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
+                        | LONG | LONGLONG | LONGPTR | SINGLE | STRING | VARIANT
+
+LITERAL_IDENTIFIER: BOOLEAN_LITERAL_IDENTIFIER | OBJECT_LITERAL_IDENTIFIER
+                  | VARIANT_LITERAL_IDENTIFIER
+BOOLEAN_LITERAL_IDENTIFIER: TRUE | FALSE
+OBJECT_LITERAL_IDENTIFIER: NOTHING
+VARIANT_LITERAL_IDENTIFIER: EMPTY | NULL
+
+RESERVED_FOR_IMPLEMENTATION_USE: ATTRIBUTE | LINEINPUT | VB_BASE | VB_CONTROL
+                               | VB_CREATABLE | VB_CUSTOMIZABLE | VB_DESCRIPTION
+                               | VB_EXPOSED | VB_EXT_KEY | VB_GLOBALNAMESPACE
+                               | VB_HELPID | VB_INVOKE_FUNC | VB_INVOKE_PROPERTY
+                               | VB_INVOKE_PROPERTYPUT
+                               | VB_INVOKE_PROPERTYPUTREF | VB_MEMBERFLAGS
+                               | VB_NAME | VB_PREDECLAREDID | VB_PROCDATA
+                               | VB_TEMPLATEDERIVED | VB_USERMEMID
+                               | VB_VARDESCRIPTION | VB_VARHELPID
+                               | VB_VARMEMBERFLAGS | VB_VARPROCDATA
+                               | VB_VARUSERMEMID
+FUTURE_RESERVED: CDECL | DECIMAL | DEFDEC
+
+FOREIGN_NAME: LBRACKET FOREIGN_IDENTIFIER RBRACKET
+FOREIGN_IDENTIFIER: /.+/
+
+BUILTIN_TYPE: RESERVED_TYPE_IDENTIFIER
+            | LBRACKET RESERVED_TYPE_IDENTIFIER RBRACKET
+            | OBJECT
+
+TYPED_NAME: IDENTIFIER TYPE_SUFFIX
+TYPE_SUFFIX: PERCENT | AMP | CARET | EXCLAMATION | SHARP | AT | DOLLAR
+
 
 // Punctuation
 COMMA: ","
@@ -19,6 +178,8 @@ SHARP: "#"
 AMP: "&"
 LPAREN: "("
 RPAREN: ")"
+LBRACKET: "["
+RBRACKET: "]"
 COLON: ":"
 SEMICOLON: ";"
 PERCENT: "%"
@@ -234,168 +395,22 @@ ERROR: "Error"
 EXPLICIT: "Explicit"
 LIB: "Lib"
 MODULE: "Module"
+OBJECT: "object" | "[object]"
 PROPERTY: "Property"
 PTRSAFE: "PtrSafe"
 TEXT: "Text"
 
-///////////////////////////
-// Physical Line Grammar //
-///////////////////////////
-
-
-//////////////////////////
-// Logical Line Grammar //
-//////////////////////////
-
-LINE_CONTINUATION: WSC* UNDERSCORE WSC* LINE_TERMINATOR
-WSC: TAB_CHARACTER | SPACE | EOM | DBCS_WHITESPACE // TODO: add most-Unicode-class-Zs
 
 ////////////////////////////
 // Lexical Tokens Grammar //
 ////////////////////////////
 
-// Separator and special tokens
-
-WS: (WSC | LINE_CONTINUATION)+
-
-SPECIAL_TOKEN: COMMA | DOT | EXCLAMATION | SHARP | AMP | LPAREN | RPAREN | MUL
-             | PLUS | MINUS | SLASH | COLON | SEMICOLON | LT | EQ | GT
-             | QUESTION | ANTISLASH | CARET
+// Separators
 eol: [WS] (comment | LINE_TERMINATOR)
 eos: (WSC* COLON | eol)+
 eof: [WS] [last_comment | LINE_TERMINATOR]
 comment: SINGLE_QUOTE COMMENT_BODY LINE_TERMINATOR
 last_comment: SINGLE_QUOTE COMMENT_BODY [LINE_TERMINATOR]
-COMMENT_BODY.10: /.+/ // Doesn't work without WSC, LINE_CONTINUATION is
-                           // voluntarily excluded
-
-// Number tokens
-
-INTEGER: INTEGER_LITERAL [PERCENT | AMP | CARET]
-INTEGER_LITERAL: DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL
-DECIMAL_LITERAL: DECIMAL_DIGIT+
-OCTAL_LITERAL: AMP ["O" | "o"] OCTAL_DIGIT+
-HEX_LITERAL: AMP ["H" | "h"] HEX_DIGIT+
-OCTAL_DIGIT: /[0-7]/
-DECIMAL_DIGIT: OCTAL_DIGIT | "8" | "9"
-HEX_DIGIT: DECIMAL_DIGIT | /[a-fA-F]/
-
-FLOAT: FLOATING_POINT_LITERAL [FLOATING_POINT_TYPE_SUFFIX]
-     | DECIMAL_LITERAL FLOATING_POINT_TYPE_SUFFIX
-FLOATING_POINT_LITERAL: DECIMAL_LITERAL EXPONENT
-                      | DECIMAL_LITERAL DOT [DECIMAL_LITERAL] [EXPONENT]
-                      | DOT DECIMAL_LITERAL [EXPONENT]
-EXPONENT: EXPONENT_LETTER [SIGN] DECIMAL_LITERAL
-EXPONENT_LETTER: "d" | "D" | "e" | "E"
-SIGN: "+" | "-"
-FLOATING_POINT_TYPE_SUFFIX: EXCLAMATION | SHARP | AT
-
-// Date tokens
-
-date_or_time: (date_value WSC+ time_value)
-            | date_value
-            | time_value
-
-date_value: left_date_value date_separator middle_date_value [date_separator right_date_value]
-left_date_value: DECIMAL_LITERAL
-               | month_name
-middle_date_value: DECIMAL_LITERAL
-                 | month_name
-right_date_value: DECIMAL_LITERAL
-                | month_name
-date_separator: WSC+
-              | WSC+ (SLASH | MINUS | COMMA) WSC+
-month_name: english_month_name | english_month_abbreviation
-english_month_name: "january" | "february" | "march" | "april" | "may" | "june"
-                  | "august" | "september" | "october" | "november" | "december"
-english_month_abbreviation: "jan" | "feb" | "mar" | "apr" | "jun" | "jul"
-                          | "aug" | "sep" | "oct" | "nov" | "dec"
-time_value: HOUR_VALUE ampm
-          | HOUR_VALUE time_separator MINUTE_VALUE [time_separator SECOND_VALUE] [ampm]
-HOUR_VALUE: DECIMAL_LITERAL
-MINUTE_VALUE: DECIMAL_LITERAL
-SECOND_VALUE: DECIMAL_LITERAL
-time_separator: WSC+ (COLON | DOT) WSC+
-ampm: WSC+ ("am" | "pm" | "a" | "p")
-
-// String tokens
-
-STRING: DOUBLE_QUOTE STRING_CHARACTER* DOUBLE_QUOTE
-STRING_CHARACTER: /[^"]/ | /""/
-
-// Identifier tokens
-
-LEXICAL_IDENTIFIER: LATIN_IDENTIFIER // TODO: handle non-latin identifiers
-LATIN_IDENTIFIER: FIRST_LATIN_IDENTIFIER_CHARACTER SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER*
-FIRST_LATIN_IDENTIFIER_CHARACTER: /[a-zA-Z]/
-SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER: FIRST_LATIN_IDENTIFIER_CHARACTER
-                                     | DECIMAL_DIGIT
-                                     | UNDERSCORE
-
-
-RESERVED_IDENTIFIER: STATEMENT_KEYWORD | MARKER_KEYWORD | OPERATOR_IDENTIFIER
-                   | SPECIAL_FORM | RESERVED_NAME | LITERAL_IDENTIFIER
-                   | REM | RESERVED_FOR_IMPLEMENTATION_USE | FUTURE_RESERVED
-
-IDENTIFIER: RESERVED_IDENTIFIER // A reserved identifier will be matched first
-          | LEXICAL_IDENTIFIER
-
-STATEMENT_KEYWORD: CALL | CASE | CLOSE | CONST| DECLARE | DEFBOOL | DEFBYTE
-                 | DEFCUR | DEFDATE | DEFDBL | DEFINT | DEFLNG | DEFLNGLNG
-                 | DEFLNGPTR | DEFOBJ | DEFSNG | DEFSTR | DEFVAR | DIM | DO
-                 | ELSE | ELSEIF | END | ENDIF | ENUM | ERASE | EVENT | EXIT
-                 | FOR | FRIEND | FUNCTION | GET | GLOBAL | GOSUB | GOTO | IF
-                 | IMPLEMENTS| INPUT | LET | LOCK | LOOP | LSET | NEXT | ON
-                 | OPEN | OPTION | PRINT | PRIVATE | PUBLIC | PUT | RAISEEVENT
-                 | REDIM | RESUME | RETURN | RSET | SEEK | SELECT | SET | STATIC
-                 | STOP | SUB | TYPE | UNLOCK | WEND | WHILE | WITH | WRITE
-
-MARKER_KEYWORD: ANY | AS | BYREF | BYVAL |CASE | EACH | ELSE | IN | NEW | SHARED
-              | UNTIL | WITHEVENTS | WRITE | OPTIONAL | PARAMARRAY | PRESERVE
-              | SPC | TAB | THEN | TO
-
-OPERATOR_IDENTIFIER: ADDRESSOF | AND | EQV | IMP | IS | LIKE | NEW | MOD | NOT
-                   | OR | TYPEOF | XOR
-
-RESERVED_NAME: ABS | CBOOL | CBYTE | CCUR | CDATE | CDBL | CDEC | CINT | CLNG
-             | CLNGLNG | CLNGPTR | CSNG | CSTR | CVAR | CVERR | DATE | DEBUG
-             | DOEVENTS | FIX | INT | LEN | LENB | ME | PSET | SCALE | SGN
-             | STRING
-
-SPECIAL_FORM: ARRAY | CIRCLE | INPUT | INPUTB | LBOUND | SCALE | UBOUND
-
-RESERVED_TYPE_IDENTIFIER: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
-                        | LONG | LONGLONG | LONGPTR | SINGLE | STRING | VARIANT
-
-LITERAL_IDENTIFIER: BOOLEAN_LITERAL_IDENTIFIER | OBJECT_LITERAL_IDENTIFIER
-                  | VARIANT_LITERAL_IDENTIFIER
-BOOLEAN_LITERAL_IDENTIFIER: TRUE | FALSE
-OBJECT_LITERAL_IDENTIFIER: NOTHING
-VARIANT_LITERAL_IDENTIFIER: EMPTY | NULL
-
-RESERVED_FOR_IMPLEMENTATION_USE: ATTRIBUTE | LINEINPUT | VB_BASE | VB_CONTROL
-                               | VB_CREATABLE | VB_CUSTOMIZABLE | VB_DESCRIPTION
-                               | VB_EXPOSED | VB_EXT_KEY | VB_GLOBALNAMESPACE
-                               | VB_HELPID | VB_INVOKE_FUNC | VB_INVOKE_PROPERTY
-                               | VB_INVOKE_PROPERTYPUT
-                               | VB_INVOKE_PROPERTYPUTREF | VB_MEMBERFLAGS
-                               | VB_NAME | VB_PREDECLAREDID | VB_PROCDATA
-                               | VB_TEMPLATEDERIVED | VB_USERMEMID
-                               | VB_VARDESCRIPTION | VB_VARHELPID
-                               | VB_VARMEMBERFLAGS | VB_VARPROCDATA
-                               | VB_VARUSERMEMID
-FUTURE_RESERVED: CDECL | DECIMAL | DEFDEC
-
-FOREIGN_NAME: "[" FOREIGN_IDENTIFIER "]"
-FOREIGN_IDENTIFIER: /.+/
-
-BUILTIN_TYPE: RESERVED_TYPE_IDENTIFIER
-            | "[" RESERVED_TYPE_IDENTIFIER "]"
-            | "object"
-            | "[object]"
-
-TYPED_NAME: IDENTIFIER TYPE_SUFFIX
-TYPE_SUFFIX: PERCENT | AMP | CARET | EXCLAMATION | SHARP | AT | DOLLAR
 
 
 //////////////////////
@@ -598,9 +613,9 @@ subroutine_declaration: sub_header eos [procedure_body eos] sub_footer
 function_declaration: function_header eos [procedure_body eos] function_footer
 property_get_declaration: property_get_header [procedure_body eos] property_footer
 property_lhs_declaration: property_lhs_header [procedure_body eos] property_footer
-sub_header: [procedure_scope WS] [STATIC WS] SUB WS subroutine_name [WS procedure_parameters] [WS STATIC]
-function_header: [procedure_scope WS] [STATIC WS] FUNCTION WS function_name [WS procedure_parameters] [WS function_type] [WS STATIC]
-property_get_header: [procedure_scope WS] [STATIC WS] PROPERTY WS GET WS function_name [WS procedure_parameters] [WS function_type] [WS STATIC]
+sub_header: [procedure_scope WS] [STATIC WS] SUB WS subroutine_name [[WS] procedure_parameters] [WS STATIC]
+function_header: [procedure_scope WS] [STATIC WS] FUNCTION WS function_name [[WS] procedure_parameters] [WS function_type] [WS STATIC]
+property_get_header: [procedure_scope WS] [STATIC WS] PROPERTY WS GET WS function_name [[WS] procedure_parameters] [WS function_type] [WS STATIC]
 property_lhs_header: [procedure_scope WS] [STATIC WS] PROPERTY WS (LET | SET) WS subroutine_name procedure_parameters [WS STATIC]
 sub_footer: END WS SUB // TODO: add end_label
 function_footer: END WS FUNCTION // TODO: add end_label
@@ -610,19 +625,19 @@ property_footer: END WS PROPERTY // TODO: add end_label
 procedure_scope: GLOBAL | PUBLIC | PRIVATE | FRIEND
 
 subroutine_name: IDENTIFIER
-               | prefixed_name
+               | PREFIXED_NAME
 function_name: TYPED_NAME
              | subroutine_name
-prefixed_name: LIFECYCLE_HANDLER_NAME
+PREFIXED_NAME: LIFECYCLE_HANDLER_NAME
              | EVENT_HANDLER_NAME
              | IMPLEMENTED_NAME
 
 function_type: AS WS type_expression [WS array_designator]
 array_designator: LPAREN WS RPAREN
 
-procedure_parameters: LPAREN WS [parameter_list] WS RPAREN
-parameter_list: positional_parameters WS COMMA WS optional_parameters
-              | positional_parameters [WS COMMA WS param_array]
+procedure_parameters: LPAREN WS? [parameter_list] WS RPAREN
+parameter_list: positional_parameters [WS] COMMA [WS] optional_parameters
+              | positional_parameters [[WS] COMMA [WS] param_array]
               | optional_parameters
               | param_array
 positional_parameters: positional_param (WS COMMA WS positional_param)*
@@ -641,6 +656,7 @@ parameter_mechanism: BYVAL | BYREF
 parameter_type: [array_designator WS] AS WS (type_expression | ANY)
 default_value: EQ WS constant_expression
 
+// TODO
 EVENT_HANDLER_NAME: IDENTIFIER // TODO: add static semantic
 IMPLEMENTED_NAME: IDENTIFIER // TODO: add static semantic
 LIFECYCLE_HANDLER_NAME: CLASS_INITIALIZE | CLASS_TERMINATE
@@ -771,7 +787,7 @@ unlock_statement: "unlock"
 line_input_statement: "line_input"
 width_statement: "width"
 write_statement: "write"
-input_statement: "input"
+input_statement: "nput"
 put_statement: "put"
 get_statement: "get"
 
@@ -782,7 +798,7 @@ expression: value_expression
 
 literal_expression: INTEGER
                   | FLOAT
-                  | date_or_time
+                  | DATE_OR_TIME
                   | STRING
                   | LITERAL_IDENTIFIER [TYPE_SUFFIX]
 
@@ -877,7 +893,7 @@ addressof_expression: "AddressOf" // WS procedure_pointer_expression
 // Bancale //
 /////////////
 
-statement_list{repeated_statement}: (repeated_statement eos+)*  repeated_statement
+statement_list{repeated_statement}: WSC* (repeated_statement eos+)*  repeated_statement
 // statement_block: eol* (statement eos+)* statement eof
 
 // statement: "Plop"
