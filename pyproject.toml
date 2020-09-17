@@ -45,6 +45,7 @@ coveralls = "^2.1.2"
 black = "^19.10b0"
 nose-cprof = "^0.2.1"
 snakeviz = "^2.1.0"
+pydot = "^1.4.1"
 
 [tool.black]
 line-length = 80
