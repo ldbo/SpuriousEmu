@@ -56,22 +56,22 @@ date_or_time: (date_value WSCS time_value)
             | date_value
             | time_value
 
-date_value: LEFT_DATE_VALUE DATE_SEPARATOR MIDDLE_DATE_VALUE [DATE_SEPARATOR RIGHT_DATE_VALUE]
-LEFT_DATE_VALUE: DECIMAL_LITERAL
-               | MONTH_NAME
-MIDDLE_DATE_VALUE: DECIMAL_LITERAL
-                 | MONTH_NAME
-RIGHT_DATE_VALUE: DECIMAL_LITERAL
-                | MONTH_NAME
-DATE_SEPARATOR: WSCS
+date_value: left_date_value middle_date_value [date_separator right_date_value]
+left_date_value: (decimal_literal
+                | month_name) date_separator
+middle_date_value: decimal_literal
+                 | month_name
+right_date_value: date_separator (decimal_literal
+                                | month_name)
+date_separator: WSCS
               | WSCS (SLASH | MINUS | COMMA) WSCS
-MONTH_NAME: JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | AUGUST | SEPTEMBER
+month_name: JANUARY | FEBRUARY | MARCH | APRIL | MAY | JUNE | AUGUST | SEPTEMBER
           | OCTOBER | NOVEMBER | DECEMBER
-time_value: HOUR_VALUE AMPM
-          | HOUR_VALUE TIME_SEPARATOR MINUTE_VALUE [TIME_SEPARATOR SECOND_VALUE] [AMPM]
-HOUR_VALUE: DECIMAL_LITERAL
-MINUTE_VALUE: DECIMAL_LITERAL
-SECOND_VALUE: DECIMAL_LITERAL
+time_value: hour_value AMPM
+          | hour_value TIME_SEPARATOR minute_value [TIME_SEPARATOR second_value] [AMPM]
+hour_value: decimal_literal
+minute_value: decimal_literal
+second_value: decimal_literal
 TIME_SEPARATOR: WSCS (COLON | DOT) WSCS
 AMPM: WSCS ("am" | "pm" | "a" | "p")
 
@@ -102,8 +102,7 @@ SUBSEQUENT_LATIN_IDENTIFIER_CHARACTER: FIRST_LATIN_IDENTIFIER_CHARACTER
                                      | DECIMAL_DIGIT
                                      | UNDERSCORE
 
-FOREIGN_NAME: LBRACKET FOREIGN_IDENTIFIER RBRACKET
-FOREIGN_IDENTIFIER: /.+/
+foreign_name: LBRACKET identifier RBRACKET
 
 // Punctuation
 COMMA: ","
@@ -327,13 +326,7 @@ last_comment: SINGLE_QUOTE COMMENT_BODY [LINE_TERMINATOR]
 
 // Identifiers
 identifier: LEXICAL_IDENTIFIER // TODO: Verify that we don't care if it's reserved or not
-// identifier: reserved_identifier // A reserved identifier will be matched first
-//           | LEXICAL_IDENTIFIER
 
-
-RESERVED_TYPE_IDENTIFIER: BOOLEAN | BYTE | CURRENCY | DATE | DOUBLE | INTEGER
-                        | LONG | LONGLONG | LONGPTR | SINGLE | STRING_KW
-                        | VARIANT
 
 literal_identifier: boolean_literal_identifier
                   | object_literal_identifier
@@ -342,9 +335,9 @@ boolean_literal_identifier: TRUE | FALSE
 object_literal_identifier: NOTHING
 variant_literal_identifier: EMPTY | NULL
 
-builtin_type: RESERVED_TYPE_IDENTIFIER
-            | LBRACKET RESERVED_TYPE_IDENTIFIER RBRACKET
-            | OBJECT
+// TODO Add RT check
+builtin_type: LEXICAL_IDENTIFIER
+            | foreign_name
 
 typed_name: identifier type_suffix
 type_suffix: PERCENT | AMP | CARET | EXCLAMATION | SHARP | AT | DOLLAR
@@ -383,7 +376,7 @@ class_module_body: class_module_declaration_section class_module_code_section
 name: untyped_name
     | typed_name
 untyped_name: identifier
-            | FOREIGN_NAME
+            | foreign_name
 
 // 5.2 Declaration section
 procedural_module_declaration_section: [pm_directives] eol* [pm_declarations eol*]
@@ -424,7 +417,7 @@ common_option_directive: option_compare_directive
                        | rem_statement
 
 option_compare_directive: OPTION ws COMPARE ws (BINARY | TEXT)
-option_base_directive: OPTION ws BASE ws INTEGER
+option_base_directive: OPTION ws BASE ws integer
 option_explicit_directive: OPTION ws EXPLICIT
 option_private_directive: OPTION ws PRIVATE ws MODULE
 
@@ -472,7 +465,7 @@ type_spec: fixed_length_string_spec
          | type_expression
 fixed_length_string_spec: STRING_KW ws MUL ws string_length
 string_length: simple_name_expression
-             | INTEGER
+             | integer
 
 public_const_declaration: (GLOBAL | PUBLIC) ws module_const_declaration
 private_const_declaration: [PRIVATE ws] module_const_declaration
@@ -558,13 +551,13 @@ function_name: typed_name
 function_type: AS ws type_expression [ws array_designator]
 array_designator: LPAREN ws RPAREN
 
-procedure_parameters: LPAREN ws? [parameter_list] ws RPAREN
+procedure_parameters: LPAREN [ws] [parameter_list [ws]] RPAREN
 parameter_list: positional_parameters [ws] COMMA [ws] optional_parameters
               | positional_parameters [[ws] COMMA [ws] param_array]
               | optional_parameters
               | param_array
-positional_parameters: positional_param (ws COMMA ws positional_param)*
-optional_parameters: optional_param (ws COMMA ws optional_param)
+positional_parameters: positional_param ([ws] COMMA [ws] positional_param)*
+optional_parameters: optional_param ([ws] COMMA [ws] optional_param)
 positional_param: [parameter_mechanism ws] param_dcl
 optional_param: optional_prefix param_dcl [ws default_value]
 param_array: PARAMARRAY ws identifier ws LPAREN ws RPAREN [ws AS ws (VARIANT | FOREIGN_VARIANT)]
@@ -600,7 +593,7 @@ statement_label: identifier_statement_label
                | line_number_label
 statement_label_list: statement_label [ws COMMA ws statement_label]
 identifier_statement_label: identifier // TODO: add static semantic
-line_number_label: INTEGER
+line_number_label: integer
 
 rem_statement: REM WSCS COMMENT_BODY // TODO: verify that ws does not work
 
@@ -716,8 +709,8 @@ get_statement: "get"
 expression: value_expression
           | l_expression
 
-literal_expression: INTEGER
-                  | FLOAT
+literal_expression: integer
+                  | float
                   | date_or_time
                   | STRING
                   | literal_identifier [type_suffix]
@@ -807,11 +800,8 @@ defined_type_expression: "member_access_expression" // TODO: unquote
 addressof_expression: ADDRESSOF // ws procedure_pointer_expression
 // procedure_pointer_expression: member_access_expression
 
-
-
 /////////////
 // Bancale //
 /////////////
 
 statement_list{repeated_statement}: WSC* (repeated_statement eos+)*  repeated_statement
-// statement_block: eol* (statement eos+)* statement eof
