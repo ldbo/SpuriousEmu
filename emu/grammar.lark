@@ -31,21 +31,21 @@ COMMENT_BODY: /.+/
 
 // Number tokens
 
-INTEGER: INTEGER_LITERAL [PERCENT | AMP | CARET]
-INTEGER_LITERAL: DECIMAL_LITERAL | OCTAL_LITERAL | HEX_LITERAL
-DECIMAL_LITERAL: DECIMAL_DIGIT+
-OCTAL_LITERAL: AMP ["O" | "o"] OCTAL_DIGIT+
-HEX_LITERAL: AMP ["H" | "h"] HEX_DIGIT+
+integer: integer_literal [PERCENT | AMP | CARET]
+integer_literal: decimal_literal | octal_literal | hex_literal
+decimal_literal: DECIMAL_DIGIT+
+octal_literal: AMP ["O" | "o"] OCTAL_DIGIT+
+hex_literal: AMP ["H" | "h"] HEX_DIGIT+
 OCTAL_DIGIT: /[0-7]/
-DECIMAL_DIGIT: OCTAL_DIGIT | "8" | "9"
-HEX_DIGIT: DECIMAL_DIGIT | /[a-fA-F]/
+DECIMAL_DIGIT: /[0-9]/
+HEX_DIGIT: /[0-9a-fA-F]/
 
-FLOAT: FLOATING_POINT_LITERAL [FLOATING_POINT_TYPE_SUFFIX]
-     | DECIMAL_LITERAL FLOATING_POINT_TYPE_SUFFIX
-FLOATING_POINT_LITERAL: DECIMAL_LITERAL EXPONENT
-                      | DECIMAL_LITERAL DOT [DECIMAL_LITERAL] [EXPONENT]
-                      | DOT DECIMAL_LITERAL [EXPONENT]
-EXPONENT: EXPONENT_LETTER [SIGN] DECIMAL_LITERAL
+float: floating_point_literal [FLOATING_POINT_TYPE_SUFFIX]
+     | decimal_literal FLOATING_POINT_TYPE_SUFFIX
+floating_point_literal: decimal_literal exponent
+                      | decimal_literal DOT [decimal_literal] [exponent]
+                      | DOT decimal_literal [exponent]
+exponent: EXPONENT_LETTER [SIGN] decimal_literal
 EXPONENT_LETTER: "d" | "D" | "e" | "E"
 SIGN: "+" | "-"
 FLOATING_POINT_TYPE_SUFFIX: EXCLAMATION | SHARP | AT
