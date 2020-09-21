@@ -290,9 +290,10 @@ description = "a modern parsing library"
 name = "lark-parser"
 optional = false
 python-versions = "*"
-version = "0.9.0"
+version = "0.10.0"
 
 [package.extras]
+nearley = ["js2py"]
 regex = ["regex"]
 
 [[package]]
@@ -700,7 +701,7 @@ python-versions = "*"
 version = "0.5"
 
 [metadata]
-content-hash = "c2881209c93bcf975ba4ff309dcf7e6c51f8a2019f3fc69f9e367f4d4e88e462"
+content-hash = "ef88cc3521895787ce77d6dadea885f7fd70c80983601bb0e4cdc2c06569f550"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -906,7 +907,7 @@ kiwisolver = [
     {file = "kiwisolver-1.2.0.tar.gz", hash = "sha256:247800260cd38160c362d211dcaf4ed0f7816afb5efe56544748b21d6ad6d17f"},
 ]
 lark-parser = [
-    {file = "lark-parser-0.9.0.tar.gz", hash = "sha256:9e7589365d6b6de1cca40b0eaec31104a3fb96a37a11a9dfd5098e95b50aa6cd"},
+    {file = "lark_parser-0.10.0-py2.py3-none-any.whl", hash = "sha256:f7044d3a4ad42c07e853da590727d5f1e5f9c36e5795bdeb05227fe0bace2344"},
 ]
 lxml = [
     {file = "lxml-4.5.2-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:74f48ec98430e06c1fa8949b49ebdd8d27ceb9df8d3d1c92e1fdc2773f003f20"},
