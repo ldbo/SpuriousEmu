@@ -762,12 +762,12 @@ l_expression: instance_expression
             | index_expression
             | dictionary_access_expression
             | with_expression
+            | simple_name_expression
 
 simple_name_expression: name // Restricted name
 instance_expression: ME
 member_access_expression: l_expression DOT name // Unrestricted name
                         | l_expression ws_line_continuation DOT name // Unrestricted name
-                        | simple_name_expression
 index_expression: l_expression ws LPAREN ws argument_list ws RPAREN
 
 argument_list: [positional_argument_list | mixed_argument_list]
@@ -776,7 +776,7 @@ mixed_argument_list: ([argument_expression ws] COMMA ws)* named_argument_list
 named_argument_list: named_argument (ws COMMA ws named_argument)*
 named_argument: name ws AFFECTATION ws argument_expression // Unrestricted name
 argument_expression: [BYVAL ws] expression
-                   | addressof_expression
+                   // | ADDRESSOF ws member_access_expression // TODO uncomment
 
 dictionary_access_expression: l_expression  EXCLAMATION name // Unrestricted name
                             | l_expression ws_line_continuation EXCLAMATION name // Unrestricted name
@@ -795,10 +795,11 @@ integer_expression: expression // TODO: add static semantic
 variable_expression: l_expression // TODO: add static semantic
 bound_variable_expression: l_expression // TODO: add static semantic
 type_expression: builtin_type
-               | defined_type_expression
+               // | defined_type_expression
 defined_type_expression: "member_access_expression" // TODO: unquote
-addressof_expression: ADDRESSOF // ws procedure_pointer_expression
-// procedure_pointer_expression: member_access_expression
+addressof_expression: ADDRESSOF ws procedure_pointer_expression
+procedure_pointer_expression: member_access_expression
+                            | simple_name_expression // TODO unquote
 
 /////////////
 // Bancale //
