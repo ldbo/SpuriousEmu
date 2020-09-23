@@ -336,7 +336,7 @@ object_literal_identifier: NOTHING
 variant_literal_identifier: EMPTY | NULL
 
 // TODO Add RT check
-builtin_type: LEXICAL_IDENTIFIER
+builtin_type: identifier
             | foreign_name
 
 typed_name: identifier type_suffix
