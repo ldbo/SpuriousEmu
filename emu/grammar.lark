@@ -73,19 +73,19 @@ hour_value: decimal_literal
 minute_value: decimal_literal
 second_value: decimal_literal
 TIME_SEPARATOR: WSCS (COLON | DOT) WSCS
-AMPM: WSCS ("am" | "pm" | "a" | "p")
+AMPM: WSCS ("am"i | "pm"i | "a"i | "p"i)
 
-JANUARY: "january" | "jan"
-FEBRUARY: "february" | "feb"
-MARCH: "march" | "mar"
-APRIL: "april" | "apr"
-MAY: "may" | "jun"
-JUNE: "june" | "jul"
-AUGUST: "august" | "aug"
-SEPTEMBER: "september" | "sep"
-OCTOBER: "october" | "oct"
-NOVEMBER: "november" | "nov"
-DECEMBER: "december" | "dec"
+JANUARY: "january"i | "jan"i
+FEBRUARY: "february"i | "feb"i
+MARCH: "march"i | "mar"i
+APRIL: "april"i | "apr"i
+MAY: "may"i | "jun"i
+JUNE: "june"i | "jul"i
+AUGUST: "august"i | "aug"i
+SEPTEMBER: "september"i | "sep"i
+OCTOBER: "october"i | "oct"i
+NOVEMBER: "november"i | "nov"i
+DECEMBER: "december"i | "dec"i
 
 // String tokens
 
@@ -131,175 +131,176 @@ MUL: "*"
 SLASH: "/"
 ANTISLASH: "\\"
 CARET: "^"
-MOD: "Mod"
+MOD: "Mod"i
 LE: "<=" | "=<"
 GE: ">=" | "=>"
 LT: "<"
 GT: ">"
 EQ: "="
 NEQ: "<>" | "><"
-LIKE: "Like"
-IS: "Is"
-IMP: "Imp"
-EQV: "Eqv"
-XOR: "Xor"
-OR: "Or"
-AND: "And"
-NOT: "Not"
-ADDRESSOF: "AddressOf"
-NEW: "New"
-TYPEOF: "TypeOf"
+LIKE: "Like"i
+IS: "Is"i
+IMP: "Imp"i
+EQV: "Eqv"i
+XOR: "Xor"i
+OR: "Or"i
+AND: "And"i
+NOT: "Not"i
+ADDRESSOF: "AddressOf"i
+NEW: "New"i
+TYPEOF: "TypeOf"i
 
 // Keywords
-CALL: "Call"
-CASE: "Case"
-CLOSE: "Close"
-CONST: "Const"
-DECLARE: "Declare"
-DEFBOOL: "DefBool"
-DEFBYTE: "DefByte"
-DEFCUR: "DefCur"
-DEFDATE: "DefDate"
-DEFDBL: "DefDbl"
-DEFINT: "DefInt"
-DEFLNG: "DefLng"
-DEFLNGLNG: "DefLngLng"
-DEFLNGPTR: "DefLngPtr"
-DEFOBJ: "DefObj"
-DEFSNG: "DefSng"
-DEFSTR: "DefStr"
-DEFVAR: "DefVar"
-DIM: "Dim"
-DO: "Do"
-ELSE: "Else"
-ELSEIF: "ElseIf"
-END: "End"
-ENDIF: "EndIf"
-ENUM: "Enum"
-ERASE: "Erase"
-EVENT: "Event"
-EXIT: "Exit"
-FOR: "For"
-FRIEND: "Friend"
-FUNCTION: "Function"
-GET: "Get"
-GLOBAL: "Global"
-GOSUB: "GoSub"
-GOTO: "GoTo"
-IF: "If"
-IMPLEMENTS: "Implements"
-INPUT: "Input"
-LET: "Let"
-LOCK: "Lock"
-LOOP: "Loop"
-LSET: "LSet"
-NEXT: "Next"
-ON: "On"
-OPEN: "Open"
-OPTION: "Option"
-PRINT: "Print"
-PRIVATE: "Private"
-PUBLIC: "Public"
-PUT: "Put"
-RAISEEVENT: "RaiseEvent"
-REDIM: "ReDim"
-REM: "Rem"
-RESUME: "Resume"
-RETURN: "Return"
-RSET: "RSet"
-SEEK: "Seek"
-SELECT: "Select"
-SET: "Set"
-STATIC: "Static"
-STOP: "Stop"
-SUB: "Sub"
-TYPE: "Type"
-UNLOCK: "Unlock"
-WEND: "Wend"
-WHILE: "While"
-WITH: "With"
-WRITE: "Write"
+CALL: "Call"i
+CASE: "Case"i
+CLOSE: "Close"i
+CONST: "Const"i
+DECLARE: "Declare"i
+DEFBOOL: "DefBool"i
+DEFBYTE: "DefByte"i
+DEFCUR: "DefCur"i
+DEFDATE: "DefDate"i
+DEFDBL: "DefDbl"i
+DEFINT: "DefInt"i
+DEFLNG: "DefLng"i
+DEFLNGLNG: "DefLngLng"i
+DEFLNGPTR: "DefLngPtr"i
+DEFOBJ: "DefObj"i
+DEFSNG: "DefSng"i
+DEFSTR: "DefStr"i
+DEFVAR: "DefVar"i
+DIM: "Dim"i
+DO: "Do"i
+ELSE: "Else"i
+ELSEIF: "ElseIf"i
+END: "End"i
+ENDIF: "EndIf"i
+ENUM: "Enum"i
+ERASE: "Erase"i
+EVENT: "Event"i
+EXIT: "Exit"i
+FOR: "For"i
+FRIEND: "Friend"i
+FUNCTION: "Function"i
+GET: "Get"i
+GLOBAL: "Global"i
+GO: "Go"i
+GOSUB: "GoSub"i
+GOTO: "GoTo"i
+IF: "If"i
+IMPLEMENTS: "Implements"i
+INPUT: "Input"i
+LET: "Let"i
+LOCK: "Lock"i
+LOOP: "Loop"i
+LSET: "LSet"i
+NEXT: "Next"i
+ON: "On"i
+OPEN: "Open"i
+OPTION: "Option"i
+PRINT: "Print"i
+PRIVATE: "Private"i
+PUBLIC: "Public"i
+PUT: "Put"i
+RAISEEVENT: "RaiseEvent"i
+REDIM: "ReDim"i
+REM: "Rem"i
+RESUME: "Resume"i
+RETURN: "Return"i
+RSET: "RSet"i
+SEEK: "Seek"i
+SELECT: "Select"i
+SET: "Set"i
+STATIC: "Static"i
+STOP: "Stop"i
+SUB: "Sub"i
+TYPE: "Type"i
+UNLOCK: "Unlock"i
+WEND: "Wend"i
+WHILE: "While"i
+WITH: "With"i
+WRITE: "Write"i
 
-ANY: "Any"
-AS: "As"
-BYREF: "ByRef"
-BYVAL: "ByVal"
-EACH: "Each"
-IN: "In"
-SHARED: "Shared"
-UNTIL: "Until"
-WITHEVENTS: "WithEvents"
-OPTIONAL: "Optional"
-PARAMARRAY: "ParamArray"
-PRESERVE: "Preserve"
-SPC: "Spc"
-TAB: "Tab"
-THEN: "Then"
-TO: "To"
+ANY: "Any"i
+AS: "As"i
+BYREF: "ByRef"i
+BYVAL: "ByVal"i
+EACH: "Each"i
+IN: "In"i
+SHARED: "Shared"i
+UNTIL: "Until"i
+WITHEVENTS: "WithEvents"i
+OPTIONAL: "Optional"i
+PARAMARRAY: "ParamArray"i
+PRESERVE: "Preserve"i
+SPC: "Spc"i
+TAB: "Tab"i
+THEN: "Then"i
+TO: "To"i
 
-DATE: "Date"
-ME: "Me"
+DATE: "Date"i
+ME: "Me"i
 
-BOOLEAN: "Boolean"
-BYTE: "Byte"
-CURRENCY: "Currency"
-DOUBLE: "Double"
-INTEGER_KW: "Integer"
-LONG: "Long"
-LONGLONG: "LongLong"
-LONGPTR: "LongPtr"
-SINGLE: "Single"
-STRING_KW: "String"
-VARIANT: "Variant"
-FOREIGN_VARIANT: "[Variant]"
+BOOLEAN: "Boolean"i
+BYTE: "Byte"i
+CURRENCY: "Currency"i
+DOUBLE: "Double"i
+INTEGER_KW: "Integer"i
+LONG: "Long"i
+LONGLONG: "LongLong"i
+LONGPTR: "LongPtr"i
+SINGLE: "Single"i
+STRING_KW: "String"i
+VARIANT: "Variant"i
+FOREIGN_VARIANT: "[Variant]"i
 
-TRUE: "True"
-FALSE: "False"
-NOTHING: "Nothing"
-EMPTY: "Empty"
-NULL: "Null"
+TRUE: "True"i
+FALSE: "False"i
+NOTHING: "Nothing"i
+EMPTY: "Empty"i
+NULL: "Null"i
 
-ATTRIBUTE:  "Attribute"
-LINEINPUT:  "LINEINPUT"
-VB_BASE:  "VB_Base"
-VB_CONTROL:  "VB_Control"
-VB_CREATABLE:  "VB_Creatable"
-VB_CUSTOMIZABLE:  "VB_Customizable"
-VB_DESCRIPTION:  "VB_Description"
-VB_EXPOSED:  "VB_Exposed"
-VB_EXT_KEY:  "VB_Ext_KEY"
-VB_GLOBALNAMESPACE:  "VB_GlobalNameSpace"
-VB_HELPID:  "VB_HelpID"
-VB_INVOKE_FUNC:  "VB_Invoke_Func"
-VB_INVOKE_PROPERTY:  "VB_Invoke_Property "
-VB_INVOKE_PROPERTYPUT:  "VB_Invoke_PropertyPut"
-VB_INVOKE_PROPERTYPUTREF:  "VB_Invoke_PropertyPutRef"
-VB_MEMBERFLAGS: "VB_MemberFlags"
-VB_NAME:  "VB_Name"
-VB_PREDECLAREDID:  "VB_PredeclaredId"
-VB_PROCDATA:  "VB_ProcData"
-VB_TEMPLATEDERIVED:  "VB_TemplateDerived"
-VB_USERMEMID:  "VB_UserMemId"
-VB_VARDESCRIPTION:  "VB_VarDescription"
-VB_VARHELPID:  "VB_VarHelpID"
-VB_VARMEMBERFLAGS:  "VB_VarMemberFlags"
-VB_VARPROCDATA:  "VB_VarProcData "
-VB_VARUSERMEMID:  "VB_VarUserMemId"
+ATTRIBUTE:  "Attribute"i
+LINEINPUT:  "LINEINPUT"i
+VB_BASE:  "VB_Base"i
+VB_CONTROL:  "VB_Control"i
+VB_CREATABLE:  "VB_Creatable"i
+VB_CUSTOMIZABLE:  "VB_Customizable"i
+VB_DESCRIPTION:  "VB_Description"i
+VB_EXPOSED:  "VB_Exposed"i
+VB_EXT_KEY:  "VB_Ext_KEY"i
+VB_GLOBALNAMESPACE:  "VB_GlobalNameSpace"i
+VB_HELPID:  "VB_HelpID"i
+VB_INVOKE_FUNC:  "VB_Invoke_Func"i
+VB_INVOKE_PROPERTY:  "VB_Invoke_Property "i
+VB_INVOKE_PROPERTYPUT:  "VB_Invoke_PropertyPut"i
+VB_INVOKE_PROPERTYPUTREF:  "VB_Invoke_PropertyPutRef"i
+VB_MEMBERFLAGS: "VB_MemberFlags"i
+VB_NAME:  "VB_Name"i
+VB_PREDECLAREDID:  "VB_PredeclaredId"i
+VB_PROCDATA:  "VB_ProcData"i
+VB_TEMPLATEDERIVED:  "VB_TemplateDerived"i
+VB_USERMEMID:  "VB_UserMemId"i
+VB_VARDESCRIPTION:  "VB_VarDescription"i
+VB_VARHELPID:  "VB_VarHelpID"i
+VB_VARMEMBERFLAGS:  "VB_VarMemberFlags"i
+VB_VARPROCDATA:  "VB_VarProcData "i
+VB_VARUSERMEMID:  "VB_VarUserMemId"i
 
-ALIAS: "Alias"
-BASE: "Base"
-BINARY: "Binary"
-CLASS_INITIALIZE: "Class_Initialize"
-CLASS_TERMINATE: "Class_Terminate"
-COMPARE: "Compare"
-ERROR: "Error"
-EXPLICIT: "Explicit"
-LIB: "Lib"
-MODULE: "Module"
-OBJECT: "object" | "[object]"
-PROPERTY: "Property"
-PTRSAFE: "PtrSafe"
-TEXT: "Text"
+ALIAS: "Alias"i
+BASE: "Base"i
+BINARY: "Binary"i
+CLASS_INITIALIZE: "Class_Initialize"i
+CLASS_TERMINATE: "Class_Terminate"i
+COMPARE: "Compare"i
+ERROR: "Error"i
+EXPLICIT: "Explicit"i
+LIB: "Lib"i
+MODULE: "Module"i
+OBJECT: "object"i | "[object]"i
+PROPERTY: "Property"i
+PTRSAFE: "PtrSafe"i
+TEXT: "Text"i
 
 
 //////////////////////////////////  RULES   ////////////////////////////////////
