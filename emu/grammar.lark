@@ -577,9 +577,9 @@ lifecycle_handler_name: CLASS_INITIALIZE | CLASS_TERMINATE
 
 // 5.4 Procedure bodies and statements
 
-procedure_body: statement_block
+procedure_body: procedure_body eos block_statement
+              | block_statement
 
-statement_block: statement_list{block_statement} eos
 block_statement: statement_label_definition
                | rem_statement
                | statement
