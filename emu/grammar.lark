@@ -310,15 +310,16 @@ TEXT: "Text"i
 // Logical Line Grammar //
 //////////////////////////
 
-ws: WSCS [ws_line_continuation]
-ws_line_continuation: WSCS LINE_CONTINUATION+
+ws: WSCS
+  | ws_line_continuation
+ws_line_continuation: WSCS (LINE_CONTINUATION WSCS)+
 
 ////////////////////////////
 // Lexical Tokens Grammar //
 ////////////////////////////
 
 // Separators
-eol: [ws] (comment | LINE_TERMINATOR)
+eol: [ws] (comment | LINE_TERMINATOR) [ws]
 eos: (WSC* COLON | eol)+
 eof: [ws] [last_comment | LINE_TERMINATOR]
 comment: SINGLE_QUOTE COMMENT_BODY LINE_TERMINATOR
@@ -327,7 +328,7 @@ last_comment: SINGLE_QUOTE COMMENT_BODY [LINE_TERMINATOR]
 
 // Identifiers
 identifier: LEXICAL_IDENTIFIER // TODO: Verify that we don't care if it's reserved or not
-
+                               // TODO: add RT case insensitivity
 
 literal_identifier: boolean_literal_identifier
                   | object_literal_identifier
