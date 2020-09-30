@@ -514,8 +514,6 @@ event_declaration: [PUBLIC ws] EVENT ws identifier [ws event_parameter_list]
 event_parameter_list: LPAREN ws [positional_parameters] ws RPAREN
 
 // 5.3 Code section
-// procedural_module_code_section: statement_block // TODO Remove
-// class_module_code_section: statement_block // TODO Remove
 
 procedural_module_code_section: statement_list{procedural_module_code_element}
 class_module_code_section: statement_list{class_module_code_element}
@@ -764,12 +762,12 @@ l_expression: instance_expression
             | index_expression
             | dictionary_access_expression
             | with_expression
-            | simple_name_expression
 
 simple_name_expression: name // Restricted name
 instance_expression: ME
 member_access_expression: l_expression DOT name // Unrestricted name
                         | l_expression ws_line_continuation DOT name // Unrestricted name
+                        | simple_name_expression
 index_expression: l_expression ws LPAREN ws argument_list ws RPAREN
 
 argument_list: [positional_argument_list | mixed_argument_list]
@@ -798,7 +796,7 @@ variable_expression: l_expression // TODO: add static semantic
 bound_variable_expression: l_expression // TODO: add static semantic
 type_expression: builtin_type
                // | defined_type_expression
-defined_type_expression: "member_access_expression" // TODO: unquote
+defined_type_expression: member_access_expression // TODO: unquote
 addressof_expression: ADDRESSOF ws procedure_pointer_expression
 procedure_pointer_expression: member_access_expression
                             | simple_name_expression // TODO unquote
@@ -807,4 +805,4 @@ procedure_pointer_expression: member_access_expression
 // Bancale //
 /////////////
 
-statement_list{repeated_statement}: WSC* (repeated_statement eos+)*  repeated_statement
+statement_list{repeated_statement}: repeated_statement (eos+ repeated_statement)*
