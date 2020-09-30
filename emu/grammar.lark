@@ -296,6 +296,10 @@ COMPARE: "Compare"i
 ERROR: "Error"i
 EXPLICIT: "Explicit"i
 LIB: "Lib"i
+MID: "Mid"
+MIDB: "MidB"
+MIDD: "Mid$"
+MIDBD: "MidB$"
 MODULE: "Module"i
 OBJECT: "object"i | "[object]"i
 PROPERTY: "Property"i
@@ -651,23 +655,44 @@ data_manipulation_statement: local_variable_declaration
                            | static_variable_declaration
                            | local_const_declaration
                            | redim_statement
+                           | erase_statement
                            | mid_statement
-                           | rset_statement
                            | lset_statement
+                           | rset_statement
                            | let_statement
                            | set_statement
 
+local_variable_declaration: DIM ws [SHARED ws] variable_declaration_list
+static_variable_declaration: STATIC ws variable_declaration_list
+local_const_declaration: const_declaration
 
-// TODO define all of them
-local_variable_declaration: "local_variable"
-static_variable_declaration: "static_variable"
-local_const_declaration: "local_const"
-redim_statement: "redim"
-mid_statement: "mid"
-rset_statement: "rset"
-lset_statement: "lset"
-let_statement: "let"
-set_statement: "set"
+redim_statement: REDIM ws PRESERVE ws redim_declaration_list
+redim_declaration_list: redim_variable_dcl (COMMA ws redim_variable_dcl)*
+redim_variable_dcl: redim_typed_variable_dcl
+                  | redim_untyped_dcl
+redim_typed_variable_dcl: typed_name ws dynamic_array_dim
+redim_untyped_dcl: untyped_name ws dynamic_array_clause
+dynamic_array_dim: LPAREN ws dynamic_bounds_list ws RPAREN
+dynamic_bounds_list: dynamic_dim_spec (ws COMMA ws dynamic_dim_spec)*
+dynamic_dim_spec: [dynamic_lower_bound ws] dynamic_upper_bound
+dynamic_lower_bound: integer_expression ws TO
+dynamic_upper_bound: integer_expression
+dynamic_array_clause: dynamic_array_dim [ws as_clause]
+
+erase_statement: ERASE ws erase_list
+erase_list: erase_element (ws COMMA ws erase_element)*
+erase_element: l_expression
+
+mid_statement: mode_specifier ws LPAREN ws string_argument ws COMMA ws start [ws COMMA ws length] ws RPAREN ws EQ ws expression
+mode_specifier: MID | MIDB | MIDD | MIDBD
+string_argument: bound_variable_expression
+start: integer_expression
+length: integer_expression
+
+lset_statement: LSET ws bound_variable_expression ws EQ ws expression
+rset_statement: RSET ws bound_variable_expression ws EQ ws expression
+let_statement: LET ws l_expression ws EQ ws expression // TODO: Allow not to use Let
+set_statement: SET ws l_expression ws EQ ws expression
 
 
 // 5.4.4 Error handling statements
