@@ -287,7 +287,9 @@ VB_VARMEMBERFLAGS:  "VB_VarMemberFlags"i
 VB_VARPROCDATA:  "VB_VarProcData "i
 VB_VARUSERMEMID:  "VB_VarUserMemId"i
 
+ACCESS: "Access"i
 ALIAS: "Alias"i
+APPEND: "Append"i
 BASE: "Base"i
 BINARY: "Binary"i
 CLASS_INITIALIZE: "Class_Initialize"i
@@ -295,16 +297,23 @@ CLASS_TERMINATE: "Class_Terminate"i
 COMPARE: "Compare"i
 ERROR: "Error"i
 EXPLICIT: "Explicit"i
+LEN: "Len"i
 LIB: "Lib"i
-MID: "Mid"
-MIDB: "MidB"
-MIDD: "Mid$"
-MIDBD: "MidB$"
+LINE: "Line"i
+MID: "Mid"i
+MIDB: "MidB"i
+MIDD: "Mid$"i
+MIDBD: "MidB$"i
 MODULE: "Module"i
 OBJECT: "object"i | "[object]"i
+OUTPUT: "Output"i
 PROPERTY: "Property"i
 PTRSAFE: "PtrSafe"i
+RANDOM: "Random"i
+READ: "Read"i
+RESET: "Reset"i
 TEXT: "Text"i
+WIDTH: "Width"i
 
 
 //////////////////////////////////  RULES   ////////////////////////////////////
@@ -684,7 +693,10 @@ erase_list: erase_element (ws COMMA ws erase_element)*
 erase_element: l_expression
 
 mid_statement: mode_specifier ws LPAREN ws string_argument ws COMMA ws start [ws COMMA ws length] ws RPAREN ws EQ ws expression
-mode_specifier: MID | MIDB | MIDD | MIDBD
+mode_specifier: MID
+              | MIDB
+              | MIDD
+              | MIDBD
 string_argument: bound_variable_expression
 start: integer_expression
 length: integer_expression
@@ -712,23 +724,88 @@ error_number: integer_expression
 
 // 5.4.5 File statements
 
-file_statement: open_statement | close_statement | seek_statement
-              | lock_statement | unlock_statement | line_input_statement
-              | width_statement | write_statement | input_statement
-              | put_statement | get_statement
+file_statement: open_statement
+              | close_statement
+              | seek_statement
+              | lock_statement
+              | unlock_statement
+              | line_input_statement
+              | width_statement
+              | write_statement
+              | input_statement
+              | print_statement
+              | put_statement
+              | get_statement
 
 
-open_statement: "open"
-close_statement: "close"
-seek_statement: "seek"
-lock_statement: "lock"
-unlock_statement: "unlock"
-line_input_statement: "line_input"
-width_statement: "width"
-write_statement: "write"
-input_statement: "nput"
-put_statement: "put"
-get_statement: "get"
+open_statement: OPEN ws path_name ws [mode_clause ws] [access_clause ws] [lock ws] AS ws file_number [ws len_clause]
+path_name: expression
+mode_clause: FOR ws mode
+mode: APPEND
+    | BINARY
+    | INPUT
+    | OUTPUT
+    | RANDOM
+access_clause: ACCESS ws access
+access: READ
+      | WRITE
+      | READ ws WRITE
+lock: SHARED
+    | LOCK ws READ
+    | LOCK ws WRITE
+    | LOCK ws READ ws WRITE
+len_clause: LEN ws EQ ws rec_length
+rec_length: expression
+file_number: marked_file_number
+           | unmarked_file_number
+marked_file_number: SHARP ws expression
+unmarked_file_number: expression
+
+close_statement: RESET
+               | CLOSE [ws file_number_list]
+file_number_list: file_number (ws COMMA ws file_number)*
+
+seek_statement: SEEK ws file_number ws COMMA position
+position: expression
+
+lock_statement: LOCK ws file_number [ws COMMA ws record_range]
+unlock_statement: UNLOCK ws file_number [ws COMMA ws record_range]
+record_range: start_record_number
+            | [start_record_number ws] TO ws end_record_number
+start_record_number: expression
+end_record_number: expression
+
+line_input_statement: LINE ws INPUT ws marked_file_number ws COMMA ws variable_name
+variable_name: variable_expression
+
+width_statement: WIDTH ws marked_file_number ws COMMA ws line_width
+line_width: expression
+
+print_statement: PRINT ws marked_file_number ws COMMA [ws output_list]
+
+output_list: output_item*
+output_item: output_clause [char_position]
+           | char_position
+output_clause: spc_clause
+             | tab_clause
+             | output_expression
+char_position: SEMICOLON
+             | COMMA
+output_expression: expression
+spc_clause: SPC ws LPAREN ws spc_number ws RPAREN
+spc_number: expression
+tab_clause: TAB [ws tab_number_clause]
+tab_number_clause: LPAREN ws tab_number ws RPAREN
+tab_number: expression
+
+write_statement: WRITE ws marked_file_number ws COMMA [ws output_list]
+
+input_statement: INPUT ws marked_file_number ws COMMA ws input_list
+input_list: input_variable (ws COMMA ws input_variable)*
+input_variable: bound_variable_expression
+
+put_statement: PUT ws file_number ws COMMA [ws expression ws COMMA] ws expression
+get_statement: GET ws file_number ws COMMA [ws expression ws COMMA] ws expression // TODO: check that is a variable_expression
 
 // 5.6 Expressions
 
