@@ -455,13 +455,13 @@ as_clause: as_auto_object
          | as_type
 
 withevents_variable_dcl: WITHEVENTS ws identifier ws AS ws class_type_name
-class_type_name: defined_type_expression
+class_type_name: "defined_type_expression"
 
 array_dim: LPAREN [ws bounds_list ws] RPAREN
 bounds_list: dim_spec *(ws COMMA ws dim_spec)
 dim_spec: [constant_expression ws TO ws] constant_expression
 
-as_auto_object: AS ws NEW ws class_type_name
+as_auto_object: AS ws NEW ws "class_type_name"
 as_type: AS ws type_spec
 type_spec: fixed_length_string_spec
          | type_expression
@@ -508,7 +508,7 @@ alias_clause: ALIAS ws STRING
 
 // Class module declaration
 
-implements_directive: IMPLEMENTS ws class_type_name
+implements_directive: IMPLEMENTS ws "class_type_name"
 
 event_declaration: [PUBLIC ws] EVENT ws identifier [ws event_parameter_list]
 event_parameter_list: LPAREN ws [positional_parameters] ws RPAREN
@@ -626,13 +626,13 @@ if_statement: IF
 call_statement: CALL
 while_statement: WHILE
 for_statement: FOR
-exit_for_statement: EXIT ws FOR
+exit_for_statement: EXIT ws FOR // TODO: Check that it is inside a For or ForEach
 do_statement: DO
-exit_do_statement: EXIT DO
+exit_do_statement: EXIT ws DO // TODO: Check that it is inside a Do
 single_line_if_statement: IF IF
 select_case_statement: SELECT CASE
 stop_statement: STOP
-goto_statement: GOTO
+goto_statement: (GOTO | GO ws TO) statement_label // TODO: check statement_label unicity
 on_goto_statement: ON GOTO
 gosub_statement: GOSUB
 return_statement: RETURN
@@ -658,6 +658,7 @@ data_manipulation_statement: local_variable_declaration
                            | set_statement
 
 
+// TODO define all of them
 local_variable_declaration: "local_variable"
 static_variable_declaration: "static_variable"
 local_const_declaration: "local_const"
