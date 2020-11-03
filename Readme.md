@@ -115,18 +115,26 @@ Python 3.8 is used, and SpuriousEmu mainly relies on [PyParsing](https://github.
 
 [nose](https://nose.readthedocs.io/en/latest/man.html) is used as testing framework, and [mypy](http://mypy-lang.org/) to perform static code analysis. `lxml` and `coverage` are used to produce test reports.
 
-## Tests
+## Development
 
-To set a development environment up, use `poetry`:
+
+[tox](https://tox.readthedocs.io/en/latest/) is used to run the tests on different Python environments, using in turn [Poetry](https://python-poetry.org/) to generate the testing virtual environments. To set the development environment up, run
 
 ```bash
+pip install tox poetry
 poetry install
 ```
 
-Then, use nose to run the test suite:
+You can run the test suite against a single Python version using
 
 ```bash
-poetry run nosetests
+poetry run nosetest
+```
+
+You can then run the full test suite (i.e. test with all the Python versions, and run various checks afterwards) using
+
+```bash
+tox
 ```
 
 All test files are in `tests`, including:
@@ -138,7 +146,7 @@ All test files are in `tests`, including:
 You can use mypy to perform code static analysis:
 
 ```bash
-poetry run mypy emu/*.py
+poetry run mypy emu
 ```
 
 Both commands produce HTML reports stored in `tests/report`.
