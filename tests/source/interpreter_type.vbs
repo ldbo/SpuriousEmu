@@ -1,1 +1,0 @@
-syntax_type.vbs
