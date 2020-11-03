@@ -143,6 +143,19 @@ version = "0.6.2"
 
 [[package]]
 category = "dev"
+description = "gitchangelog generates a changelog thanks to git log."
+name = "gitchangelog"
+optional = false
+python-versions = "*"
+version = "3.0.4"
+
+[package.extras]
+Mako = ["mako"]
+Mustache = ["pystache"]
+test = ["mako", "minimock", "nose", "pystache"]
+
+[[package]]
+category = "dev"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -318,7 +331,7 @@ wcwidth = "*"
 [[package]]
 category = "dev"
 description = "Run a subprocess in a pseudo terminal"
-marker = "python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\""
+marker = "python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\" or python_version >= \"3.4\" and sys_platform != \"win32\" and (python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\")"
 name = "ptyprocess"
 optional = false
 python-versions = "*"
@@ -331,6 +344,14 @@ name = "pygments"
 optional = false
 python-versions = ">=3.5"
 version = "2.7.2"
+
+[[package]]
+category = "dev"
+description = "Mustache for Python"
+name = "pystache"
+optional = false
+python-versions = "*"
+version = "0.5.4"
 
 [[package]]
 category = "dev"
@@ -428,7 +449,7 @@ python-versions = "*"
 version = "0.2.5"
 
 [metadata]
-content-hash = "8a26b00d59c97c35c780f0f6e7f1d933f3036b5b5407d3b3d8af6f45a23ddf81"
+content-hash = "62483dbc801683631c836468be584678f4a7b4cbdf4dc496294b897588e3557e"
 lock-version = "1.0"
 python-versions = "^3.6"
 
@@ -519,6 +540,10 @@ decorator = [
 ]
 docopt = [
     {file = "docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"},
+]
+gitchangelog = [
+    {file = "gitchangelog-3.0.4-py2.py3-none-any.whl", hash = "sha256:45f8b8e64cece0d9bb03a35ecd8ee62c1c7157f8dac0ef3cb68381bfcc1bde29"},
+    {file = "gitchangelog-3.0.4.tar.gz", hash = "sha256:3d8d6a730450fbd5b0a9bc58d0dd3e269c967d7eb4fece0c5cff4372a3f77421"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -630,6 +655,9 @@ ptyprocess = [
 pygments = [
     {file = "Pygments-2.7.2-py3-none-any.whl", hash = "sha256:88a0bbcd659fcb9573703957c6b9cff9fab7295e6e76db54c9d00ae42df32773"},
     {file = "Pygments-2.7.2.tar.gz", hash = "sha256:381985fcc551eb9d37c52088a32914e00517e57f4a21609f48141ba08e193fa0"},
+]
+pystache = [
+    {file = "pystache-0.5.4.tar.gz", hash = "sha256:f7bbc265fb957b4d6c7c042b336563179444ab313fb93a719759111eabd3b85a"},
 ]
 regex = [
     {file = "regex-2020.10.28-cp27-cp27m-win32.whl", hash = "sha256:4b5a9bcb56cc146c3932c648603b24514447eafa6ce9295234767bf92f69b504"},
