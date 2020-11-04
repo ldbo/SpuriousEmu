@@ -6,3 +6,6 @@ spurious_emu.egg-info
 .tox/
 .coverage
 tests/report/
+
+# Documentation
+docs/build
