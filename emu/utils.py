@@ -1,4 +1,6 @@
+from abc import abstractmethod
 from dataclasses import dataclass
+from typing import Generic, TypeVar
 
 
 @dataclass
@@ -120,3 +122,64 @@ class FilePosition:
             start_column,
             end_column,
         )
+
+
+T = TypeVar("T")  #: Output type of the Visitor DP algorithm
+
+
+class Visitable:
+    """Base class for Visitable classes, must simply be inherited."""
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    def accept(self, visitor: "Visitor[T]") -> T:
+        """
+        Method called by a visiting visitor, should not be overriden.
+
+        Raises:
+          :py:exc:`NotImplementedError`: If the visitor does not implement the
+                                         expected ``visit_`` method
+        """
+        assert isinstance(visitor, Visitor)
+
+        visiter = "visit_" + type(self).__qualname__.replace(".", "_")
+        try:
+            visiter_function = getattr(visitor, visiter)
+        except AttributeError:
+            msg = (
+                f"Visitor {type(visitor).__qualname__} doesn't handle "
+                + f"Visitable type {type(self).__qualname__}"
+            )
+            raise NotImplementedError(msg)
+
+        return visiter_function(self)
+
+
+class Visitor(Generic[T]):
+    """
+    Base class for Visitor classes. For a subclass to be able to handle the
+    :py:class:`Visitable` type ``U``, it must implement a method
+    ``visit_U(self, visitable : U) -> T``. Then, to apply the algorithm to a
+    :py:class:`Visitable` object ``u``, simply call ``visitor.visit(u)``. Use
+    the class argument ``T`` to specify the output type of the ``visit_``
+    methods.
+    """
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    def visit(self, visitable: Visitable) -> T:
+        """
+        Returns:
+          The output of the algorithm in ``visit_U``
+
+        Raises:
+          :py:exc:`NotImplementedError`: If the ``visit_U`` method is not
+                                         implemented
+        """
+        assert isinstance(visitable, Visitable)
+
+        return visitable.accept(self)
