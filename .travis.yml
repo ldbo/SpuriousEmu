@@ -20,12 +20,12 @@ cache: pip
 before_install:
   - pip install poetry
 install:
-  - pip install tox-travis
+  - pip install tox-travis coveralls
 script:
   - tox
 
 after_success:
-  - poetry run coveralls
+  - coveralls
 
 before_deploy:
   - poetry config --local pypi-token.pypi $PYPI_TOKEN
