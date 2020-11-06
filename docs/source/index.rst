@@ -112,3 +112,20 @@ Disclaimer
 ----------
 
 SpuriousEmu was initially started during an internship at the *NATO Cyber Security Centre* during the summer of 2020, and is now developped on my spare time. It is highly experimental, so you may expect it to fail on most real-life samples.
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   features
+   philosophy
+   testing
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: API reference
+
+   genindex
+   lexer_parser
+   utils_errors
