@@ -128,4 +128,5 @@ SpuriousEmu was initially started during an internship at the *NATO Cyber Securi
 
    genindex
    lexer_parser
+   data
    utils_errors
