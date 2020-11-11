@@ -1,0 +1,742 @@
+[
+  {
+    "TYPE": "Operation",
+    "operands": [
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Name",
+            "name": "b"
+          },
+          {
+            "TYPE": "ParenExpr",
+            "expr": {
+              "TYPE": "Operation",
+              "operands": [
+                {
+                  "TYPE": "Name",
+                  "name": "c"
+                },
+                {
+                  "TYPE": "Name",
+                  "name": "ab"
+                }
+              ],
+              "operator": {
+                "TYPE": "Operator",
+                "op": "<Type.PLUS>"
+              }
+            }
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.MULT>"
+        }
+      },
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "c"
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.UNARY_MINUS>"
+        }
+      }
+    ],
+    "operator": {
+      "TYPE": "Operator",
+      "op": "<Type.PLUS>"
+    }
+  },
+  {
+    "TYPE": "Operation",
+    "operands": [
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "a"
+              },
+              {
+                "TYPE": "MemberAccess",
+                "expr": {
+                  "TYPE": "MemberAccess",
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "b"
+                  },
+                  "field": {
+                    "TYPE": "Name",
+                    "name": "c"
+                  }
+                },
+                "field": {
+                  "TYPE": "Name",
+                  "name": "d"
+                }
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.EXP>"
+            }
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.UNARY_MINUS>"
+        }
+      },
+      {
+        "TYPE": "Name",
+        "name": "Me"
+      }
+    ],
+    "operator": {
+      "TYPE": "Operator",
+      "op": "<Type.PLUS>"
+    }
+  },
+  {
+    "TYPE": "ParenExpr",
+    "expr": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "MemberAccess",
+                    "expr": {
+                      "TYPE": "MemberAccess",
+                      "expr": {
+                        "TYPE": "Name",
+                        "name": "a"
+                      },
+                      "field": {
+                        "TYPE": "Name",
+                        "name": "b"
+                      }
+                    },
+                    "field": {
+                      "TYPE": "Name",
+                      "name": "c"
+                    }
+                  },
+                  {
+                    "TYPE": "Literal",
+                    "variable": {
+                      "TYPE": "Variable",
+                      "declared_type": "Integer",
+                      "value": {
+                        "TYPE": "Integer",
+                        "value": 5
+                      }
+                    }
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.PLUS>"
+                }
+              },
+              {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 12
+                  }
+                }
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.MINUS>"
+            }
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Name",
+            "name": "b"
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Name",
+            "name": "c"
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Name",
+            "name": "d"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "TYPE": "ArgList",
+    "args": [
+      {
+        "TYPE": "Arg",
+        "addressof": false,
+        "byval": false,
+        "expr": {
+          "TYPE": "ParenExpr",
+          "expr": {
+            "TYPE": "Name",
+            "name": "a"
+          }
+        }
+      },
+      {
+        "TYPE": "Arg",
+        "addressof": false,
+        "byval": false,
+        "expr": {
+          "TYPE": "ParenExpr",
+          "expr": {
+            "TYPE": "Name",
+            "name": "b"
+          }
+        }
+      },
+      {
+        "TYPE": "Arg",
+        "addressof": false,
+        "byval": false,
+        "expr": {
+          "TYPE": "ParenExpr",
+          "expr": {
+            "TYPE": "Name",
+            "name": "c"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "TYPE": "ArgList",
+    "args": [
+      {
+        "TYPE": "Arg",
+        "addressof": false,
+        "byval": false,
+        "expr": {
+          "TYPE": "Name",
+          "name": "a"
+        }
+      },
+      {
+        "TYPE": "Arg",
+        "addressof": false,
+        "byval": false,
+        "expr": {
+          "TYPE": "Name",
+          "name": "b"
+        }
+      }
+    ]
+  },
+  {
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 1
+              }
+            }
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 2
+              }
+            }
+          }
+        }
+      ]
+    },
+    "expr": {
+      "TYPE": "Name",
+      "name": "a"
+    }
+  },
+  {
+    "TYPE": "DictAccess",
+    "expr": {
+      "TYPE": "DictAccess",
+      "expr": {
+        "TYPE": "DictAccess",
+        "expr": {
+          "TYPE": "Name",
+          "name": "a"
+        },
+        "field": {
+          "TYPE": "Name",
+          "name": "d"
+        }
+      },
+      "field": {
+        "TYPE": "Name",
+        "name": "b"
+      }
+    },
+    "field": {
+      "TYPE": "Name",
+      "name": "eb"
+    }
+  },
+  {
+    "TYPE": "MemberAccess",
+    "expr": {
+      "TYPE": "IndexExpr",
+      "args": {
+        "TYPE": "ArgList",
+        "args": [
+          {
+            "TYPE": "Arg",
+            "addressof": false,
+            "byval": false,
+            "expr": {
+              "TYPE": "Name",
+              "name": "arg1"
+            }
+          },
+          {
+            "TYPE": "Arg",
+            "addressof": false,
+            "byval": false,
+            "expr": {
+              "TYPE": "Name",
+              "name": "arg2"
+            }
+          }
+        ]
+      },
+      "expr": {
+        "TYPE": "Name",
+        "name": "a"
+      }
+    },
+    "field": {
+      "TYPE": "Name",
+      "name": "b"
+    }
+  },
+  {
+    "TYPE": "Operation",
+    "operands": [
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "b"
+              },
+              {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "Name",
+                    "name": "c"
+                  },
+                  {
+                    "TYPE": "Name",
+                    "name": "d"
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.EXP>"
+                }
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.MULT>"
+            }
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.PLUS>"
+        }
+      },
+      {
+        "TYPE": "Name",
+        "name": "e"
+      }
+    ],
+    "operator": {
+      "TYPE": "Operator",
+      "op": "<Type.AND>"
+    }
+  },
+  {
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Name",
+            "name": "b"
+          }
+        }
+      ]
+    },
+    "expr": {
+      "TYPE": "ParenExpr",
+      "expr": {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Name",
+            "name": "b"
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.PLUS>"
+        }
+      }
+    }
+  },
+  {
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Name",
+            "name": "c"
+          }
+        }
+      ]
+    },
+    "expr": {
+      "TYPE": "MemberAccess",
+      "expr": {
+        "TYPE": "Name",
+        "name": "a"
+      },
+      "field": {
+        "TYPE": "Name",
+        "name": "b"
+      }
+    }
+  },
+  {
+    "TYPE": "MemberAccess",
+    "expr": {
+      "TYPE": "IndexExpr",
+      "args": {
+        "TYPE": "ArgList",
+        "args": [
+          {
+            "TYPE": "Arg",
+            "addressof": false,
+            "byval": false,
+            "expr": {
+              "TYPE": "Name",
+              "name": "b"
+            }
+          }
+        ]
+      },
+      "expr": {
+        "TYPE": "Name",
+        "name": "a"
+      }
+    },
+    "field": {
+      "TYPE": "Name",
+      "name": "c"
+    }
+  },
+  {
+    "TYPE": "Operation",
+    "operands": [
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Name",
+            "name": "b"
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.PLUS>"
+        }
+      },
+      {
+        "TYPE": "Name",
+        "name": "c"
+      }
+    ],
+    "operator": {
+      "TYPE": "Operator",
+      "op": "<Type.MINUS>"
+    }
+  },
+  {
+    "TYPE": "Operation",
+    "operands": [
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Name",
+            "name": "b"
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.EXP>"
+        }
+      }
+    ],
+    "operator": {
+      "TYPE": "Operator",
+      "op": "<Type.UNARY_MINUS>"
+    }
+  },
+  {
+    "TYPE": "Operation",
+    "operands": [
+      {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.UNARY_MINUS>"
+        }
+      },
+      {
+        "TYPE": "Name",
+        "name": "b"
+      }
+    ],
+    "operator": {
+      "TYPE": "Operator",
+      "op": "<Type.MULT>"
+    }
+  },
+  {
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": []
+    },
+    "expr": {
+      "TYPE": "Name",
+      "name": "f"
+    }
+  },
+  {
+    "TYPE": "MemberAccess",
+    "expr": {
+      "TYPE": "IndexExpr",
+      "args": {
+        "TYPE": "ArgList",
+        "args": []
+      },
+      "expr": {
+        "TYPE": "MemberAccess",
+        "expr": {
+          "TYPE": "IndexExpr",
+          "args": {
+            "TYPE": "ArgList",
+            "args": []
+          },
+          "expr": {
+            "TYPE": "Name",
+            "name": "a"
+          }
+        },
+        "field": {
+          "TYPE": "Name",
+          "name": "b"
+        }
+      }
+    },
+    "field": {
+      "TYPE": "Name",
+      "name": "c"
+    }
+  },
+  {
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "b"
+              },
+              {
+                "TYPE": "Name",
+                "name": "c"
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.PLUS>"
+            }
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "d"
+              },
+              {
+                "TYPE": "Name",
+                "name": "e"
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.PLUS>"
+            }
+          }
+        }
+      ]
+    },
+    "expr": {
+      "TYPE": "MemberAccess",
+      "expr": {
+        "TYPE": "Name",
+        "name": "a"
+      },
+      "field": {
+        "TYPE": "Name",
+        "name": "f"
+      }
+    }
+  },
+  {
+    "TYPE": "ParenExpr",
+    "expr": {
+      "TYPE": "Name",
+      "name": "a"
+    }
+  },
+  {
+    "TYPE": "ParenExpr",
+    "expr": {
+      "TYPE": "ParenExpr",
+      "expr": {
+        "TYPE": "ParenExpr",
+        "expr": {
+          "TYPE": "ParenExpr",
+          "expr": {
+            "TYPE": "Name",
+            "name": "a"
+          }
+        }
+      }
+    }
+  }
+]

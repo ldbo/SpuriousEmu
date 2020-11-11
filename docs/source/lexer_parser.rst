@@ -3,7 +3,7 @@ Lexer and parser
 
 SpuriousEmu now [#]_ relies on a hand-written two-pass lexer and a recursive
 descent parser, which provide a good compromise between runtime speed and
-development time, and allow an easy handling of errors.
+development time, and allows an easy handling of errors.
 
 
 Lexer
@@ -25,6 +25,32 @@ keywords in the VBA language.
    :members:
 
 .. autoclass:: emu.lexer.Token
+   :no-members:
+
+.. autoclass:: emu.lexer::Token.Category
+
+
+Parser
+^^^^^^
+
+The parser is based on hybrid approach:
+
+  - it is mainly using a handwritten recursive descent algorithm, for its ease
+    of development. Indeed, it allows to easily translate LL grammar to code,
+    while being tweakable.
+  - However, this is not really adapted to expressions parsing, where an
+    operator precedence parser is way faster and leads to a shorter code.
+    Additionally, this allows to overcome Python recursion limit. That is why
+    expressions are parsed using a modified version of the Shunting-Yard
+    algorithm.
+
+The :class:`emu.parser.Parser` class is used to build an annotated
+:class:`Abstract Syntax Tree <emu.abstract_syntax_tree.AST>`
+
+.. autoclass:: emu.parser.Parser
+   :members: parse
+
+.. autoclass:: emu.abstract_syntax_tree.AST
    :members:
 
 
@@ -32,9 +58,10 @@ keywords in the VBA language.
        SpuriousEmu, namely:
 
         - first a PEG parser generated with
-          `PyParsing <https://github.com/pyparsing/pyparsing>`_, which was easy to
-          maintain but too slow for VBA;
-        - then an LALR parser thanks to `Lark <https://github.com/lark-parser/lark>`_,
-          which was faster but required too much development time to be efficient.
+          `PyParsing <https://github.com/pyparsing/pyparsing>`_, which was easy
+          to maintain but too slow for VBA;
+        - then an LALR parser thanks to
+          `Lark <https://github.com/lark-parser/lark>`_, which was faster but
+          required too much development time to be efficient.
 
 
