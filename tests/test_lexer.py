@@ -1,10 +1,10 @@
-from .test import load_source, assert_result
+from nose.tools import assert_equals, assert_false, assert_raises, raises
 
 from emu.error import LexerError
 from emu.lexer import Lexer
 from emu.utils import to_dict
 
-from nose.tools import assert_equals, assert_false, assert_raises, raises
+from .test import assert_result, load_source
 
 CODE = load_source("lexer.vbs")
 
@@ -97,6 +97,42 @@ def test_pop():
     lexer = Lexer(CODE)
     tokens = list(lexer.tokens())
     assert_equals(tokens, poped_tokens)
+
+
+def test_backtracking():
+    """lexer: backtracking"""
+    lexer = Lexer("t1 t2 t3 t4")
+
+    with assert_raises(RuntimeError):
+        lexer.backtrack()
+
+    with assert_raises(RuntimeError):
+        lexer.dump_backtracking_point()
+
+    lexer.save_backtracking_point()
+    [lexer.pop_token(), lexer.pop_token()]
+    lexer.dump_backtracking_point()
+
+    lexer.save_backtracking_point()
+    tokens_2 = [lexer.pop_token(), lexer.pop_token()]
+
+    lexer.save_backtracking_point()
+    tokens_3 = [lexer.pop_token(), lexer.pop_token()]
+
+    lexer.save_backtracking_point()
+    tokens_4 = list(lexer.tokens())
+
+    lexer.backtrack()
+    tokens_4_b = list(lexer.tokens())
+    lexer.dump_backtracking_point()
+
+    lexer.backtrack()
+    tokens_234_b = list(lexer.tokens())
+
+    assert_equals(tokens_2, ["t2", " "])
+    assert_equals(tokens_3, ["t3", " "])
+    assert_equals(tokens_4_b, tokens_4)
+    assert_equals(tokens_234_b, tokens_2 + tokens_3 + tokens_4)
 
 
 @raises(LexerError)

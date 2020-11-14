@@ -1,19 +1,102 @@
-from typing import Callable, Iterable, Optional, Tuple
+from functools import wraps
+from typing import (
+    Callable,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
-from .abstract_syntax_tree import *
-from .data import *
+from .abstract_syntax_tree import (
+    AST,
+    Arg,
+    ArgList,
+    DictAccess,
+    Expr,
+    IndexExpr,
+    Literal,
+    MemberAccess,
+    Name,
+    Operation,
+    Operator,
+    ParenExpr,
+    WithDictAccess,
+    WithMemberAccess,
+)
+from .data import (
+    Boolean,
+    Currency,
+    Double,
+    Empty,
+    Integer,
+    Long,
+    LongLong,
+    Null,
+    ObjectReference,
+    Single,
+    String,
+    Value,
+    Variable,
+)
 from .error import ParserError
 from .lexer import Lexer, Token
-
+from .utils import FilePosition
 
 _TC = Token.Category
 _OT = Operator.Type
+_T = TypeVar("_T")
+_Rule = Callable[["Parser"], _T]  #: Type of a parsing rule
+
+
+def _with_backtracking(rule: _Rule) -> _Rule:
+    """
+    Decorator allowing to have a backtrack-enabled rule: if it fails, the lexer
+    state remains unchanged. Should be used as little as possible, ie. only
+    when using lookaheads is not an acceptable solution.
+
+    Todo:
+      * Improve typehint to `Optional[_T]` where T is a `Type[AST]`
+    """
+
+    @wraps(rule)
+    def wrapper(self: "Parser") -> _T:
+        lexer = self._Parser__lexer  # type: ignore [attr-defined]
+        # See https://github.com/python/mypy/issues/8267
+        lexer.save_backtracking_point()
+
+        try:
+            result = rule(self)
+        except ParserError:
+            lexer.backtrack()
+            raise
+
+        if result is None:
+            lexer.backtrack()
+        else:
+            lexer.dump_backtracking_point()
+
+        return result
+
+    return wrapper
 
 
 class Parser:
     """
     VBA hybrid parser, based on a recursive descent for most of the grammar,
     except for expressions which are parsed using an operator precedence parser.
+
+    Rules and terminals are parsed using recursive methods which must conform
+    to the following interface:
+
+      - don't accept any argument
+      - if parsing is successful, return an instance of a subclass of
+        :class:`AST`, and the lexer must be reading the token following the
+        last token of the rule or terminal
+      - if parsing fails, return ``None``, and lexer must be reading the first
+        token of the rule or terminal
 
     Args:
       lexer: Lexer used as a token source by the parser
@@ -157,8 +240,14 @@ class Parser:
     def __pop_token(self) -> Token:
         return self.__lexer.pop_token()
 
+    def __pop_tokens(self, number: int) -> Tuple[Token, ...]:
+        return tuple(self.__pop_token() for _ in range(number))
+
     def __peek_token(self, distance: int = 0) -> Token:
         return self.__lexer.peek_token(distance)
+
+    def __peek_tokens(self, *distances: int) -> Tuple[Token, ...]:
+        return tuple(self.__peek_token(distance) for distance in distances)
 
     def __category_match(self, category: _TC, distance: int = 0) -> bool:
         """
@@ -173,6 +262,12 @@ class Parser:
           :py:exc:`IndexError`: If ``distance < 0``
         """
         return self.__peek_token(distance).category == category
+
+    def __category_matches(self, category: _TC, *distances: int) -> bool:
+        return all(
+            token.category == category
+            for token in self.__peek_tokens(*distances)
+        )
 
     def __categories_match(
         self, categories: Iterable[_TC], distance: int = 0
@@ -207,6 +302,9 @@ class Parser:
 
     # Rules
 
+    # Expression
+
+    @_with_backtracking
     def expression(self) -> Optional[Expr]:
         """Expression parser using the Shunting-Yard algorithm"""
         # Operator stack, is never empty until parsing is done, which is

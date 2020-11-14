@@ -1,9 +1,8 @@
+import re
 from collections import deque
 from enum import Enum
 from hashlib import md5
 from typing import Callable, Deque, Generator, List, Set, Tuple, Union
-
-import re
 
 from .error import LexerError
 from .utils import FilePosition
@@ -179,7 +178,7 @@ TOKEN_REGEXS: Tuple[Tuple[str, _TC], ...] = (
     (r"([0-9]+|&[o]?[0-7]+|&[h][0-9a-fA-F]+)[%&\^]?", _TC.INTEGER),
     (r'"([^"]|"")*"', _TC.STRING),
     (
-        r"(,|\.|!|\?|#|\(|\)|\[|]|:|;|%|&|\^|@|\$|:=|\+|-|\*|/|\\|"
+        r"(,|\.|!|\?|#|\(|\)|\[|]|;|%|&|\^|@|\$|:=|\+|-|\*|/|\\|"
         r"<=|=<|>=|=>|<|>|=|<>|><)",
         _TC.SYMBOL,
     ),
@@ -404,39 +403,46 @@ SYMBOL_OPERATORS = {
 
 class Lexer:
     """
-    Two-pass VBA lexer.
+    Two-pass VBA lexer with arbitrary distance lookahead and backtracking
+    support.
 
     Args:
       - stream: Input file
       - stream_name: Name of the file, replaced by the md5 sum of its content
                      if empty
-
-    Todo:
-      - Hide internal attributes
     """
 
-    stream: str
-    stream_name: str
-    next_tokens: Deque[Token]
-    last_token: Token
-    token_start: int
-    index: int
-    line: int
-    column: int
+    __stream: str  #: Content of the input stream, constant
+    __stream_name: str  #: Name of the input stream, constant
+    __next_tokens: Deque[Token]
+    """Next tokens to be popped, used as a buffer for lookaheads"""
+    __last_token: Token  #: Last parsed token, unused for now
+    __index: int
+    """Current reading position, which is ahead of the position of the next
+    token to be popped because of lookaheads buffering"""
+    __line: int  #: Current reading line
+    __column: int  #: Current reading column
+    __backtrackings: List[List[Token]]
+    """The last element contains the last tokens that have been returned by
+    pop_token after the last call to save_backtracking_point. The concatenation
+    of the lists contains all the tokens that can be backtracked to. If it is
+    empty, no backtracking is active."""
+
+    # API
 
     def __init__(self, stream: str, stream_name: str = "") -> None:
-        self.stream = stream
-        self.stream_name = stream_name
+        self.__stream = stream
+        self.__stream_name = stream_name
         if stream_name == "":
-            self.stream_name = md5(stream.encode("utf8")).hexdigest()
+            self.__stream_name = md5(stream.encode("utf8")).hexdigest()
 
-        self.next_tokens = deque()
+        self.__next_tokens = deque()
         last_position = FilePosition(stream_name, stream, 0, 0, 1, 1, 0, 1)
-        self.last_token = Token("", _TC.START_OF_FILE, last_position)
-        self.token_start = 0
-        self.index = 0
-        self.line = 1
-        self.column = 1
+        self.__last_token = Token("", _TC.START_OF_FILE, last_position)
+        self.__index = 0
+        self.__line = 1
+        self.__column = 1
+        self.__backtrackings = []
 
     def tokens(self) -> Generator[Token, None, None]:
         """
@@ -464,10 +470,15 @@ class Lexer:
         Raises:
           :py:exc:`LexerError`: If the next token is malformed
         """
-        if len(self.next_tokens) == 0:
+        if len(self.__next_tokens) == 0:
             self.__second_pass()
 
-        return self.next_tokens.popleft()
+        return_token = self.__next_tokens.popleft()
+
+        if self.__backtrackings != []:
+            self.__backtrackings[-1].append(return_token)
+
+        return return_token
 
     def peek_token(self, distance: int = 0) -> Token:
         """
@@ -488,15 +499,58 @@ class Lexer:
         if distance < 0:
             raise IndexError("Can't peek a token at a negative distance.")
 
-        while len(self.next_tokens) < distance + 1:
+        while len(self.__next_tokens) < distance + 1:
             self.__second_pass()
 
-        return self.next_tokens[distance]
+        return self.__next_tokens[distance]
+
+    def save_backtracking_point(self) -> None:
+        """
+        Save the current input stream position for backtracking, allowing to
+        come back to it later with :fun:`backtrack`. Supports nested calls
+        for multiple-depth backtracking.
+        """
+        self.__backtrackings.append([])
+
+    def backtrack(self) -> None:
+        """
+        Come back to the last position saved with
+        :fun:`save_backtracking_point`, typically called when parsing was not
+        possible.
+
+        Raises:
+          :exc:`RuntimeError`: If there is no backtracking level available.
+        """
+        if self.__backtrackings == []:
+            msg = "No backtracking point saved to restore the lexer state to"
+            raise RuntimeError(msg)
+
+        self.__next_tokens.extendleft(self.__backtrackings[-1][::-1])
+        self.__backtrackings.pop()
+
+    def dump_backtracking_point(self) -> None:
+        """
+        Dump one level of backtracking, typically called when parsing was
+        successful.
+
+        Raises:
+          :exc:`RuntimeError`: If there is no backtracking level available.
+        """
+        if self.__backtrackings == []:
+            msg = "No backtracking level to dump"
+            raise RuntimeError(msg)
+
+        if len(self.__backtrackings) == 1:
+            self.__backtrackings.pop()
+        else:
+            self.__backtrackings[-2].extend(self.__backtrackings.pop())
+
+    # Internals
 
     def __second_pass(self) -> None:
         """
         Set the correct category of the current token output by
-        ``__first_pass.``, and update :py:attr:`self.next_tokens`, adding one
+        ``__first_pass.``, and update :py:attr:`self.__next_tokens`, adding one
         or two tokens.
 
         Raises:
@@ -518,22 +572,22 @@ class Lexer:
                 next_token = self.__first_pass()
                 if next_token == "$":
                     token = token + next_token  # type: ignore [assignment]
-                    self.next_tokens.append(token)
+                    self.__next_tokens.append(token)
                 else:
-                    self.next_tokens.append(token)
-                    self.next_tokens.append(next_token)
+                    self.__next_tokens.append(token)
+                    self.__next_tokens.append(next_token)
                 return
             else:
                 token.category = _TC.KEYWORD
         elif token.category == _TC.SYMBOL and token in SYMBOL_OPERATORS:
             token.category = _TC.OPERATOR
 
-        self.next_tokens.append(token)
+        self.__next_tokens.append(token)
 
     def __first_pass(self) -> Token:
         """
         Try the different regex-based scanners found in _TOKEN_SCANNERS until
-        one of them succeeds in scanning the stream at ``self.index``.
+        one of them succeeds in scanning the stream at ``self.__index``.
 
         Returns:
           The first matched token, using the category of the associated
@@ -545,37 +599,42 @@ class Lexer:
         for scan, category in _TOKEN_SCANNERS:
             try:
                 # This first line may raise a RuntimeError
-                end_index = scan(self.stream, self.index)
+                end_index = scan(self.__stream, self.__index)
 
                 position = FilePosition.from_indices(
-                    self.stream_name,
-                    self.stream,
-                    self.index,
+                    self.__stream_name,
+                    self.__stream,
+                    self.__index,
                     end_index,
-                    self.line,
-                    self.column,
+                    self.__line,
+                    self.__column,
                 )
                 token = Token(
-                    self.stream[self.index : end_index], category, position
+                    self.__stream[self.__index : end_index], category, position
                 )
-                self.index = position.end_index
-                self.line = position.end_line
+                self.__index = position.end_index
+                self.__line = position.end_line
                 if token == "" or token[-1] not in position.IEOLS:
-                    self.column = position.end_column
+                    self.__column = position.end_column
                 else:
-                    self.column = 1
+                    self.__column = 1
                 return token
             except RuntimeError:
                 continue
 
-        name = self.stream_name
-        stream = self.stream
-        start_index = self.index
+        name = self.__stream_name
+        stream = self.__stream
+        start_index = self.__index
         end_index = start_index + 1
-        start_line = self.line
-        start_column = self.column
+        start_line = self.__line
+        start_column = self.__column
         position = FilePosition.from_indices(
-            name, stream, start_index, end_index, start_line, start_column,
+            name,
+            stream,
+            start_index,
+            end_index,
+            start_line,
+            start_column,
         )
 
         raise LexerError("Can't scan this line", position)
