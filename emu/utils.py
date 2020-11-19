@@ -201,6 +201,50 @@ class FilePosition:
             end_column,
         )
 
+    def __sub__(self, position: "FilePosition") -> "FilePosition":
+        """
+        Returns:
+          The position starting at ``self`` start and ending just before the
+          start of ``position``.
+
+        Raises:
+          :py:exc:`RuntimeError`: If the two positions are not in the same file,
+                                  or if ``position`` is before ``self``
+        """
+        if self.is_virtual():
+            return position
+        elif position.is_virtual():
+            return self
+
+        if self.file_name != position.file_name:
+            msg = "Can't add positions that are not in the same file"
+            raise RuntimeError(msg)
+
+        if self.start_index > position.start_index:
+            msg = "position1 - position2 needs position1 before position2"
+
+        file_name = self.file_name
+        file_content = self.file_content
+        start_index = self.start_index
+        end_index = position.start_index
+        start_column = self.start_column
+        end_column = position.start_column
+        start_line = self.start_line
+        end_line = position.start_line
+
+        return FilePosition(
+            file_name,
+            file_content,
+            start_index,
+            end_index,
+            start_line,
+            end_line,
+            start_column,
+            end_column,
+        )
+
+
+VIRTUAL_POSITION = FilePosition.build_virtual()
 
 T = TypeVar("T")  #: Output type of the Visitor DP algorithm
 

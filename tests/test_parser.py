@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from nose.tools import assert_equals, assert_raises
 
 from emu.abstract_syntax_tree import Literal, Name
@@ -112,9 +110,6 @@ def test_statements():
     Get #4,,FileBuffer
     Get #1, Position, MyRecord
     """
-    # code = """
-    # Print #2, "Zone 1"; Tab Tab(12 + 13); Hey
-    # """
     lexer = Lexer(code)
 
     parser = Parser(lexer)
@@ -122,18 +117,17 @@ def test_statements():
     print()
     block = parser.statement_block()
 
-    for statement in block.statements:
-        print(statement.position.body())
-        pprint(to_dict(statement, excluded_fields={"position"}))
-        print()
-
     if lexer.peek_token().category != lexer.peek_token().Category.END_OF_FILE:
+        from pprint import pprint
+
         import ipdb
 
+        for statement in block.statements:
+            print(statement.position.body())
+            pprint(to_dict(statement, excluded_fields={"position"}))
+            print()
+
         ipdb.set_trace()
-    # pprint(to_dict(block, excluded_fields={"position"}))
-    # print(''.join(lexer.tokens()))
-    # import ipdb; ipdb.set_trace()
 
 
 def test_string():

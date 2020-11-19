@@ -62,7 +62,7 @@ from .data import (
 )
 from .error import ParserError
 from .lexer import Lexer, Token
-from .utils import FilePosition
+from .utils import VIRTUAL_POSITION, FilePosition
 
 _TC = Token.Category
 _OT = Operator.Type
@@ -81,7 +81,7 @@ def _with_backtracking(rule: _Rule) -> _Rule:
     """
 
     @wraps(rule)
-    def wrapper(self: "Parser") -> _T:
+    def backtracking_wrapper(self: "Parser") -> _T:
         lexer = self._Parser__lexer  # type: ignore [attr-defined]
         # See https://github.com/python/mypy/issues/8267
         lexer.save_backtracking_point()
@@ -99,7 +99,38 @@ def _with_backtracking(rule: _Rule) -> _Rule:
 
         return result
 
-    return wrapper
+    return backtracking_wrapper
+
+
+def _add_rule_position(rule: _Rule) -> _Rule:
+    """
+    Decorator adding position information to a rule: if it returns not ``None``,
+    it replaces the node position with the position range starting at the first
+    parsed token and stopping before the first non-parsed one.
+    """
+
+    @wraps(rule)
+    def position_wrapper(self: "Parser") -> _T:
+        lexer = self._Parser__lexer  # type: ignore [attr-defined]
+        start_position = lexer.peek_token().position
+
+        try:
+            node = rule(self)
+        except ParserError:
+            raise
+
+        if node is None:
+            return node  # type: ignore [return-value]
+
+        end_position = lexer.peek_token().position
+        new_position = start_position - end_position
+
+        # This is the only place you are allowed to do that !
+        object.__setattr__(node, "position", new_position)
+
+        return node
+
+    return position_wrapper
 
 
 class Parser:
@@ -339,7 +370,7 @@ class Parser:
     # Expression
 
     @_with_backtracking
-    def expression(self) -> Optional[Expression]:  # TODO handle errors
+    def expression(self) -> Optional[Expression]:
         """Expression parser using the Shunting-Yard algorithm"""
         # Operator stack, is never empty until parsing is done, which is
         # obtained by surrounding the expression in parentheses
@@ -350,7 +381,12 @@ class Parser:
         self.__index_expressions = 0
         self.__paren_expressions = 0
 
-        self.__expression_shunting_yard(operators, operands)
+        try:
+            self.__expression_shunting_yard(operators, operands)
+        except Exception as e:
+            msg = "Encountered an unexpected exception during expression "
+            msg += f"parsing: {e}"
+            raise self.__craft_error(msg)
 
         self.__last_operatorand = None
 
@@ -662,6 +698,7 @@ class Parser:
     # Statements (individual statements do not include the END_OF_STATEMENT
     # token)
 
+    @_add_rule_position
     def statement_block(self) -> Optional[StatementBlock]:
         ok = True
         statements = []
@@ -673,12 +710,7 @@ class Parser:
             else:
                 statements.append(statement)
 
-        if statements == []:
-            position = self.__peek_token().position
-        else:
-            position = statements[0].position + statements[-1].position
-
-        return StatementBlock(position, tuple(statements))
+        return StatementBlock(VIRTUAL_POSITION, tuple(statements))
 
     def block_statement(self) -> Optional[Statement]:  # TODO
         return self.__try_rules(self.statement)  # type: ignore
@@ -702,9 +734,9 @@ class Parser:
             self.on_error, self.resume, self.error_statement
         )
 
+    @_add_rule_position
     @_with_backtracking
     def on_error(self) -> Optional[OnError]:
-        start_position = self.__peek_token().position
         if not self.__pop_tokens(4)[::2] == ("On", "Error"):
             return None
 
@@ -712,7 +744,7 @@ class Parser:
         if action == "Resume":
             if self.__peek_token() == "Next":
                 label = None
-                end_position = self.__pop_token().position
+                self.__pop_token()
             else:
                 msg = "On Error Resume statement must be followed by Next"
                 position = self.__pop_token().position
@@ -723,23 +755,22 @@ class Parser:
                 msg = "On Error Goto must be followed by a literal or a name"
                 position = self.__peek_token().position
                 raise ParserError(msg, position)
-
-            end_position = label.position
         else:
             return None
 
-        return OnError(start_position + end_position, label)
+        return OnError(VIRTUAL_POSITION, label)
 
+    @_add_rule_position
     @_with_backtracking
     def resume(self) -> Optional[Resume]:
-        if self.__peek_token() == "Resume":
-            start_position = self.__pop_tokens(2)[0].position
-        else:
+        if self.__peek_token() != "Resume":
             return None
+
+        self.__pop_tokens(2)
 
         if self.__peek_token() == "Next":
             label = None
-            end_position = self.__pop_token().position
+            self.__pop_token()
         else:
             label = self.statement_label()
             if label is None:
@@ -748,23 +779,22 @@ class Parser:
                 position = self.__peek_token().position
                 raise ParserError(msg, position)
 
-            end_position = label.position
+        return Resume(VIRTUAL_POSITION, label)
 
-        return Resume(start_position + end_position, label)
-
+    @_add_rule_position
     @_with_backtracking
     def error_statement(self) -> Optional[Error]:
-        if self.__peek_token() == "Error":
-            start_position = self.__pop_tokens(2)[0].position
-        else:
+        if self.__peek_token() != "Error":
             return None
+
+        self.__pop_tokens(2)
 
         error_number = self.integer_expression()
         if error_number is None:
             msg = "Error statement must be followed by an integer expression"
             raise self.__craft_error(msg)
 
-        return Error(start_position + error_number.position, error_number)
+        return Error(VIRTUAL_POSITION, error_number)
 
     # File statements
     def file_statement(self) -> Optional[Union[Open, Close]]:
@@ -783,12 +813,13 @@ class Parser:
             self.get,
         )
 
+    @_add_rule_position
     @_with_backtracking
     def open(self) -> Optional[Open]:
-        if self.__peek_token() == "Open":
-            start_position = self.__pop_tokens(2)[0].position
-        else:
+        if self.__peek_token() != "Open":
             return None
+
+        self.__pop_tokens(2)
 
         try:
             path_name = self.expression()
@@ -814,13 +845,8 @@ class Parser:
 
         length = self.__length_clause()
 
-        if length is not None:
-            end_position = length.position
-        else:
-            end_position = file_number.position
-
         return Open(
-            start_position + end_position,
+            VIRTUAL_POSITION,
             path_name,
             file_number,
             mode,
@@ -947,30 +973,27 @@ class Parser:
 
         return tuple(numbers)
 
+    @_add_rule_position
     @_with_backtracking
     def close(self) -> Optional[Close]:
         if self.__peek_token() == "Reset":
-            position = self.__pop_token().position
+            self.__pop_token()
             file_numbers = None
         elif self.__peek_token() == "Close":
-            position_start = self.__pop_token().position
+            self.__pop_token()
             file_numbers = self.__file_number_list()
-
-            if len(file_numbers) > 0:
-                position = position_start + file_numbers[-1].position
-            else:
-                position = position_start
         else:
             return None
 
-        return Close(position, file_numbers)
+        return Close(VIRTUAL_POSITION, file_numbers)
 
+    @_add_rule_position
     @_with_backtracking
     def seek(self) -> Optional[Seek]:
         if self.__peek_token() != "Seek":
             return None
-        else:
-            start_position = self.__pop_tokens(2)[0].position
+
+        self.__pop_tokens(2)
 
         file_number = self.file_number()
 
@@ -983,9 +1006,7 @@ class Parser:
         if seek_position is None:
             raise self.__craft_error("Seek statement needs valid position")
 
-        return Seek(
-            start_position + seek_position.position, file_number, seek_position
-        )
+        return Seek(VIRTUAL_POSITION, file_number, seek_position)
 
     def __lock_unlock(self, lock: bool) -> Optional[Union[Lock, Unlock]]:
         node_type: Union[Type[Lock], Type[Unlock]]
@@ -996,8 +1017,8 @@ class Parser:
 
         if self.__peek_token() != keyword:
             return None
-        else:
-            start_position = self.__pop_tokens(2)[0].position
+
+        self.__pop_tokens(2)
 
         file_number = self.file_number()
         if file_number is None:
@@ -1020,38 +1041,37 @@ class Parser:
                 if end_record_number is None:
                     msg = keyword + " statement needs a valid end record number"
                     raise self.__craft_error(msg)
-                else:
-                    end_position = end_record_number.position
             else:
-                end_position = start_record_number.position
                 end_record_number = None
         else:
             start_record_number = None
             end_record_number = None
-            end_position = file_number.position
 
         assert node_type in (Lock, Unlock)
         return node_type(  # type: ignore [call-arg]
-            start_position + end_position,
+            VIRTUAL_POSITION,
             file_number,
             start_record_number,
             end_record_number,
         )
 
+    @_add_rule_position
     @_with_backtracking
     def lock(self) -> Optional[Lock]:
         return self.__lock_unlock(lock=True)  # type: ignore [return-value]
 
+    @_add_rule_position
     @_with_backtracking
     def unlock(self) -> Optional[Unlock]:
         return self.__lock_unlock(lock=False)  # type: ignore [return-value]
 
+    @_add_rule_position
     @_with_backtracking
     def line_input(self) -> Optional[LineInput]:
         if self.__peek_tokens(0, 2) != ("Line", "Input"):
             return None
 
-        start_position = self.__pop_tokens(4)[0].position
+        self.__pop_tokens(4)
         file_number = self.file_number()
         if file_number is None:
             raise self.__craft_error("Line Input statement needs file number")
@@ -1063,17 +1083,18 @@ class Parser:
             raise self.__craft_error("Line Input statement needs variable name")
 
         return LineInput(
-            start_position + variable_name.position,
+            VIRTUAL_POSITION,
             file_number,
             variable_name,
         )
 
+    @_add_rule_position
     @_with_backtracking
     def width(self) -> Optional[Width]:
         if self.__peek_token() != "Width":
             return None
 
-        start_position = self.__pop_tokens(2)[0].position
+        self.__pop_tokens(2)
         file_number = self.file_number()
         if file_number is None:
             raise self.__craft_error("Line Input statement needs file number")
@@ -1085,11 +1106,12 @@ class Parser:
             raise self.__craft_error("Line Input statement needs variable name")
 
         return Width(
-            start_position + line_width.position,
+            VIRTUAL_POSITION,
             file_number,
             line_width,
         )
 
+    @_add_rule_position
     @_with_backtracking
     def output_item(self) -> Optional[OutputItem]:
         clause_title = None
@@ -1099,7 +1121,6 @@ class Parser:
         if self.__category_match(_TC.BLANK):
             self.__pop_token()
 
-        position = self.__peek_token().position
         if self.__peek_token() in (",", ";"):
             char_position = {
                 ",": OutputItem.CharPosition.COMMA,
@@ -1109,7 +1130,6 @@ class Parser:
             clause_title, clause_argument = self.__output_clause()
 
             if self.__peek_token() in (",", ";"):
-                position = position + self.__peek_token().position
                 char_position = {
                     ",": OutputItem.CharPosition.COMMA,
                     ";": OutputItem.CharPosition.SEMICOLON,
@@ -1125,7 +1145,7 @@ class Parser:
             char_position = OutputItem.CharPosition.SEMICOLON
 
         return OutputItem(
-            position, clause_title, clause_argument, char_position
+            VIRTUAL_POSITION, clause_title, clause_argument, char_position
         )
 
     def __output_clause(
@@ -1201,18 +1221,18 @@ class Parser:
         if self.__peek_token() != keyword:
             return None
 
-        start_position = self.__pop_tokens(2)[0].position
+        self.__pop_tokens(2)
+
         file_number = self.file_number()
         if file_number is None:
             raise self.__craft_error(keyword + " statement needs a file number")
         if self.__peek_token() != ",":
             msg = keyword + " statement needs an output list"
             raise self.__craft_error(msg)
-        position = start_position + self.__pop_token().position
+
+        self.__pop_token()
 
         output_list = self.__output_list()
-        if len(output_list) > 1:
-            position = position + output_list[-1].position
 
         if len(output_list) == 0 and write:
             output_list = (
@@ -1226,22 +1246,25 @@ class Parser:
                 ),
             )
 
-        return node_type(position, file_number, output_list)
+        return node_type(VIRTUAL_POSITION, file_number, output_list)
 
+    @_add_rule_position
     @_with_backtracking
     def print(self) -> Optional[Write]:
         return self.__write_print(write=False)  # type: ignore [return-value]
 
+    @_add_rule_position
     @_with_backtracking
     def write(self) -> Optional[Write]:
         return self.__write_print(write=True)  # type: ignore [return-value]
 
+    @_add_rule_position
     @_with_backtracking
     def input(self) -> Optional[Input]:
         if not self.__peek_token() == "Input":
             return None
 
-        start_position = self.__pop_tokens(2)[0].position
+        self.__pop_tokens(2)
         file_number = self.file_number()
         if file_number is None:
             raise self.__craft_error("Input statement needs valid file number")
@@ -1262,7 +1285,7 @@ class Parser:
             self.__pop_token()
 
         return Input(
-            start_position + input_list[-1].position,
+            VIRTUAL_POSITION,
             file_number,
             tuple(input_list),
         )
@@ -1273,7 +1296,7 @@ class Parser:
         if not self.__peek_token() == name:
             return None
 
-        start_position = self.__pop_tokens(2)[0].position
+        self.__pop_tokens(2)
         file_number = self.file_number()
         if file_number is None:
             msg = f"{name} statement needs a valid file number"
@@ -1296,16 +1319,18 @@ class Parser:
                 raise self.__craft_error("Get statement needs a variable")
 
         return node_type(  # type: ignore [return-value]
-            start_position + data_variable.position,
+            VIRTUAL_POSITION,
             file_number,
             record_number,
             data_variable,
         )
 
+    @_add_rule_position
     @_with_backtracking
     def put(self) -> Optional[Put]:
         return self.__put_get(put=True)  # type: ignore [return-value]
 
+    @_add_rule_position
     @_with_backtracking
     def get(self) -> Optional[Get]:
         return self.__put_get(put=False)  # type: ignore [return-value]
