@@ -47,11 +47,11 @@ The parser is based on hybrid approach:
 The :class:`emu.parser.Parser` class is used to build an annotated
 :class:`Abstract Syntax Tree <emu.abstract_syntax_tree.AST>`
 
-.. autoclass:: emu.parser.Parser
-   :members: parse
-
 .. autoclass:: emu.abstract_syntax_tree.AST
    :members:
+
+.. autoclass:: emu.parser.Parser
+   :members: parse
 
 
 .. [#] Different kind of parsers have been used throughout the development of

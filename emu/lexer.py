@@ -507,7 +507,7 @@ class Lexer:
     def save_backtracking_point(self) -> None:
         """
         Save the current input stream position for backtracking, allowing to
-        come back to it later with :fun:`backtrack`. Supports nested calls
+        come back to it later with :func:`backtrack`. Supports nested calls
         for multiple-depth backtracking.
         """
         self.__backtrackings.append([])
@@ -515,7 +515,7 @@ class Lexer:
     def backtrack(self) -> None:
         """
         Come back to the last position saved with
-        :fun:`save_backtracking_point`, typically called when parsing was not
+        :func:`save_backtracking_point`, typically called when parsing was not
         possible.
 
         Raises:

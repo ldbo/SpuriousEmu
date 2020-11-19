@@ -1,16 +1,22 @@
-from dataclasses import dataclass, field, InitVar
+from dataclasses import InitVar, dataclass, field
 from enum import Enum
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 from .data import Variable
 from .lexer import Token
-from .utils import Visitable, FilePosition
+from .utils import FilePosition, Visitable
 
 
 @dataclass(frozen=True)
 class AST(Visitable):
     """
-    Base class of the nodes of the abstract syntax tree. It conforms to the
+    Base class of the nodes of the abstract syntax tree. It contains most of the
+    static semantic of VBA, but doesn't necessarily lexicographically represent
+    it. For example, whether a for loop ends with ``Next`` or ``Next i`` is not
+    stored in it. However, this can be retrieved using the :attr:`position`
+    field.
+
+    It conforms to the
     Visitable interface, which is the main way it is processed. Thus, this is a
     pure data class, which does not perform any processing.
 
@@ -21,7 +27,9 @@ class AST(Visitable):
 
     token_ast_or_position: InitVar[Union[Token, FilePosition, "AST"]]
     position: FilePosition = field(init=False, repr=False)
-    """Position of the node in the source code"""
+    """Position of the node in the source code, can be a real or a virtual
+    position. A virtual one means that the node was added during the
+    analysis."""
 
     def __post_init__(
         self, token_ast_or_position: Union[Token, FilePosition]
@@ -35,71 +43,66 @@ class AST(Visitable):
             raise TypeError(msg)
 
 
-@dataclass(frozen=True)
-class Block(AST):
-    stmts: Tuple[AST]
-
-
-# Primary expressions
+# Expressions
 
 
 @dataclass(frozen=True)
-class Expr(AST):
+class Expression(AST):
     pass
 
 
 @dataclass(frozen=True)
-class ParenExpr(Expr):
-    expr: Expr
+class ParenExpr(Expression):
+    expr: Expression
 
 
 @dataclass(frozen=True)
-class Literal(Expr):
+class Literal(Expression):
     variable: Variable
 
 
 @dataclass(frozen=True)
-class Name(Expr):
+class Name(Expression):
     name: str
 
 
 @dataclass(frozen=True)
-class DictAccess(Expr):
-    expr: Expr
+class DictAccess(Expression):
+    expr: Expression
     field: Name
 
 
 @dataclass(frozen=True)
-class MemberAccess(Expr):
-    expr: Expr
+class MemberAccess(Expression):
+    expr: Expression
     field: Name
 
 
 @dataclass(frozen=True)
-class WithDictAccess(Expr):
+class WithDictAccess(Expression):
     field: Name
 
 
 @dataclass(frozen=True)
-class WithMemberAccess(Expr):
+class WithMemberAccess(Expression):
     field: Name
 
 
 @dataclass(frozen=True)
 class Arg(AST):
-    expr: Expr
+    expr: Expression
     byval: bool = False
     addressof: bool = False
 
 
 @dataclass(frozen=True)
-class ArgList(Expr):
+class ArgList(Expression):
     args: Tuple[Arg, ...]
 
 
 @dataclass(frozen=True)
-class IndexExpr(Expr):
-    expr: Expr
+class IndexExpr(Expression):
+    expr: Expression
     args: ArgList
 
 
@@ -140,6 +143,164 @@ class Operator(AST):
 
 
 @dataclass(frozen=True)
-class Operation(Expr):
+class Operation(Expression):
     operator: Operator
-    operands: Tuple[Expr, ...]
+    operands: Tuple[Expression, ...]
+
+
+# Statements
+
+
+@dataclass(frozen=True)
+class Statement(AST):
+    pass
+
+
+StmtLabel = Union[Name, Literal]
+"""Type of a statement label, either a name or an integer literal"""
+
+
+# Error statements
+
+
+@dataclass(frozen=True)
+class OnError(Statement):
+    goto_label: Optional[StmtLabel] = None
+    """If ``None``, represent a ``On Error Resume Next`` statement, else a
+    ``On Error Goto ...``"""
+
+
+@dataclass(frozen=True)
+class Resume(Statement):
+    stmt_label: Optional[StmtLabel]
+    """If ``None``, represent a ``Resume Next`` statement, else a
+    ``Resume {label}``"""
+
+
+@dataclass(frozen=True)
+class Error(Statement):
+    error_number: Expression  #: Integer expression of the error
+
+
+# File statements
+
+
+@dataclass(frozen=True)
+class Open(Statement):
+    class Mode(Enum):
+        APPEND = 0
+        BINARY = 1
+        INPUT = 2
+        OUTPUT = 3
+        RANDOM = 4
+
+    class Access(Enum):
+        READ = 0
+        WRITE = 1
+        READ_WRITE = 2
+
+    class Lock(Enum):
+        SHARED = 1
+        LOCK_READ = 2
+        LOCK_WRITE = 3
+        LOCK_READ_WRITE = 4
+
+    path_name: Expression
+    file_number: Expression
+    mode: "Open.Mode"
+    access: "Open.Access"
+    lock: "Open.Lock"
+    length: Expression
+
+
+@dataclass(frozen=True)
+class Close(Statement):
+    file_numbers: Optional[Tuple[Expression, ...]]
+    """If ``None, corresponds to a Reset, else a Close [file-number-list]"""
+
+
+@dataclass(frozen=True)
+class Seek(Statement):
+    file_number: Expression
+    seek_position: Expression
+
+
+@dataclass(frozen=True)
+class Lock(Statement):
+    file_number: Expression
+    start_record_number: Expression
+    end_record_number: Optional[Expression]
+
+
+@dataclass(frozen=True)
+class Unlock(Statement):
+    file_number: Expression
+    start_record_number: Expression
+    end_record_number: Optional[Expression]
+
+
+@dataclass(frozen=True)
+class LineInput(Statement):
+    file_number: Expression
+    variable_name: Expression
+
+
+@dataclass(frozen=True)
+class Width(Statement):
+    file_number: Expression
+    line_width: Expression
+
+
+@dataclass(frozen=True)
+class OutputItem(AST):
+    class Clause(Enum):
+        SPC = 0
+        TAB = 1
+
+    class CharPosition(Enum):
+        SEMICOLON = 0
+        COMMA = 1
+
+    clause_title: Optional["OutputItem.Clause"]
+    clause_argument: Optional[Expression]
+    char_position: "OutputItem.CharPosition"
+
+
+@dataclass(frozen=True)
+class Print(Statement):
+    file_number: Expression
+    outputs: Tuple[OutputItem, ...]
+
+
+@dataclass(frozen=True)
+class Write(Statement):
+    file_number: Expression
+    outputs: Tuple[OutputItem, ...]
+
+
+@dataclass(frozen=True)
+class Input(Statement):
+    file_number: Expression
+    inputs: Tuple[Expression, ...]
+
+
+@dataclass(frozen=True)
+class Put(Statement):
+    file_number: Expression
+    record_number: Optional[Expression]
+    data: Expression
+
+
+@dataclass(frozen=True)
+class Get(Statement):
+    file_number: Expression
+    record_number: Optional[Expression]
+    variable: Optional[Expression]
+
+
+# Module level elements
+
+
+@dataclass(frozen=True)
+class StatementBlock(AST):
+    statements: Tuple[Statement, ...]

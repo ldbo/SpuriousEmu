@@ -1,13 +1,13 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Generic, Iterable, Optional, Set, TypeVar, cast
+from typing import Any, Dict, Generic, Optional, Set, TypeVar, cast
 
 
 @dataclass(frozen=True)
 class FilePosition:
     """
-    Position of a slice in a code chunk.
+    Position of a slice of text in a code chunk.
     """
 
     EXCLUDED = {"file_content"}
@@ -17,7 +17,10 @@ class FilePosition:
 
     file_name: str  #: Content of the whole file
     file_content: str  #: Name of the file
-    start_index: int  #: Start index in the file, starting at 0, inclusive
+    start_index: int
+    """Start index in the file, starting at 0, inclusive. If it is ``< 0``, the
+    position is virtual (useful for tokens that are added during parsing), in
+    which case all the other fields are not taken into account."""
     end_index: int
     """End index in the file, starting at 0, exclusive, must be
     ``>= start_index``"""
@@ -27,15 +30,24 @@ class FilePosition:
     end_column: int  #: End column, starting at 1, exclusive
 
     def __post_init__(self) -> None:
+        if self.start_index < 0:
+            return
+
         if not self.start_index <= self.end_index:
             msg = "Can't create a FilePosition with end_index < start_index"
             raise RuntimeError(msg)
+
+    def is_virtual(self):
+        return self.start_index < 0
 
     def start_of_line_index(self) -> int:
         """
         Returns:
           The index of the start of the first line of the position.
         """
+        if self.is_virtual():
+            return -1
+
         index = self.start_index
         while index > 0:
             if self.file_content[index] in self.IEOLS:
@@ -51,6 +63,9 @@ class FilePosition:
           The index of the character after the end of the last line of the
           position.
         """
+        if self.is_virtual():
+            return -1
+
         index = max(self.end_index - 1, self.start_index)
         while index < len(self.file_content):
             if self.file_content[index] in self.IEOLS:
@@ -73,13 +88,24 @@ class FilePosition:
         Returns:
           The text between :py:attr:`start_index` and :py:attr:`end_index`
         """
+        if self.is_virtual():
+            return ""
+
         return self.file_content[self.start_index : self.end_index]
 
     def lines(self) -> str:
         """Return the whole lines that contain the position"""
+        if self.is_virtual():
+            return ""
+
         end_index = self.end_of_line_index()
         start_index = self.start_of_line_index()
         return self.file_content[start_index:end_index]
+
+    @staticmethod
+    def build_virtual() -> "FilePosition":
+        """Return a virtual file position."""
+        return FilePosition("", "", -1, -1, -1, -1, -1, -1)
 
     @classmethod
     def from_indices(
@@ -134,6 +160,11 @@ class FilePosition:
         Raises:
           :py:exc:`RuntimeError`: If the two positions are not in the same file
         """
+        if self.is_virtual():
+            return position
+        elif position.is_virtual():
+            return self
+
         if self.file_name != position.file_name:
             msg = "Can't add positions that are not in the same file"
             raise RuntimeError(msg)

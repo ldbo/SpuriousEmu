@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from nose.tools import assert_equals, assert_raises
 
 from emu.abstract_syntax_tree import Literal, Name
@@ -19,14 +21,22 @@ from emu.utils import to_dict
 from .test import assert_result
 
 
+def test_api():
+    """parser: API"""
+    with assert_raises(RuntimeError):
+        lexer = Lexer("")
+        parser = Parser(lexer)
+        parser.parse("i_dont_exist")
+
+
 def test_expression():
     """parser: operator precedence parser"""
     codes = (
         "a * b * (c + ab) + -c",
         "- a ^ b.c.d + Me",
-        "(a.b.c + 5 - 12, b, c, d)",
-        "(a), (b), (c)",
-        "a, b",
+        "f(a.b.c + 5 - 12, b, c, d)",
+        "g((a), (b), (c))",
+        "h(a, b)",
         "a(1, 2)",
         "a!d!b!eb",
         "a(arg1, arg2).b",
@@ -59,12 +69,71 @@ def test_expression():
     assert_equals(None, parser.parse("expression"))
 
 
-def test_api():
-    """parser: API"""
-    with assert_raises(RuntimeError):
-        lexer = Lexer("")
-        parser = Parser(lexer)
-        parser.parse("i_dont_exist")
+def test_statements():
+    """parser: statements"""
+    code = """
+    On Error Goto abcd : On Error Resume Next
+    On Error Goto 123 :
+    Resume Next : Resume 12 : Resume abcd : Error abcd : Error 123
+    Open hey As 12
+    Open "hi my name is" For Binary Access Read Lock Read As (12 + "abcd") _
+    Len = 1
+    Open s Access Write Lock Read Write As f
+    Open s Access Read Write Lock Read As f
+    Open s Lock Write As #f
+    Open s Shared As # f
+    Open s As f Len=12
+    Open s As f Len = 15
+    Reset Close hey
+    Reset
+    Close abcd + 5, abcd(), efg
+    Close
+    Seek ab, 123 + 5
+    Lock c
+    Lock d, To b
+    Lock f, a To 12 + b
+    Unlock g, b
+    Line Input #123, ab
+    Width #145, abcd
+    Print #1,
+    Print #1, "This is a test"
+    Print #1, "Zone 1",Tab; "Zone 2"
+    Print #1, "Hello" ;" " , "World"
+    Print #1, Spc(5); "5 leading spaces "
+    Print #1, Tab(10) ; "Hello"
+    Write #1, "Hello World", 234
+    Write #1,
+    Write #1, MyBool ; " is a Boolean value"
+    Write #1, MyDate ; " is a date"
+    Write #1, MyNull ; " is a null value"
+    Write #1, MyError ; " is an error value"
+    Input #1, MyString, MyNumber
+    Put #1, RecordNumber, MyRecord
+    Get #4,,FileBuffer
+    Get #1, Position, MyRecord
+    """
+    # code = """
+    # Print #2, "Zone 1"; Tab Tab(12 + 13); Hey
+    # """
+    lexer = Lexer(code)
+
+    parser = Parser(lexer)
+
+    print()
+    block = parser.statement_block()
+
+    for statement in block.statements:
+        print(statement.position.body())
+        pprint(to_dict(statement, excluded_fields={"position"}))
+        print()
+
+    if lexer.peek_token().category != lexer.peek_token().Category.END_OF_FILE:
+        import ipdb
+
+        ipdb.set_trace()
+    # pprint(to_dict(block, excluded_fields={"position"}))
+    # print(''.join(lexer.tokens()))
+    # import ipdb; ipdb.set_trace()
 
 
 def test_string():

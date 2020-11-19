@@ -14,17 +14,36 @@ from .abstract_syntax_tree import (
     AST,
     Arg,
     ArgList,
+    Close,
     DictAccess,
-    Expr,
+    Error,
+    Expression,
+    Get,
     IndexExpr,
+    Input,
+    LineInput,
     Literal,
+    Lock,
     MemberAccess,
     Name,
+    OnError,
+    Open,
     Operation,
     Operator,
+    OutputItem,
     ParenExpr,
+    Print,
+    Put,
+    Resume,
+    Seek,
+    Statement,
+    StatementBlock,
+    StmtLabel,
+    Unlock,
+    Width,
     WithDictAccess,
     WithMemberAccess,
+    Write,
 )
 from .data import (
     Boolean,
@@ -97,6 +116,8 @@ class Parser:
         last token of the rule or terminal
       - if parsing fails, return ``None``, and lexer must be reading the first
         token of the rule or terminal
+      - if parsing fails because of a source code error, a ParserError must be
+        raised
 
     Args:
       lexer: Lexer used as a token source by the parser
@@ -111,9 +132,13 @@ class Parser:
     """Name of the source code, found by peeking at the first token"""
     __file_content: str  #: Source code, found by peeking at the first token
 
-    __last_operatorand: Optional[Union[Operator, Expr]]
+    __last_operatorand: Optional[Union[Operator, Expression]]
     """Hold the last expression token seen, either an operator or an operand.
     Is ``None`` when not parsing an expression."""
+    __index_expressions: int
+    """Only used during expression parsing, store the number of nested index
+    expressions"""
+    __paren_expressions: int
 
     __FLOAT_TYPES = {
         None: Double,
@@ -198,6 +223,8 @@ class Parser:
         self.__file_name = first_token.position.file_name
         self.__file_content = first_token.position.file_content
         self.__last_operatorand = None
+        self.__index_expressions = 0
+        self.__paren_expressions = 0
 
     def parse(self, rule: str) -> AST:
         """
@@ -292,6 +319,10 @@ class Parser:
         """
         Returns:
           The first non-``None`` return value of one of the rules, or ``None``.
+
+        Todo:
+          * Improve typehints to something like Callable[Tx], ... ->
+            Union[Tx, ...]
         """
         for rule in rules:
             tree = rule()
@@ -300,35 +331,50 @@ class Parser:
 
         return None
 
+    def __craft_error(self, msg: str) -> ParserError:
+        return ParserError(msg, self.__peek_token().position)
+
     # Rules
 
     # Expression
 
     @_with_backtracking
-    def expression(self) -> Optional[Expr]:
+    def expression(self) -> Optional[Expression]:  # TODO handle errors
         """Expression parser using the Shunting-Yard algorithm"""
         # Operator stack, is never empty until parsing is done, which is
         # obtained by surrounding the expression in parentheses
         operators: List[Operator] = [Operator(self.__peek_token(), _OT.LPAREN)]
         # Operands, begins empty but stays non-empty during all parsing
-        operands: List[Expr] = []
+        operands: List[Expression] = []
         self.__last_operatorand = operators[-1]
+        self.__index_expressions = 0
+        self.__paren_expressions = 0
 
-        if self.__categories_match(
-            (_TC.END_OF_STATEMENT, _TC.END_OF_FILE, _TC.SYMBOL)
-        ):
+        self.__expression_shunting_yard(operators, operands)
+
+        self.__last_operatorand = None
+
+        if len(operands) == 0:
             return None
+        elif len(operands) > 1:
+            msg = "Error while parsing the expression"
+            position = operands[0].position + operands[-1].position
+            raise ParserError(msg, position)
 
+        # We are left with a single parenthesized expression at the end
+        paren_operand = operands.pop()
+        assert isinstance(paren_operand, ParenExpr)
+        return paren_operand.expr
+
+    def __expression_shunting_yard(
+        self, operators: List[Operator], operands: List[Expression]
+    ) -> None:
         while True:
             if self.__categories_match(
                 (_TC.END_OF_STATEMENT, _TC.END_OF_FILE, _TC.SYMBOL)
             ):
-                self.__expression_closing_parenthesis(
-                    operators, operands, self.__peek_token().position
-                )
                 break
-
-            if self.BLANK():
+            elif self.BLANK():
                 continue
 
             # Encounter operator
@@ -339,42 +385,34 @@ class Parser:
                 continue
 
             # Encounter primary expression
+            if (len(operators), len(operands)) == (1, 1):
+                break
+
             operand = self.primary()
-            if operand is None:
-                if operands == []:
-                    position = None
-                else:
-                    position = operands[-1].position
-                msg = "Can't parse the expression, "
-                msg += "expecting a primary expression"
-                raise ParserError(msg, position)
+            if operand is not None:
+                operands.append(operand)
+                self.__last_operatorand = operand
+                continue
 
-            operands.append(operand)
-            self.__last_operatorand = operand
+            # Can't parse anymore: stop
+            break
 
-        self.__last_operatorand = None
-        if len(operands) != 1:
-            msg = "Error while parsing the expression"
-            if operands == []:
-                position = self.__peek_token().position
-            else:
-                position = operands[0].position + operands[-1].position
-            raise ParserError(msg, position)
-
-        # We are left with a single parenthesized expression at the end
-        paren_operand = operands.pop()
-        assert isinstance(paren_operand, ParenExpr)
-        return paren_operand.expr
+        self.__expression_closing_parenthesis(
+            operators, operands, self.__peek_token().position
+        )
 
     def __expression_closing_parenthesis(
         self, operators, operands, rparen_position: FilePosition
     ):
         """Handle a closing parenthesis during expression parsing: it is either
         to close an index expression or just after a parenthesized expression"""
+        if len(operands) == 0:
+            return
+
         while operators[-1].op not in (_OT.LPAREN, _OT.INDEX):
             Parser.__expression_reduce_stacks(operators, operands)
 
-        current_operands: Tuple[Expr, ...]
+        current_operands: Tuple[Expression, ...]
         if operators[-1].op == _OT.LPAREN:
             current_operands = (operands.pop(),)
         else:  # Index expression
@@ -386,6 +424,9 @@ class Parser:
                 args = operands.pop()
 
             current_operands = (operands.pop(), args)
+            self.__index_expressions -= 1
+
+        self.__paren_expressions -= 1
 
         lparen_or_index = operators.pop()
         new_operand = Operation(
@@ -400,7 +441,7 @@ class Parser:
         self,
         operator: Operator,
         operators: List[Operator],
-        operands: List[Expr],
+        operands: List[Expression],
     ) -> None:
         """Handle an operator during expression parsing"""
         # operators is never empty
@@ -427,7 +468,7 @@ class Parser:
 
     @staticmethod
     def __expression_reduce_stacks(
-        operators: List[Operator], operands_stack: List[Expr]
+        operators: List[Operator], operands_stack: List[Expression]
     ) -> None:
         """
         Perform stacks reduction, consuming one multi-operand operation, and
@@ -463,7 +504,7 @@ class Parser:
         operands_stack.append(pp_operand)
 
     @staticmethod
-    def __expression_post_process_operation(operation: Operation) -> Expr:
+    def __expression_post_process_operation(operation: Operation) -> Expression:
         """Returns:
         An expression representing the same operation, but formatted in a
         more semantic way, easing later processing.
@@ -525,26 +566,43 @@ class Parser:
           Should only be called during expression parsing
         """
         if self.__category_match(_TC.OPERATOR):
+            if self.__peek_token() == "," and self.__index_expressions == 0:
+                return None
+
+            if self.__peek_token() == ")" and self.__paren_expressions == 0:
+                return None
+
             token = self.__pop_token()
 
             try:
                 op = self.__OP_TYPE[token]
-            except KeyError:  # Happens only for binary-and-unary operators
-                if self.__last_operatorand is None:
-                    arity = 1
-                elif isinstance(self.__last_operatorand, Expr):
-                    arity = 2
-                elif self.__last_operatorand.op == _OT.RPAREN:
-                    arity = 2
-                else:  # Operator which is not a right parenthesis
-                    arity = 1
-                op = self.__OP_ARITY_TYPE[token][arity]
+            except KeyError:
+                op = self.__operator_multi_ary(token)
+
+            if op == _OT.INDEX:
+                self.__index_expressions += 1
+                self.__paren_expressions += 1
+            elif op == _OT.LPAREN:
+                self.__paren_expressions += 1
 
             return Operator(token, op)
 
         return None
 
-    def primary(self) -> Optional[Expr]:
+    def __operator_multi_ary(self, token: Token) -> Operator.Type:
+        """Determine the arity of a binary-and-unary operator."""
+        if self.__last_operatorand is None:
+            arity = 1
+        elif isinstance(self.__last_operatorand, Expression):
+            arity = 2
+        elif self.__last_operatorand.op == _OT.RPAREN:
+            arity = 2
+        else:  # Operator which is not a right parenthesis
+            arity = 1
+
+        return self.__OP_ARITY_TYPE[token][arity]
+
+    def primary(self) -> Optional[Expression]:
         return self.__try_rules(  # type: ignore [return-value]
             self.literal, self.NAME, self.ME
         )
@@ -577,34 +635,704 @@ class Parser:
     ]:
         expression = self.expression()
 
-        if expression is None:
+        if expression is None or not isinstance(
+            expression,
+            (
+                Name,
+                DictAccess,
+                MemberAccess,
+                IndexExpr,
+                WithDictAccess,
+                WithMemberAccess,
+            ),
+        ):
             return None
         else:
-            if isinstance(
-                expression,
-                (
-                    Name,
-                    DictAccess,
-                    MemberAccess,
-                    IndexExpr,
-                    WithDictAccess,
-                    WithMemberAccess,
-                ),
-            ):
-                return expression
+            return expression
+
+    def integer_expression(self) -> Optional[Expression]:
+        return self.expression()
+
+    def variable_expression(self) -> Optional[Expression]:
+        return self.expression()
+
+    def bound_variable_expression(self) -> Optional[Expression]:
+        return self.expression()
+
+    # Statements (individual statements do not include the END_OF_STATEMENT
+    # token)
+
+    def statement_block(self) -> Optional[StatementBlock]:
+        ok = True
+        statements = []
+        self.EOS()  # Skip newlines at the beginning
+        while ok:
+            statement = self.block_statement()
+            if statement is None:
+                ok = False
             else:
-                raise ParserError(
-                    "Expecting a l-expression", expression.position
+                statements.append(statement)
+
+        if statements == []:
+            position = self.__peek_token().position
+        else:
+            position = statements[0].position + statements[-1].position
+
+        return StatementBlock(position, tuple(statements))
+
+    def block_statement(self) -> Optional[Statement]:  # TODO
+        return self.__try_rules(self.statement)  # type: ignore
+
+    def statement(self) -> Optional[Statement]:  # TODO
+        statement = self.__try_rules(
+            self.error_handling_statement, self.file_statement
+        )
+        if statement is None or not self.EOS():
+            return None
+
+        return statement  # type: ignore [return-value]
+
+    def statement_label(self) -> Optional[StmtLabel]:
+        return self.__try_rules(self.NAME, self.literal)  # type: ignore
+
+    # Error statements
+
+    def error_handling_statement(self) -> Optional[OnError]:  # TODO
+        return self.__try_rules(  # type: ignore [return-value]
+            self.on_error, self.resume, self.error_statement
+        )
+
+    @_with_backtracking
+    def on_error(self) -> Optional[OnError]:
+        start_position = self.__peek_token().position
+        if not self.__pop_tokens(4)[::2] == ("On", "Error"):
+            return None
+
+        action = self.__pop_tokens(2)[0]
+        if action == "Resume":
+            if self.__peek_token() == "Next":
+                label = None
+                end_position = self.__pop_token().position
+            else:
+                msg = "On Error Resume statement must be followed by Next"
+                position = self.__pop_token().position
+                raise ParserError(msg, position)
+        elif action == "Goto":
+            label = self.statement_label()
+            if label is None:
+                msg = "On Error Goto must be followed by a literal or a name"
+                position = self.__peek_token().position
+                raise ParserError(msg, position)
+
+            end_position = label.position
+        else:
+            return None
+
+        return OnError(start_position + end_position, label)
+
+    @_with_backtracking
+    def resume(self) -> Optional[Resume]:
+        if self.__peek_token() == "Resume":
+            start_position = self.__pop_tokens(2)[0].position
+        else:
+            return None
+
+        if self.__peek_token() == "Next":
+            label = None
+            end_position = self.__pop_token().position
+        else:
+            label = self.statement_label()
+            if label is None:
+                msg = "Resume statement must be followed by Next "
+                msg += "or a statement label"
+                position = self.__peek_token().position
+                raise ParserError(msg, position)
+
+            end_position = label.position
+
+        return Resume(start_position + end_position, label)
+
+    @_with_backtracking
+    def error_statement(self) -> Optional[Error]:
+        if self.__peek_token() == "Error":
+            start_position = self.__pop_tokens(2)[0].position
+        else:
+            return None
+
+        error_number = self.integer_expression()
+        if error_number is None:
+            msg = "Error statement must be followed by an integer expression"
+            raise self.__craft_error(msg)
+
+        return Error(start_position + error_number.position, error_number)
+
+    # File statements
+    def file_statement(self) -> Optional[Union[Open, Close]]:
+        return self.__try_rules(  # type: ignore
+            self.open,
+            self.close,
+            self.seek,
+            self.lock,
+            self.unlock,
+            self.line_input,
+            self.width,
+            self.print,
+            self.write,
+            self.input,
+            self.put,
+            self.get,
+        )
+
+    @_with_backtracking
+    def open(self) -> Optional[Open]:
+        if self.__peek_token() == "Open":
+            start_position = self.__pop_tokens(2)[0].position
+        else:
+            return None
+
+        try:
+            path_name = self.expression()
+            if path_name is None:
+                raise ParserError("dummy")
+        except ParserError:
+            msg = "Open statement requires a valid path name"
+            raise self.__craft_error(msg)
+
+        mode = self.__mode_clause()
+        access = self.__access_clause(mode)
+        lock = self.__lock()
+
+        if self.__peek_token() != "As":
+            raise self.__craft_error("Open statement needs a file number")
+        else:
+            self.__pop_tokens(2)
+
+        file_number = self.file_number()
+
+        if file_number is None:
+            raise self.__craft_error("Open statement needs a valid file number")
+
+        length = self.__length_clause()
+
+        if length is not None:
+            end_position = length.position
+        else:
+            end_position = file_number.position
+
+        return Open(
+            start_position + end_position,
+            path_name,
+            file_number,
+            mode,
+            access,
+            lock,
+            length,
+        )
+
+    def __mode_clause(self) -> Open.Mode:
+        # "For" mode
+        mode_token: Optional[Token]
+        if self.__peek_token() != "For":
+            return Open.Mode.RANDOM
+
+        mode_token = self.__peek_token(2)
+
+        try:
+            mode = {
+                "append": Open.Mode.APPEND,
+                "binary": Open.Mode.BINARY,
+                "input": Open.Mode.INPUT,
+                "output": Open.Mode.OUTPUT,
+                "random": Open.Mode.RANDOM,
+            }[mode_token]
+        except KeyError:
+            position = self.__peek_token().position
+            raise ParserError(
+                "Open statement needs a valid mode clause", position
+            )
+
+        self.__pop_tokens(4)
+        return mode
+
+    def __access_clause(self, mode: Open.Mode) -> Open.Access:
+        # "Access" access
+        if self.__peek_token() != "Access":
+            return {
+                Open.Mode.APPEND: Open.Access.READ_WRITE,
+                Open.Mode.BINARY: Open.Access.READ_WRITE,
+                Open.Mode.INPUT: Open.Access.READ,
+                Open.Mode.OUTPUT: Open.Access.WRITE,
+                Open.Mode.RANDOM: Open.Access.READ_WRITE,
+            }[mode]
+
+        if self.__peek_tokens(2, 4) == ("Read", "Write"):
+            access = Open.Access.READ_WRITE
+            pop = 6
+        elif self.__peek_token(2) == "Read":
+            access = Open.Access.READ
+            pop = 4
+        elif self.__peek_token(2) == "Write":
+            access = Open.Access.WRITE
+            pop = 4
+        else:
+            position = self.__peek_token().position
+            raise ParserError(
+                "Open statement needs a valid access clause", position
+            )
+
+        self.__pop_tokens(pop)
+        return access
+
+    def __lock(self) -> Open.Lock:
+        if self.__peek_token() == "Shared":
+            lock = Open.Lock.SHARED
+            pop = 2
+        elif self.__peek_tokens(0, 2, 4) == ("Lock", "Read", "Write"):
+            lock = Open.Lock.LOCK_READ_WRITE
+            pop = 6
+        elif self.__peek_tokens(0, 2) == ("Lock", "Read"):
+            lock = Open.Lock.LOCK_READ
+            pop = 4
+        elif self.__peek_tokens(0, 2) == ("Lock", "Write"):
+            lock = Open.Lock.LOCK_WRITE
+            pop = 4
+        else:
+            return Open.Lock.SHARED
+
+        self.__pop_tokens(pop)
+        return lock
+
+    def __length_clause(self) -> Expression:
+        if self.__peek_token() != "Len":
+            return Literal(
+                FilePosition.build_virtual(), Variable(Integer, Integer(0))
+            )
+
+        if self.__peek_token(1) == "=":
+            self.__pop_tokens(2)
+        elif self.__peek_token(2) == "=":
+            self.__pop_tokens(3)
+        else:
+            msg = "Open statement needs a valid Len clause"
+            raise self.__craft_error(msg)
+
+        return self.expression()
+
+    def file_number(self) -> Optional[Expression]:
+        if self.__peek_token() == "#":
+            self.__pop_token()
+
+        return self.expression()
+
+    def __file_number_list(self) -> Tuple[Expression, ...]:
+        numbers = []
+        while True:
+            number = self.file_number()
+            if number is None:
+                break
+            else:
+                numbers.append(number)
+
+            if self.__peek_token() == ",":
+                self.__pop_token()
+
+        if numbers == []:
+            for i in range(1, 512):
+                numbers.append(
+                    Literal(
+                        FilePosition.build_virtual(),
+                        Variable(Integer, Integer(i)),
+                    )
                 )
+
+        return tuple(numbers)
+
+    @_with_backtracking
+    def close(self) -> Optional[Close]:
+        if self.__peek_token() == "Reset":
+            position = self.__pop_token().position
+            file_numbers = None
+        elif self.__peek_token() == "Close":
+            position_start = self.__pop_token().position
+            file_numbers = self.__file_number_list()
+
+            if len(file_numbers) > 0:
+                position = position_start + file_numbers[-1].position
+            else:
+                position = position_start
+        else:
+            return None
+
+        return Close(position, file_numbers)
+
+    @_with_backtracking
+    def seek(self) -> Optional[Seek]:
+        if self.__peek_token() != "Seek":
+            return None
+        else:
+            start_position = self.__pop_tokens(2)[0].position
+
+        file_number = self.file_number()
+
+        if file_number is None or self.__peek_token() != ",":
+            msg = "Seek statement needs a position after the file number"
+            raise self.__craft_error(msg)
+
+        self.__pop_token()
+        seek_position = self.expression()
+        if seek_position is None:
+            raise self.__craft_error("Seek statement needs valid position")
+
+        return Seek(
+            start_position + seek_position.position, file_number, seek_position
+        )
+
+    def __lock_unlock(self, lock: bool) -> Optional[Union[Lock, Unlock]]:
+        node_type: Union[Type[Lock], Type[Unlock]]
+        if lock:
+            keyword, node_type = "Lock", Lock
+        else:
+            keyword, node_type = "Unlock", Unlock
+
+        if self.__peek_token() != keyword:
+            return None
+        else:
+            start_position = self.__pop_tokens(2)[0].position
+
+        file_number = self.file_number()
+        if file_number is None:
+            raise self.__craft_error(f"{keyword} statement needs a file number")
+
+        if self.__peek_token() == ",":
+            self.__pop_token()
+
+            start_record_number = self.expression()
+            if start_record_number is None:
+                self.BLANK()
+                start_record_number = Literal(
+                    FilePosition.build_virtual(), Variable(Integer, Integer(1))
+                )
+
+            if self.__peek_token() == "To":
+                self.__pop_token()
+                end_record_number = self.expression()
+
+                if end_record_number is None:
+                    msg = keyword + " statement needs a valid end record number"
+                    raise self.__craft_error(msg)
+                else:
+                    end_position = end_record_number.position
+            else:
+                end_position = start_record_number.position
+                end_record_number = None
+        else:
+            start_record_number = None
+            end_record_number = None
+            end_position = file_number.position
+
+        assert node_type in (Lock, Unlock)
+        return node_type(  # type: ignore [call-arg]
+            start_position + end_position,
+            file_number,
+            start_record_number,
+            end_record_number,
+        )
+
+    @_with_backtracking
+    def lock(self) -> Optional[Lock]:
+        return self.__lock_unlock(lock=True)  # type: ignore [return-value]
+
+    @_with_backtracking
+    def unlock(self) -> Optional[Unlock]:
+        return self.__lock_unlock(lock=False)  # type: ignore [return-value]
+
+    @_with_backtracking
+    def line_input(self) -> Optional[LineInput]:
+        if self.__peek_tokens(0, 2) != ("Line", "Input"):
+            return None
+
+        start_position = self.__pop_tokens(4)[0].position
+        file_number = self.file_number()
+        if file_number is None:
+            raise self.__craft_error("Line Input statement needs file number")
+        if self.__pop_token() != ",":
+            raise self.__craft_error("Line Input statement needs variable name")
+
+        variable_name = self.variable_expression()
+        if variable_name is None:
+            raise self.__craft_error("Line Input statement needs variable name")
+
+        return LineInput(
+            start_position + variable_name.position,
+            file_number,
+            variable_name,
+        )
+
+    @_with_backtracking
+    def width(self) -> Optional[Width]:
+        if self.__peek_token() != "Width":
+            return None
+
+        start_position = self.__pop_tokens(2)[0].position
+        file_number = self.file_number()
+        if file_number is None:
+            raise self.__craft_error("Line Input statement needs file number")
+        if self.__pop_token() != ",":
+            raise self.__craft_error("Line Input statement needs variable name")
+
+        line_width = self.expression()
+        if line_width is None:
+            raise self.__craft_error("Line Input statement needs variable name")
+
+        return Width(
+            start_position + line_width.position,
+            file_number,
+            line_width,
+        )
+
+    @_with_backtracking
+    def output_item(self) -> Optional[OutputItem]:
+        clause_title = None
+        clause_argument = None
+        char_position = None
+
+        if self.__category_match(_TC.BLANK):
+            self.__pop_token()
+
+        position = self.__peek_token().position
+        if self.__peek_token() in (",", ";"):
+            char_position = {
+                ",": OutputItem.CharPosition.COMMA,
+                ";": OutputItem.CharPosition.SEMICOLON,
+            }[self.__pop_token()]
+        else:
+            clause_title, clause_argument = self.__output_clause()
+
+            if self.__peek_token() in (",", ";"):
+                position = position + self.__peek_token().position
+                char_position = {
+                    ",": OutputItem.CharPosition.COMMA,
+                    ";": OutputItem.CharPosition.SEMICOLON,
+                }[self.__pop_token()]
+
+            if self.__category_match(_TC.BLANK):
+                self.__pop_token()
+
+        if (clause_title, clause_argument, char_position) == (None, None, None):
+            return None
+
+        if char_position is None:
+            char_position = OutputItem.CharPosition.SEMICOLON
+
+        return OutputItem(
+            position, clause_title, clause_argument, char_position
+        )
+
+    def __output_clause(
+        self,
+    ) -> Tuple[Optional[OutputItem.Clause], Optional[Expression]]:
+        clause_title: Optional[OutputItem.Clause] = None
+        clause_argument = None
+
+        if self.__category_match(_TC.BLANK):
+            clause_title = OutputItem.Clause.TAB
+
+        if self.__peek_token() == "Tab":
+            clause_title = OutputItem.Clause.TAB
+            clause_argument = self.__output_clause_tab()
+        elif self.__peek_token() == "Spc":
+            clause_title = OutputItem.Clause.SPC
+            clause_argument = self.__output_clause_spc()
+        else:
+            clause_title = None
+            clause_argument = self.expression()
+
+        return clause_title, clause_argument
+
+    def __output_clause_tab(self) -> Optional[Expression]:
+        self.__pop_token()
+        if self.__peek_token() == "(":
+            self.__pop_token()
+            clause_argument = self.expression()
+            if clause_argument is None:
+                msg = "Tab clause needs valid expression"
+                raise self.__craft_error(msg)
+            if not self.__pop_token() == ")":
+                msg = "Tab clause needs ending parenthesis"
+                raise self.__craft_error(msg)
+        else:
+            clause_argument = None
+
+        return clause_argument
+
+    def __output_clause_spc(self) -> Expression:
+        self.__pop_token()
+        if not self.__pop_token() == "(":
+            raise self.__craft_error("Spc clause needs opening parenthesis")
+
+        clause_argument = self.expression()
+        if clause_argument is None:
+            raise self.__craft_error("Spc clause needs valid expression")
+
+        if not self.__pop_token() == ")":
+            raise self.__craft_error("Spc clause needs closing parenthesis")
+
+        return clause_argument
+
+    def __output_list(self) -> Tuple[OutputItem, ...]:
+        items = []
+        while True:
+            item = self.output_item()
+            if item is None:
+                break
+            items.append(item)
+
+        return tuple(items)
+
+    def __write_print(self, write: bool) -> Optional[Union[Write, Print]]:
+        node_type: Union[Type[Write], Type[Print]]
+        if write:
+            keyword = "Write"
+            node_type = Write
+        else:
+            keyword = "Print"
+            node_type = Print
+
+        if self.__peek_token() != keyword:
+            return None
+
+        start_position = self.__pop_tokens(2)[0].position
+        file_number = self.file_number()
+        if file_number is None:
+            raise self.__craft_error(keyword + " statement needs a file number")
+        if self.__peek_token() != ",":
+            msg = keyword + " statement needs an output list"
+            raise self.__craft_error(msg)
+        position = start_position + self.__pop_token().position
+
+        output_list = self.__output_list()
+        if len(output_list) > 1:
+            position = position + output_list[-1].position
+
+        if len(output_list) == 0 and write:
+            output_list = (
+                OutputItem(
+                    FilePosition.build_virtual(),
+                    None,
+                    Literal(
+                        FilePosition.build_virtual(), Variable(String, String())
+                    ),
+                    OutputItem.CharPosition.COMMA,
+                ),
+            )
+
+        return node_type(position, file_number, output_list)
+
+    @_with_backtracking
+    def print(self) -> Optional[Write]:
+        return self.__write_print(write=False)  # type: ignore [return-value]
+
+    @_with_backtracking
+    def write(self) -> Optional[Write]:
+        return self.__write_print(write=True)  # type: ignore [return-value]
+
+    @_with_backtracking
+    def input(self) -> Optional[Input]:
+        if not self.__peek_token() == "Input":
+            return None
+
+        start_position = self.__pop_tokens(2)[0].position
+        file_number = self.file_number()
+        if file_number is None:
+            raise self.__craft_error("Input statement needs valid file number")
+
+        if self.__peek_token() != ",":
+            raise self.__craft_error("Input statement needs inputs")
+        self.__pop_token()
+
+        input_list = []
+        while True:
+            input_variable = self.bound_variable_expression()
+            if input_variable is None:
+                break
+            input_list.append(input_variable)
+
+            if not self.__peek_token() == ",":
+                break
+            self.__pop_token()
+
+        return Input(
+            start_position + input_list[-1].position,
+            file_number,
+            tuple(input_list),
+        )
+
+    def __put_get(self, put: bool) -> Optional[Union[Put, Get]]:
+        name, node_type = {True: ("Put", Put), False: ("Get", Get)}[put]
+
+        if not self.__peek_token() == name:
+            return None
+
+        start_position = self.__pop_tokens(2)[0].position
+        file_number = self.file_number()
+        if file_number is None:
+            msg = f"{name} statement needs a valid file number"
+            raise self.__craft_error(msg)
+
+        if self.__pop_token() != ",":
+            raise self.__craft_error("Missing comma")
+
+        record_number = self.expression()
+        if self.__pop_token() != ",":
+            raise self.__craft_error("Malformed record number")
+
+        if put:
+            data_variable = self.expression()
+            if data_variable is None:
+                raise self.__craft_error("Put statement needs data")
+        else:
+            data_variable = self.variable_expression()
+            if data_variable is None:
+                raise self.__craft_error("Get statement needs a variable")
+
+        return node_type(  # type: ignore [return-value]
+            start_position + data_variable.position,
+            file_number,
+            record_number,
+            data_variable,
+        )
+
+    @_with_backtracking
+    def put(self) -> Optional[Put]:
+        return self.__put_get(put=True)  # type: ignore [return-value]
+
+    @_with_backtracking
+    def get(self) -> Optional[Get]:
+        return self.__put_get(put=False)  # type: ignore [return-value]
 
     # Literals
 
-    def BLANK(self) -> bool:
-        if self.__category_match(_TC.BLANK):
+    def EOS(self) -> bool:
+        ok = False
+        while self.__categories_match((_TC.BLANK, _TC.END_OF_STATEMENT)):
+            ok = True
             self.__pop_token()
-            return True
-        else:
-            return False
+
+        if not ok and self.__category_match(_TC.END_OF_FILE):
+            ok = True
+
+        return ok
+
+    def EOF(self) -> bool:
+        return self.__category_match(_TC.END_OF_FILE)
+
+    def BLANK(self) -> bool:
+        ok = False
+        while self.__category_match(_TC.BLANK):
+            ok = True
+            self.__pop_token()
+
+        return ok
 
     def INTEGER(self) -> Optional[Literal]:
         """[MS-VBA]_ 3.3.2: Number tokens"""

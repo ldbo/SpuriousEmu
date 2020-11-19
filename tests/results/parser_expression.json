@@ -112,8 +112,8 @@
     }
   },
   {
-    "TYPE": "ParenExpr",
-    "expr": {
+    "TYPE": "IndexExpr",
+    "args": {
       "TYPE": "ArgList",
       "args": [
         {
@@ -207,71 +207,89 @@
           }
         }
       ]
+    },
+    "expr": {
+      "TYPE": "Name",
+      "name": "f"
     }
   },
   {
-    "TYPE": "ArgList",
-    "args": [
-      {
-        "TYPE": "Arg",
-        "addressof": false,
-        "byval": false,
-        "expr": {
-          "TYPE": "ParenExpr",
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "ParenExpr",
+            "expr": {
+              "TYPE": "Name",
+              "name": "a"
+            }
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "ParenExpr",
+            "expr": {
+              "TYPE": "Name",
+              "name": "b"
+            }
+          }
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
+          "expr": {
+            "TYPE": "ParenExpr",
+            "expr": {
+              "TYPE": "Name",
+              "name": "c"
+            }
+          }
+        }
+      ]
+    },
+    "expr": {
+      "TYPE": "Name",
+      "name": "g"
+    }
+  },
+  {
+    "TYPE": "IndexExpr",
+    "args": {
+      "TYPE": "ArgList",
+      "args": [
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
           "expr": {
             "TYPE": "Name",
             "name": "a"
           }
-        }
-      },
-      {
-        "TYPE": "Arg",
-        "addressof": false,
-        "byval": false,
-        "expr": {
-          "TYPE": "ParenExpr",
+        },
+        {
+          "TYPE": "Arg",
+          "addressof": false,
+          "byval": false,
           "expr": {
             "TYPE": "Name",
             "name": "b"
           }
         }
-      },
-      {
-        "TYPE": "Arg",
-        "addressof": false,
-        "byval": false,
-        "expr": {
-          "TYPE": "ParenExpr",
-          "expr": {
-            "TYPE": "Name",
-            "name": "c"
-          }
-        }
-      }
-    ]
-  },
-  {
-    "TYPE": "ArgList",
-    "args": [
-      {
-        "TYPE": "Arg",
-        "addressof": false,
-        "byval": false,
-        "expr": {
-          "TYPE": "Name",
-          "name": "a"
-        }
-      },
-      {
-        "TYPE": "Arg",
-        "addressof": false,
-        "byval": false,
-        "expr": {
-          "TYPE": "Name",
-          "name": "b"
-        }
-      }
-    ]
+      ]
+    },
+    "expr": {
+      "TYPE": "Name",
+      "name": "h"
+    }
   },
   {
     "TYPE": "IndexExpr",
