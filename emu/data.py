@@ -3,7 +3,7 @@ This module defines the VBA computational environment elements, conforming
 to [MS-VBA]_ section 2.
 """
 
-from dataclasses import dataclass, field, InitVar
+from dataclasses import InitVar, dataclass, field
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from .utils import MissingOptional

@@ -629,12 +629,7 @@ class Lexer:
         start_line = self.__line
         start_column = self.__column
         position = FilePosition.from_indices(
-            name,
-            stream,
-            start_index,
-            end_index,
-            start_line,
-            start_column,
+            name, stream, start_index, end_index, start_line, start_column
         )
 
         raise LexerError("Can't scan this line", position)

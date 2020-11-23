@@ -1082,11 +1082,7 @@ class Parser:
         if variable_name is None:
             raise self.__craft_error("Line Input statement needs variable name")
 
-        return LineInput(
-            VIRTUAL_POSITION,
-            file_number,
-            variable_name,
-        )
+        return LineInput(VIRTUAL_POSITION, file_number, variable_name)
 
     @_add_rule_position
     @_with_backtracking
@@ -1105,11 +1101,7 @@ class Parser:
         if line_width is None:
             raise self.__craft_error("Line Input statement needs variable name")
 
-        return Width(
-            VIRTUAL_POSITION,
-            file_number,
-            line_width,
-        )
+        return Width(VIRTUAL_POSITION, file_number, line_width)
 
     @_add_rule_position
     @_with_backtracking
@@ -1284,11 +1276,7 @@ class Parser:
                 break
             self.__pop_token()
 
-        return Input(
-            VIRTUAL_POSITION,
-            file_number,
-            tuple(input_list),
-        )
+        return Input(VIRTUAL_POSITION, file_number, tuple(input_list))
 
     def __put_get(self, put: bool) -> Optional[Union[Put, Get]]:
         name, node_type = {True: ("Put", Put), False: ("Get", Get)}[put]
@@ -1319,10 +1307,7 @@ class Parser:
                 raise self.__craft_error("Get statement needs a variable")
 
         return node_type(  # type: ignore [return-value]
-            VIRTUAL_POSITION,
-            file_number,
-            record_number,
-            data_variable,
+            VIRTUAL_POSITION, file_number, record_number, data_variable
         )
 
     @_add_rule_position
