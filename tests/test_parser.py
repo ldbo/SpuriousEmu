@@ -70,6 +70,24 @@ def test_expression():
 def test_statements():
     """parser: statements"""
     code = """
+    Dim Shared variable
+    Dim a As Integer, b, c%
+    Static abcd As Long, def As String
+    Const a = 1, b As Long = 12, c! = 30
+    ReDim MyArray()
+    ReDim Array1(), Array2(), Array3()
+    ReDim Preserve Array1(), Array2(), Array3()
+    ReDim arr(1, 2 To 12, 3)
+    ReDim arr(12) As Integer
+    ReDim array(12 To 15) As New MyClass
+    Erase a
+    Erase a, b, c
+    Mid(str, 12, 3) = "abc"
+    MidB$(name, 0) = str + "12"
+    LSet b = "Hey"
+    RSet a = "abcd"
+    Let a = b.c() + 12
+    Set a.b(12, 14) = 12
     On Error Goto abcd : On Error Resume Next
     On Error Goto 123 :
     Resume Next : Resume 12 : Resume abcd : Error abcd : Error 123
@@ -117,15 +135,16 @@ def test_statements():
     print()
     block = parser.statement_block()
 
+    from pprint import pprint
+
+    for statement in block.statements:
+        print(statement.position.body())
+        pprint(to_dict(statement, excluded_fields={"position"}))
+        print()
+
     if lexer.peek_token().category != lexer.peek_token().Category.END_OF_FILE:
-        from pprint import pprint
 
         import ipdb
-
-        for statement in block.statements:
-            print(statement.position.body())
-            pprint(to_dict(statement, excluded_fields={"position"}))
-            print()
 
         ipdb.set_trace()
 

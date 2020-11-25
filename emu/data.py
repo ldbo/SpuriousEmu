@@ -170,6 +170,7 @@ class String(Value):
 
     @staticmethod
     def from_stringn(stringn: "StringN") -> "String":
+        assert isinstance(stringn.n, int)
         return String(b"\x00\x00" * stringn.n)
 
 
@@ -371,10 +372,10 @@ class Variant(PureDeclaredType):
 
 @dataclass(frozen=True)
 class StringN(PureDeclaredType):
-    n: int
+    n: Union[int, str]
 
     def __post_init__(self) -> None:
-        if not 1 <= self.n <= 65535:
+        if isinstance(self.n, int) and not 1 <= self.n <= 65535:
             raise ValueError("String length must be between 1 and 65535")
 
 

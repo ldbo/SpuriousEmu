@@ -14,17 +14,29 @@ from .abstract_syntax_tree import (
     AST,
     Arg,
     ArgList,
+    ArrayDimensions,
     Close,
+    ConstItem,
+    DataManipulationStatement,
     DictAccess,
+    Erase,
     Error,
+    ErrorHandlingStatement,
     Expression,
+    FileStatement,
     Get,
     IndexExpr,
     Input,
+    Let,
+    LExpression,
     LineInput,
     Literal,
+    LocalConstantDeclaration,
+    LocalVariableDeclaration,
     Lock,
+    LSet,
     MemberAccess,
+    Mid,
     Name,
     OnError,
     Open,
@@ -34,20 +46,25 @@ from .abstract_syntax_tree import (
     ParenExpr,
     Print,
     Put,
+    ReDim,
     Resume,
+    RSet,
     Seek,
+    Set,
     Statement,
     StatementBlock,
     StmtLabel,
     Unlock,
+    VariableDeclaration,
     Width,
-    WithDictAccess,
-    WithMemberAccess,
     Write,
 )
 from .data import (
     Boolean,
+    Byte,
     Currency,
+    Date,
+    DeclaredType,
     Double,
     Empty,
     Integer,
@@ -57,8 +74,10 @@ from .data import (
     ObjectReference,
     Single,
     String,
+    StringN,
     Value,
     Variable,
+    Variant,
 )
 from .error import ParserError
 from .lexer import Lexer, Token
@@ -178,6 +197,30 @@ class Parser:
         "@": Currency,
     }  #: Mapping between float suffix and value type
 
+    __TYPED_NAME_SUFFIXES = {
+        "%": Integer,
+        "&": Long,
+        "^": LongLong,
+        "!": Single,
+        "#": Double,
+        "@": Currency,
+        "$": String,
+    }  #: Mapping between typed names suffix and their declared type
+
+    __BUILTIN_TYPES = {
+        "boolean": Boolean,
+        "byte": Byte,
+        "currency": Currency,
+        "date": Date,
+        "double": Double,
+        "integer": Integer,
+        "long": Long,
+        "longlong": LongLong,
+        "single": Single,
+        "string": String,
+        "variant": Variant,
+    }  #: Mapping between built-in type name and corresponding declared type
+
     __OPERATORS_PRECEDENCES = {
         _OT.RPAREN: -2,
         _OT.INDEX: -1,
@@ -245,6 +288,15 @@ class Parser:
         "(": {1: _OT.LPAREN, 2: _OT.INDEX},
         "-": {1: _OT.UNARY_MINUS, 2: _OT.MINUS},
     }  #: Mapping between multiple-arity operators symbols and their operator
+
+    __LEXPRESSION_OPERATORS = {
+        _OT.INDEX,
+        _OT.EXCLAMATION,
+        _OT.DOT,
+        _OT.RPAREN,
+        _OT.LPAREN,
+        _OT.COMMA,
+    }  #: Operators allowed in an l-expression
 
     # API
 
@@ -371,7 +423,17 @@ class Parser:
 
     @_with_backtracking
     def expression(self) -> Optional[Expression]:
-        """Expression parser using the Shunting-Yard algorithm"""
+        return self.__expression(False)
+
+    @_with_backtracking
+    def l_expression(self) -> Optional[LExpression]:
+        return self.__expression(True)  # type: ignore [return-value]
+
+    def __expression(self, l_expression: bool) -> Optional[Expression]:
+        """
+        Expression parser using the Shunting-Yard algorithm If l_expression
+        is True, only handle l-expression, by restricting the allowed operators.
+        """
         # Operator stack, is never empty until parsing is done, which is
         # obtained by surrounding the expression in parentheses
         operators: List[Operator] = [Operator(self.__peek_token(), _OT.LPAREN)]
@@ -382,7 +444,7 @@ class Parser:
         self.__paren_expressions = 0
 
         try:
-            self.__expression_shunting_yard(operators, operands)
+            self.__expression_shunting_yard(operators, operands, l_expression)
         except Exception as e:
             msg = "Encountered an unexpected exception during expression "
             msg += f"parsing: {e}"
@@ -403,7 +465,10 @@ class Parser:
         return paren_operand.expr
 
     def __expression_shunting_yard(
-        self, operators: List[Operator], operands: List[Expression]
+        self,
+        operators: List[Operator],
+        operands: List[Expression],
+        l_expression: bool,
     ) -> None:
         while True:
             if self.__categories_match(
@@ -414,7 +479,11 @@ class Parser:
                 continue
 
             # Encounter operator
-            operator = self.operator()
+            if not l_expression:
+                operator = self.operator()
+            else:
+                operator = self.__expression_loperator()
+
             if operator is not None:
                 self.__expression_operator(operator, operators, operands)
                 self.__last_operatorand = operator
@@ -433,9 +502,22 @@ class Parser:
             # Can't parse anymore: stop
             break
 
+        # Close the virtual parenthesis
         self.__expression_closing_parenthesis(
             operators, operands, self.__peek_token().position
         )
+
+    @_with_backtracking
+    def __expression_loperator(self) -> Optional[Operator]:
+        operator = self.operator()
+        if (
+            operator is not None
+            and operator.op not in self.__LEXPRESSION_OPERATORS
+        ):
+
+            return None
+
+        return operator
 
     def __expression_closing_parenthesis(
         self, operators, operands, rparen_position: FilePosition
@@ -479,7 +561,9 @@ class Parser:
         operators: List[Operator],
         operands: List[Expression],
     ) -> None:
-        """Handle an operator during expression parsing"""
+        """Handle an operator during expression parsing: close and open
+        parenthesis, simply push on operator stack or reduce the stacks
+        depending on its precedence."""
         # operators is never empty
         if operator.op == _OT.RPAREN:
             self.__expression_closing_parenthesis(
@@ -657,34 +741,8 @@ class Parser:
 
         return None
 
-    def l_expression(
-        self,
-    ) -> Optional[
-        Union[
-            Name,
-            DictAccess,
-            MemberAccess,
-            IndexExpr,
-            WithDictAccess,
-            WithMemberAccess,
-        ]
-    ]:
-        expression = self.expression()
-
-        if expression is None or not isinstance(
-            expression,
-            (
-                Name,
-                DictAccess,
-                MemberAccess,
-                IndexExpr,
-                WithDictAccess,
-                WithMemberAccess,
-            ),
-        ):
-            return None
-        else:
-            return expression
+    def constant_expression(self) -> Optional[Expression]:
+        return self.expression()
 
     def integer_expression(self) -> Optional[Expression]:
         return self.expression()
@@ -693,7 +751,10 @@ class Parser:
         return self.expression()
 
     def bound_variable_expression(self) -> Optional[Expression]:
-        return self.expression()
+        return self.l_expression()
+
+    def defined_type_expression(self) -> Optional[Expression]:
+        return self.l_expression()
 
     # Statements (individual statements do not include the END_OF_STATEMENT
     # token)
@@ -715,9 +776,11 @@ class Parser:
     def block_statement(self) -> Optional[Statement]:  # TODO
         return self.__try_rules(self.statement)  # type: ignore
 
-    def statement(self) -> Optional[Statement]:  # TODO
+    def statement(self) -> Optional[Statement]:
         statement = self.__try_rules(
-            self.error_handling_statement, self.file_statement
+            self.error_handling_statement,
+            self.file_statement,
+            self.data_manipulation_statement,
         )
         if statement is None or not self.EOS():
             return None
@@ -727,9 +790,410 @@ class Parser:
     def statement_label(self) -> Optional[StmtLabel]:
         return self.__try_rules(self.NAME, self.literal)  # type: ignore
 
+    # Data manipulation statements
+
+    def data_manipulation_statement(
+        self,
+    ) -> Optional[DataManipulationStatement]:
+        return self.__try_rules(  # type: ignore [return-value]
+            self.local_variable_declaration,
+            self.local_constant_declaration,
+            self.re_dim,
+            self.erase,
+            self.mid,
+            self.lset,
+            self.rset,
+            self.let,
+            self.set,
+        )
+
+    @_add_rule_position
+    @_with_backtracking
+    def array_dimensions(self) -> Optional[ArrayDimensions]:
+        if not self.__peek_token() == "(":
+            return None
+        self.__pop_token()
+
+        dimensions = []
+        while True:
+            if self.__peek_token() == ")":
+                self.__pop_token()
+                break
+
+            bound1 = self.constant_expression()
+            if bound1 is None:
+                msg = "Array dimension needs at least one bound"
+                raise self.__craft_error(msg)
+
+            if self.__peek_token() == "To":
+                self.__pop_token()
+                bound2 = self.constant_expression()
+                if bound2 is None:
+                    msg = "Array dimension needs a constant expression as "
+                    msg += "upper bound"
+                    raise self.__craft_error(msg)
+            else:
+                bound2 = None
+
+            dimensions.append((bound1, bound2))
+
+            if self.__peek_token() == ",":
+                self.__pop_token()
+
+        return ArrayDimensions(VIRTUAL_POSITION, tuple(dimensions))
+
+    @_add_rule_position
+    @_with_backtracking
+    def variable_declaration(self) -> Optional[VariableDeclaration]:
+        # TODO handle declared type
+        self.BLANK()
+        name_node = self.NAME()
+        if name_node is None:
+            return None
+        name = name_node.name
+
+        new = False
+        declared_type: Optional[Union[Expression, DeclaredType]] = None
+        if self.__peek_token() in self.__TYPED_NAME_SUFFIXES:
+            suffix = self.__pop_token()
+            declared_type = self.__TYPED_NAME_SUFFIXES[suffix]
+            array_dimensions = self.array_dimensions()
+        else:
+            array_dimensions = self.array_dimensions()
+            self.BLANK()
+            as_clause = self.__as_clause_type()
+            if as_clause is not None:
+                new, declared_type = as_clause
+
+        return VariableDeclaration(
+            VIRTUAL_POSITION, name, array_dimensions, new, declared_type
+        )
+
+    def __as_clause_type(
+        self,
+    ) -> Optional[Tuple[bool, Optional[Union[Expression, DeclaredType]]]]:
+        if self.__peek_token() != "As":
+            return None
+
+        self.__pop_token()
+        self.BLANK()
+
+        new = False
+        declared_type: Optional[Union[Expression, DeclaredType]]
+        if self.__peek_token() == "New":  # Auto object: As New ...
+            self.__pop_token()
+            new = True
+            declared_type = self.defined_type_expression()
+            if declared_type is None:
+                msg = "Auto object needs a valid class name"
+        elif self.__peek_tokens(0, 1) == ("String", "*"):
+            self.__pop_tokens(2)
+            length = self.constant_expression()
+            if length is None or not isinstance(length, Name):
+                msg = "Fixed length string needs a valid constant length"
+                raise self.__craft_error(msg)
+
+            declared_type = StringN(length.name)
+        elif self.__category_match(_TC.KEYWORD):
+            type_name = self.__pop_token()
+            try:
+                declared_type = self.__BUILTIN_TYPES[type_name]
+            except KeyError:
+                msg = f"{str(type_name)} is not a supported type"
+                raise self.__craft_error(msg)
+        else:
+            declared_type = self.l_expression()
+
+        return (new, declared_type)
+
+    def __variable_declarations(self) -> Tuple[VariableDeclaration, ...]:
+        declarations = []
+        while True:
+            declaration = self.variable_declaration()
+            if declaration is None:
+                msg = "Malformed declaration"
+                raise self.__craft_error(msg)
+            declarations.append(declaration)
+
+            self.BLANK()
+            if self.__peek_token() == ",":
+                self.__pop_token()
+            else:
+                break
+
+        return tuple(declarations)
+
+    @_add_rule_position
+    @_with_backtracking
+    def local_variable_declaration(self) -> Optional[LocalVariableDeclaration]:
+        if self.__peek_token() == "Dim":
+            self.__pop_token()
+            self.BLANK()
+            if self.__peek_token() == "Shared":
+                self.__pop_token()
+                self.BLANK()
+            static = False
+        elif self.__peek_token() == "Static":
+            self.__pop_token()
+            self.BLANK()
+            static = True
+        else:
+            return None
+
+        variable_declarations = self.__variable_declarations()
+
+        return LocalVariableDeclaration(
+            VIRTUAL_POSITION, static, variable_declarations
+        )
+
+    def __const_item_list(self) -> Tuple[ConstItem, ...]:
+        items = []
+        while True:
+            self.BLANK()
+            item = self.const_item()
+            if item is None:
+                raise self.__craft_error("Const item lists expects an item")
+
+            items.append(item)
+
+            self.BLANK()
+            if self.__peek_token() != ",":
+                break
+            self.__pop_token()
+
+        return tuple(items)
+
+    @_add_rule_position
+    def const_item(self) -> Optional[ConstItem]:
+        name_node = self.NAME()
+        if name_node is None:
+            return None
+        name = name_node.name
+
+        declared_type: Optional[DeclaredType]
+        if self.__peek_token() in self.__TYPED_NAME_SUFFIXES:
+            suffix = self.__pop_token()
+            declared_type = self.__TYPED_NAME_SUFFIXES[suffix]
+        else:
+            self.BLANK()
+            if self.__peek_token() == "As":
+                self.__pop_token()
+                self.BLANK()
+                builtin_type = self.__pop_token()
+                if builtin_type.category != _TC.KEYWORD:
+                    msg = "Constant must have a builtin type value"
+                    raise self.__craft_error(msg)
+
+                declared_type = self.__BUILTIN_TYPES[builtin_type]
+            else:
+                declared_type = None
+
+        self.BLANK()
+        if self.__pop_token() != "=":
+            raise self.__craft_error("Constant item must have a declared value")
+
+        value = self.constant_expression()
+        if value is None:
+            raise self.__craft_error("Constant item must have a declared value")
+
+        return ConstItem(VIRTUAL_POSITION, name, declared_type, value)
+
+    @_add_rule_position
+    @_with_backtracking
+    def local_constant_declaration(self) -> Optional[LocalConstantDeclaration]:
+        if not self.__peek_token() == "Const":
+            return None
+        self.__pop_token()
+        const_items = self.__const_item_list()
+
+        return LocalConstantDeclaration(VIRTUAL_POSITION, const_items)
+
+    @_add_rule_position
+    @_with_backtracking
+    def re_dim(self) -> Optional[ReDim]:
+        if not self.__peek_token() == "ReDim":
+            return None
+
+        self.__pop_token()
+        self.BLANK()
+        if self.__peek_token() == "Preserve":
+            preserve = True
+            self.__pop_token()
+        else:
+            preserve = False
+
+        variable_declarations = self.__variable_declarations()
+
+        return ReDim(VIRTUAL_POSITION, preserve, variable_declarations)
+
+    def __erase_list(self) -> Tuple[Expression, ...]:
+        erase_elements = []
+        while True:
+            erase_element = self.l_expression()
+            if erase_element is None:
+                raise self.__craft_error("Erase statement needs a valid list")
+
+            erase_elements.append(erase_element)
+            if self.__peek_token() == ",":
+                self.__pop_token()
+            else:
+                break
+
+        return tuple(erase_elements)
+
+    @_add_rule_position
+    @_with_backtracking
+    def erase(self) -> Optional[Erase]:
+        if self.__peek_token() != "Erase":
+            return None
+
+        self.__pop_token()
+        elements = self.__erase_list()
+        return Erase(VIRTUAL_POSITION, elements)
+
+    @_add_rule_position
+    @_with_backtracking
+    def mid(self) -> Optional[Mid]:
+        mode_specifier = self.__peek_token()
+
+        if mode_specifier in ("Mid", "Mid$"):
+            byte_level = False
+        elif mode_specifier in ("MidB", "MidB$"):
+            byte_level = True
+        else:
+            return None
+        self.__pop_token()
+
+        self.BLANK()
+        string_argument, start, length = self.__mid_arguments()
+        self.BLANK()
+
+        if self.__pop_token() != "=":
+            raise self.__craft_error("Mid statement needs a assigned value")
+
+        value = self.expression()
+        if value is None:
+            raise self.__craft_error("Mid statement needs a assigned value")
+
+        return Mid(
+            VIRTUAL_POSITION, byte_level, string_argument, start, length, value
+        )
+
+    def __mid_arguments(
+        self,
+    ) -> Tuple[Expression, Expression, Optional[Expression]]:
+        if self.__pop_token() != "(":
+            raise self.__craft_error("Mid statement needs an argument")
+
+        string_argument = self.bound_variable_expression()
+        if string_argument is None:
+            msg = "Mid statement needs a valid bound variable string argument"
+            raise self.__craft_error(msg)
+
+        if self.__peek_token() == ",":
+            self.__pop_token()
+            start = self.integer_expression()
+            if start is None:
+                msg = "Mid statement start argument must be a valid integer "
+                msg += "expression"
+                raise self.__craft_error(msg)
+
+            if self.__peek_token() == ",":
+                self.__pop_token()
+                length = self.integer_expression()
+                if length is None:
+                    msg = "Mid statement length argument must be a valid "
+                    msg += "integer expression"
+                    raise self.__craft_error(msg)
+            else:
+                length = None
+        else:
+            raise self.__craft_error("Mid statement needs a start argument")
+
+        if self.__pop_token() != ")":
+            msg = "Mid statement misses a closing parenthesis"
+            raise self.__craft_error(msg)
+
+        return string_argument, start, length
+
+    def __lr_set(self, lset: bool) -> Optional[Union[LSet, RSet]]:
+        node_type: Union[Type[LSet], Type[RSet]]
+        if lset:
+            kw = "LSet"
+            node_type = LSet
+        else:
+            kw = "RSet"
+            node_type = RSet
+
+        if self.__peek_token() != kw:
+            return None
+
+        self.__pop_token()
+        variable = self.bound_variable_expression()
+        if variable is None:
+            raise self.__craft_error(f"{kw} statement needs a bound variable")
+
+        if self.__pop_token() != "=":
+            raise self.__craft_error(f"{kw} statement needs a valid value")
+
+        value = self.expression()
+        if value is None:
+            raise self.__craft_error(f"{kw} statement needs a valid value")
+
+        return node_type(VIRTUAL_POSITION, variable, value)
+
+    @_add_rule_position
+    @_with_backtracking
+    def lset(self) -> Optional[RSet]:
+        return self.__lr_set(True)  # type: ignore [return-value]
+
+    @_add_rule_position
+    @_with_backtracking
+    def rset(self) -> Optional[RSet]:
+        return self.__lr_set(False)  # type: ignore [return-value]
+
+    @_add_rule_position
+    @_with_backtracking
+    def let(self) -> Optional[Let]:
+        if self.__peek_token() == "Let":
+            self.__pop_token()
+
+        l_expression = self.l_expression()
+        if l_expression is None:
+            return None
+
+        if self.__pop_token() != "=":
+            return None
+
+        value = self.expression()
+        if value is None:
+            raise self.__craft_error("Let statement needs valid value")
+
+        return Let(VIRTUAL_POSITION, l_expression, value)
+
+    @_add_rule_position
+    @_with_backtracking
+    def set(self) -> Optional[Set]:
+        if not self.__peek_token() == "Set":
+            return None
+
+        self.__pop_tokens(2)
+        l_expression = self.l_expression()
+        if l_expression is None:
+            raise self.__craft_error("Set statement needs a valid l-expression")
+
+        if self.__pop_token() != "=":
+            raise self.__craft_error("Set statement needs assignment")
+
+        value = self.expression()
+        if value is None:
+            raise self.__craft_error("Set statement needs a valid value")
+
+        return Set(VIRTUAL_POSITION, l_expression, value)
+
     # Error statements
 
-    def error_handling_statement(self) -> Optional[OnError]:  # TODO
+    def error_handling_statement(self) -> Optional[ErrorHandlingStatement]:
         return self.__try_rules(  # type: ignore [return-value]
             self.on_error, self.resume, self.error_statement
         )
@@ -797,8 +1261,8 @@ class Parser:
         return Error(VIRTUAL_POSITION, error_number)
 
     # File statements
-    def file_statement(self) -> Optional[Union[Open, Close]]:
-        return self.__try_rules(  # type: ignore
+    def file_statement(self) -> Optional[FileStatement]:
+        return self.__try_rules(  # type: ignore [return-value]
             self.open,
             self.close,
             self.seek,
@@ -1110,9 +1574,7 @@ class Parser:
         clause_argument = None
         char_position = None
 
-        if self.__category_match(_TC.BLANK):
-            self.__pop_token()
-
+        self.BLANK()
         if self.__peek_token() in (",", ";"):
             char_position = {
                 ",": OutputItem.CharPosition.COMMA,
@@ -1126,9 +1588,7 @@ class Parser:
                     ",": OutputItem.CharPosition.COMMA,
                     ";": OutputItem.CharPosition.SEMICOLON,
                 }[self.__pop_token()]
-
-            if self.__category_match(_TC.BLANK):
-                self.__pop_token()
+            self.BLANK()
 
         if (clause_title, clause_argument, char_position) == (None, None, None):
             return None

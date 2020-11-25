@@ -2,7 +2,7 @@ from dataclasses import InitVar, dataclass, field
 from enum import Enum
 from typing import Optional, Tuple, Union
 
-from .data import Variable
+from .data import DeclaredType, Variable
 from .lexer import Token
 from .utils import FilePosition, Visitable
 
@@ -148,6 +148,10 @@ class Operation(Expression):
     operands: Tuple[Expression, ...]
 
 
+LExpression = Union[
+    Name, MemberAccess, IndexExpr, DictAccess, WithMemberAccess, WithDictAccess
+]
+
 # Statements
 
 
@@ -156,11 +160,100 @@ class Statement(AST):
     pass
 
 
-StmtLabel = Union[Name, Literal]
-"""Type of a statement label, either a name or an integer literal"""
+# Data manipulation statements
 
+
+@dataclass(frozen=True)
+class ArrayDimensions(AST):
+    dimensions: Tuple[Tuple[Expression, Optional[Expression]], ...]
+
+
+@dataclass(frozen=True)
+class VariableDeclaration(AST):
+    name: str
+    array_dimensions: Optional[ArrayDimensions]
+    new: bool
+    declared_type: Optional[Union[Expression, DeclaredType]]
+
+
+@dataclass(frozen=True)
+class ConstItem(AST):
+    name: str
+    declared_type: Optional[DeclaredType]
+    value: Expression
+
+
+@dataclass(frozen=True)
+class LocalVariableDeclaration(Statement):
+    static: bool
+    variable_declarations: Tuple[VariableDeclaration, ...]
+
+
+@dataclass(frozen=True)
+class LocalConstantDeclaration(Statement):
+    const_items: Tuple[ConstItem, ...]
+
+
+@dataclass(frozen=True)
+class ReDim(Statement):
+    preserve: bool
+    variable_declarations: Tuple[VariableDeclaration, ...]
+
+
+@dataclass(frozen=True)
+class Erase(Statement):
+    elements: Tuple[Expression, ...]
+
+
+@dataclass(frozen=True)
+class Mid(Statement):
+    byte_level: bool  #: ``True`` for MidB and MidB$, ``False`` else
+    string_argument: Expression
+    start: Expression
+    length: Optional[Expression]
+    value: Expression
+
+
+@dataclass(frozen=True)
+class LSet(Statement):
+    variable: Expression
+    value: Expression
+
+
+@dataclass(frozen=True)
+class RSet(Statement):
+    variable: Expression
+    value: Expression
+
+
+@dataclass(frozen=True)
+class Let(Statement):
+    l_expression: Expression
+    value: Expression
+
+
+@dataclass(frozen=True)
+class Set(Statement):
+    l_expression: Expression
+    value: Expression
+
+
+DataManipulationStatement = Union[
+    LocalVariableDeclaration,
+    LocalConstantDeclaration,
+    ReDim,
+    Erase,
+    Mid,
+    LSet,
+    RSet,
+    Let,
+    Set,
+]
 
 # Error statements
+
+StmtLabel = Union[Name, Literal]
+"""Type of a statement label, either a name or an integer literal"""
 
 
 @dataclass(frozen=True)
@@ -181,6 +274,8 @@ class Resume(Statement):
 class Error(Statement):
     error_number: Expression  #: Integer expression of the error
 
+
+ErrorHandlingStatement = Union[OnError, Resume, Error]
 
 # File statements
 
@@ -297,6 +392,22 @@ class Get(Statement):
     record_number: Optional[Expression]
     variable: Optional[Expression]
 
+
+FileStatement = Union[
+    Open,
+    Close,
+    Seek,
+    Lock,
+    Unlock,
+    LineInput,
+    Width,
+    OutputItem,
+    Print,
+    Write,
+    Input,
+    Put,
+    Get,
+]
 
 # Module level elements
 
