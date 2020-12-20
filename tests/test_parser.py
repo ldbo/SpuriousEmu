@@ -74,8 +74,12 @@ def test_statements():
     parser = Parser(lexer)
     parsed_block = parser.statement_block()
 
-    # export_result("statements", to_dict(parsed_block))
-    assert_result("statements", to_dict(parsed_block))
+    # export_result(
+    #     "statements", to_dict(parsed_block, excluded_fields={"position"})
+    # )
+    assert_result(
+        "statements", to_dict(parsed_block, excluded_fields={"position"})
+    )
 
 
 def test_new_statements():
@@ -86,13 +90,35 @@ def test_new_statements():
     Wend
 
     While False
+
     Wend
+
+    For i = 0 To 12
+
+    Next i
+
+    For j = 12 To 16 Step 5
+        msgBox j
+    Next
+
+    For nasty = 0 to 1
+        For amnesty = 12 To 10
+            msgBox amnesty
+        Next amnesty
+    Next nasty
     """
     lexer = Lexer(code)
     parser = Parser(lexer)
 
     print()
-    block = parser.statement_block()
+    try:
+        block = parser.statement_block()
+    except ParserError as error:
+        print(f"Error: {error}")
+        print(f"Next token: {lexer.peek_token()}")
+        import ipdb
+
+        ipdb.set_trace()
 
     from pprint import pprint
 

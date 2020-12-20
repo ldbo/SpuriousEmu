@@ -904,14 +904,73 @@ class Parser:
             raise self.__craft_error(msg)
 
         body = self.statement_block()
+        if body is None:
+            raise self.__craft_error("While loop needs a valid body")
 
         if self.__pop_token() != "Wend":
             raise self.__craft_error("While loop must end with Wend footer")
 
         return While(VIRTUAL_POSITION, body, condition)
 
+    @_add_rule_position
+    @_with_backtracking
     def for_(self) -> Optional[For]:
-        return None
+        if self.__pop_token() != "For":
+            return None
+
+        # Header
+        iterator, start_value, end_value, step_value = self.__for_header()
+
+        # Body
+        self.BLANK()
+        if self.__pop_token().category != _TC.END_OF_STATEMENT:
+            msg = "For loop header must be followed by a newline"
+            raise self.__craft_error(msg)
+
+        body = self.statement_block()
+        if body is None:
+            raise self.__craft_error("For loop needs a valid body")
+
+        # Footer
+        if self.__pop_token() != "Next":
+            raise self.__craft_error("For loop needs a Next footer")
+
+        self.bound_variable_expression()
+
+        return For(
+            VIRTUAL_POSITION, body, iterator, start_value, end_value, step_value
+        )
+
+    def __for_header(
+        self,
+    ) -> Tuple[Expression, Expression, Expression, Optional[Expression]]:
+        iterator = self.bound_variable_expression()
+        if iterator is None:
+            raise self.__craft_error("For loop needs a valid iterator")
+
+        if self.__pop_token() != "=":
+            raise self.__craft_error("Iterator needs an initial value")
+
+        start_value = self.expression()
+        if start_value is None:
+            raise self.__craft_error("Iterator needs a valid initial value")
+
+        if self.__pop_token() != "To":
+            raise self.__craft_error("Iterator needs a final value")
+
+        end_value = self.expression()
+        if end_value is None:
+            raise self.__craft_error("Iterator needs a valid final value")
+
+        if self.__peek_token() == "Step":
+            self.__pop_token()
+            step_value = self.expression()
+            if step_value is None:
+                raise self.__craft_error("Iterator needs a valid step value")
+        else:
+            step_value = None
+
+        return iterator, start_value, end_value, step_value
 
     def for_each(self) -> Optional[ForEach]:
         return None

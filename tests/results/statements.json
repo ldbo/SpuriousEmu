@@ -1,15 +1,5 @@
 {
   "TYPE": "StatementBlock",
-  "position": {
-    "TYPE": "FilePosition",
-    "end_column": 31,
-    "end_index": 1793,
-    "end_line": 63,
-    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-    "start_column": 1,
-    "start_index": 0,
-    "start_line": 1
-  },
   "statements": [
     {
       "TYPE": "Call",
@@ -17,52 +7,12 @@
         "TYPE": "IndexExpr",
         "args": {
           "TYPE": "ArgList",
-          "args": [],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": -1,
-            "end_index": -1,
-            "end_line": -1,
-            "file_name": "",
-            "start_column": -1,
-            "start_index": -1,
-            "start_line": -1
-          }
+          "args": []
         },
         "expr": {
           "TYPE": "Name",
-          "name": "jean",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 14,
-            "end_index": 13,
-            "end_line": 1,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 10,
-            "start_index": 9,
-            "start_line": 1
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
+          "name": "jean"
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 14,
-        "end_index": 13,
-        "end_line": 1,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 4,
-        "start_line": 1
       }
     },
     {
@@ -78,27 +28,7 @@
               "byval": false,
               "expr": {
                 "TYPE": "Name",
-                "name": "a",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 16,
-                  "end_index": 29,
-                  "end_line": 2,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 15,
-                  "start_index": 28,
-                  "start_line": 2
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 16,
-                "end_index": 29,
-                "end_line": 2,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 15,
-                "start_index": 28,
-                "start_line": 2
+                "name": "a"
               }
             },
             {
@@ -107,27 +37,7 @@
               "byval": false,
               "expr": {
                 "TYPE": "Name",
-                "name": "b",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 19,
-                  "end_index": 32,
-                  "end_line": 2,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 18,
-                  "start_index": 31,
-                  "start_line": 2
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 19,
-                "end_index": 32,
-                "end_line": 2,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 18,
-                "start_index": 31,
-                "start_line": 2
+                "name": "b"
               }
             },
             {
@@ -136,75 +46,15 @@
               "byval": false,
               "expr": {
                 "TYPE": "Name",
-                "name": "c",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 22,
-                  "end_index": 35,
-                  "end_line": 2,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 21,
-                  "start_index": 34,
-                  "start_line": 2
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 22,
-                "end_index": 35,
-                "end_line": 2,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 21,
-                "start_index": 34,
-                "start_line": 2
+                "name": "c"
               }
             }
-          ],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 22,
-            "end_index": 35,
-            "end_line": 2,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 15,
-            "start_index": 28,
-            "start_line": 2
-          }
+          ]
         },
         "expr": {
           "TYPE": "Name",
-          "name": "jean",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 14,
-            "end_index": 27,
-            "end_line": 2,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 10,
-            "start_index": 23,
-            "start_line": 2
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 23,
-          "end_index": 36,
-          "end_line": 2,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 14,
-          "start_index": 27,
-          "start_line": 2
+          "name": "jean"
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 23,
-        "end_index": 36,
-        "end_line": 2,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 18,
-        "start_line": 2
       }
     },
     {
@@ -213,52 +63,12 @@
         "TYPE": "IndexExpr",
         "args": {
           "TYPE": "ArgList",
-          "args": [],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 1,
-            "end_index": 48,
-            "end_line": 4,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 47,
-            "start_line": 3
-          }
+          "args": []
         },
         "expr": {
           "TYPE": "Name",
-          "name": "msgBox",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 11,
-            "end_index": 47,
-            "end_line": 3,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 5,
-            "start_index": 41,
-            "start_line": 3
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
+          "name": "msgBox"
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 11,
-        "end_index": 47,
-        "end_line": 3,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 41,
-        "start_line": 3
       }
     },
     {
@@ -283,16 +93,6 @@
                       "byval": false,
                       "expr": {
                         "TYPE": "Literal",
-                        "position": {
-                          "TYPE": "FilePosition",
-                          "end_column": 22,
-                          "end_index": 69,
-                          "end_line": 4,
-                          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                          "start_column": 20,
-                          "start_index": 67,
-                          "start_line": 4
-                        },
                         "variable": {
                           "TYPE": "Variable",
                           "declared_type": "Integer",
@@ -301,112 +101,22 @@
                             "value": 12
                           }
                         }
-                      },
-                      "position": {
-                        "TYPE": "FilePosition",
-                        "end_column": 22,
-                        "end_index": 69,
-                        "end_line": 4,
-                        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                        "start_column": 20,
-                        "start_index": 67,
-                        "start_line": 4
                       }
                     }
-                  ],
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 22,
-                    "end_index": 69,
-                    "end_line": 4,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 20,
-                    "start_index": 67,
-                    "start_line": 4
-                  }
+                  ]
                 },
                 "expr": {
                   "TYPE": "Name",
-                  "name": "jacques",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 19,
-                    "end_index": 66,
-                    "end_line": 4,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 12,
-                    "start_index": 59,
-                    "start_line": 4
-                  }
-                },
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 23,
-                  "end_index": 70,
-                  "end_line": 4,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 19,
-                  "start_index": 66,
-                  "start_line": 4
+                  "name": "jacques"
                 }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 23,
-                "end_index": 70,
-                "end_line": 4,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 19,
-                "start_index": 66,
-                "start_line": 4
               }
             }
-          ],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 23,
-            "end_index": 70,
-            "end_line": 4,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 19,
-            "start_index": 66,
-            "start_line": 4
-          }
+          ]
         },
         "expr": {
           "TYPE": "Name",
-          "name": "msgBox",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 11,
-            "end_index": 58,
-            "end_line": 4,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 5,
-            "start_index": 52,
-            "start_line": 4
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
+          "name": "msgBox"
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 23,
-        "end_index": 70,
-        "end_line": 4,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 52,
-        "start_line": 4
       }
     },
     {
@@ -422,27 +132,7 @@
               "byval": false,
               "expr": {
                 "TYPE": "Name",
-                "name": "abcd",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 16,
-                  "end_index": 86,
-                  "end_line": 5,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 12,
-                  "start_index": 82,
-                  "start_line": 5
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 16,
-                "end_index": 86,
-                "end_line": 5,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 12,
-                "start_index": 82,
-                "start_line": 5
+                "name": "abcd"
               }
             },
             {
@@ -451,89 +141,19 @@
               "byval": false,
               "expr": {
                 "TYPE": "Name",
-                "name": "efgh",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 22,
-                  "end_index": 92,
-                  "end_line": 5,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 18,
-                  "start_index": 88,
-                  "start_line": 5
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 22,
-                "end_index": 92,
-                "end_line": 5,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 18,
-                "start_index": 88,
-                "start_line": 5
+                "name": "efgh"
               }
             }
-          ],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 22,
-            "end_index": 92,
-            "end_line": 5,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 12,
-            "start_index": 82,
-            "start_line": 5
-          }
+          ]
         },
         "expr": {
           "TYPE": "Name",
-          "name": "msgBox",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 11,
-            "end_index": 81,
-            "end_line": 5,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 5,
-            "start_index": 75,
-            "start_line": 5
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
+          "name": "msgBox"
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 22,
-        "end_index": 92,
-        "end_line": 5,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 75,
-        "start_line": 5
       }
     },
     {
       "TYPE": "LocalVariableDeclaration",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 24,
-        "end_index": 116,
-        "end_line": 6,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 97,
-        "start_line": 6
-      },
       "static": false,
       "variable_declarations": [
         {
@@ -541,32 +161,12 @@
           "array_dimensions": null,
           "declared_type": null,
           "name": "variable",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 116,
-            "end_line": 6,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 16,
-            "start_index": 108,
-            "start_line": 6
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "LocalVariableDeclaration",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 28,
-        "end_index": 144,
-        "end_line": 7,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 121,
-        "start_line": 7
-      },
       "static": false,
       "variable_declarations": [
         {
@@ -574,66 +174,26 @@
           "array_dimensions": null,
           "declared_type": "Integer",
           "name": "a",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 21,
-            "end_index": 137,
-            "end_line": 7,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 9,
-            "start_index": 125,
-            "start_line": 7
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": null,
           "declared_type": null,
           "name": "b",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 140,
-            "end_line": 7,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 22,
-            "start_index": 138,
-            "start_line": 7
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": null,
           "declared_type": "Integer",
           "name": "c",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 28,
-            "end_index": 144,
-            "end_line": 7,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 25,
-            "start_index": 141,
-            "start_line": 7
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "LocalVariableDeclaration",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 39,
-        "end_index": 183,
-        "end_line": 8,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 149,
-        "start_line": 8
-      },
       "static": true,
       "variable_declarations": [
         {
@@ -641,34 +201,14 @@
           "array_dimensions": null,
           "declared_type": "Long",
           "name": "abcd",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 168,
-            "end_line": 8,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 12,
-            "start_index": 156,
-            "start_line": 8
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": null,
           "declared_type": "String",
           "name": "def",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 39,
-            "end_index": 183,
-            "end_line": 8,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 25,
-            "start_index": 169,
-            "start_line": 8
-          }
+          "new": false
         }
       ]
     },
@@ -679,28 +219,8 @@
           "TYPE": "ConstItem",
           "declared_type": null,
           "name": "a",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 16,
-            "end_index": 199,
-            "end_line": 9,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 194,
-            "start_line": 9
-          },
           "value": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 16,
-              "end_index": 199,
-              "end_line": 9,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 198,
-              "start_line": 9
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -715,28 +235,8 @@
           "TYPE": "ConstItem",
           "declared_type": "Long",
           "name": "b",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 32,
-            "end_index": 215,
-            "end_line": 9,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 18,
-            "start_index": 201,
-            "start_line": 9
-          },
           "value": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 32,
-              "end_index": 215,
-              "end_line": 9,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 30,
-              "start_index": 213,
-              "start_line": 9
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -751,28 +251,8 @@
           "TYPE": "ConstItem",
           "declared_type": "Single",
           "name": "c",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 41,
-            "end_index": 224,
-            "end_line": 9,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 34,
-            "start_index": 217,
-            "start_line": 9
-          },
           "value": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 41,
-              "end_index": 224,
-              "end_line": 9,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 39,
-              "start_index": 222,
-              "start_line": 9
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -783,288 +263,98 @@
             }
           }
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 41,
-        "end_index": 224,
-        "end_line": 9,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 188,
-        "start_line": 9
-      }
+      ]
     },
     {
       "TYPE": "ReDim",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 20,
-        "end_index": 244,
-        "end_line": 10,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 229,
-        "start_line": 10
-      },
       "preserve": false,
       "variable_declarations": [
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 20,
-              "end_index": 244,
-              "end_line": 10,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 18,
-              "start_index": 242,
-              "start_line": 10
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "MyArray",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 20,
-            "end_index": 244,
-            "end_line": 10,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 235,
-            "start_line": 10
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "ReDim",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 39,
-        "end_index": 283,
-        "end_line": 11,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 249,
-        "start_line": 11
-      },
       "preserve": false,
       "variable_declarations": [
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 19,
-              "end_index": 263,
-              "end_line": 11,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 17,
-              "start_index": 261,
-              "start_line": 11
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "Array1",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 19,
-            "end_index": 263,
-            "end_line": 11,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 255,
-            "start_line": 11
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 29,
-              "end_index": 273,
-              "end_line": 11,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 27,
-              "start_index": 271,
-              "start_line": 11
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "Array2",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 29,
-            "end_index": 273,
-            "end_line": 11,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 20,
-            "start_index": 264,
-            "start_line": 11
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 39,
-              "end_index": 283,
-              "end_line": 11,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 37,
-              "start_index": 281,
-              "start_line": 11
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "Array3",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 39,
-            "end_index": 283,
-            "end_line": 11,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 30,
-            "start_index": 274,
-            "start_line": 11
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "ReDim",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 48,
-        "end_index": 331,
-        "end_line": 12,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 288,
-        "start_line": 12
-      },
       "preserve": true,
       "variable_declarations": [
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 28,
-              "end_index": 311,
-              "end_line": 12,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 26,
-              "start_index": 309,
-              "start_line": 12
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "Array1",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 28,
-            "end_index": 311,
-            "end_line": 12,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 19,
-            "start_index": 302,
-            "start_line": 12
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 38,
-              "end_index": 321,
-              "end_line": 12,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 36,
-              "start_index": 319,
-              "start_line": 12
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "Array2",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 38,
-            "end_index": 321,
-            "end_line": 12,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 29,
-            "start_index": 312,
-            "start_line": 12
-          }
+          "new": false
         },
         {
           "TYPE": "VariableDeclaration",
           "array_dimensions": {
             "TYPE": "ArrayDimensions",
-            "dimensions": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 48,
-              "end_index": 331,
-              "end_line": 12,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 46,
-              "start_index": 329,
-              "start_line": 12
-            }
+            "dimensions": []
           },
           "declared_type": null,
           "name": "Array3",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 48,
-            "end_index": 331,
-            "end_line": 12,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 39,
-            "start_index": 322,
-            "start_line": 12
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "ReDim",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 29,
-        "end_index": 360,
-        "end_line": 13,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 336,
-        "start_line": 13
-      },
       "preserve": false,
       "variable_declarations": [
         {
@@ -1075,16 +365,6 @@
               [
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 16,
-                    "end_index": 347,
-                    "end_line": 13,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 15,
-                    "start_index": 346,
-                    "start_line": 13
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1099,16 +379,6 @@
               [
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 19,
-                    "end_index": 350,
-                    "end_line": 13,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 18,
-                    "start_index": 349,
-                    "start_line": 13
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1120,16 +390,6 @@
                 },
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 25,
-                    "end_index": 356,
-                    "end_line": 13,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 23,
-                    "start_index": 354,
-                    "start_line": 13
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1143,16 +403,6 @@
               [
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 28,
-                    "end_index": 359,
-                    "end_line": 13,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 27,
-                    "start_index": 358,
-                    "start_line": 13
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1164,46 +414,16 @@
                 },
                 null
               ]
-            ],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 29,
-              "end_index": 360,
-              "end_line": 13,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 14,
-              "start_index": 345,
-              "start_line": 13
-            }
+            ]
           },
           "declared_type": null,
           "name": "arr",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 29,
-            "end_index": 360,
-            "end_line": 13,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 342,
-            "start_line": 13
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "ReDim",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 29,
-        "end_index": 389,
-        "end_line": 14,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 365,
-        "start_line": 14
-      },
       "preserve": false,
       "variable_declarations": [
         {
@@ -1214,16 +434,6 @@
               [
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 17,
-                    "end_index": 377,
-                    "end_line": 14,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 15,
-                    "start_index": 375,
-                    "start_line": 14
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1235,46 +445,16 @@
                 },
                 null
               ]
-            ],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 18,
-              "end_index": 378,
-              "end_line": 14,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 14,
-              "start_index": 374,
-              "start_line": 14
-            }
+            ]
           },
           "declared_type": "Integer",
           "name": "arr",
-          "new": false,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 29,
-            "end_index": 389,
-            "end_line": 14,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 371,
-            "start_line": 14
-          }
+          "new": false
         }
       ]
     },
     {
       "TYPE": "ReDim",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 41,
-        "end_index": 430,
-        "end_line": 15,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 394,
-        "start_line": 15
-      },
       "preserve": false,
       "variable_declarations": [
         {
@@ -1285,16 +465,6 @@
               [
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 19,
-                    "end_index": 408,
-                    "end_line": 15,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 17,
-                    "start_index": 406,
-                    "start_line": 15
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1306,16 +476,6 @@
                 },
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 25,
-                    "end_index": 414,
-                    "end_line": 15,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 23,
-                    "start_index": 412,
-                    "start_line": 15
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1326,44 +486,14 @@
                   }
                 }
               ]
-            ],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 26,
-              "end_index": 415,
-              "end_line": 15,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 16,
-              "start_index": 405,
-              "start_line": 15
-            }
+            ]
           },
           "declared_type": {
             "TYPE": "Name",
-            "name": "MyClass",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 41,
-              "end_index": 430,
-              "end_line": 15,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 34,
-              "start_index": 423,
-              "start_line": 15
-            }
+            "name": "MyClass"
           },
           "name": "array",
-          "new": true,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 41,
-            "end_index": 430,
-            "end_line": 15,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 400,
-            "start_line": 15
-          }
+          "new": true
         }
       ]
     },
@@ -1372,102 +502,32 @@
       "elements": [
         {
           "TYPE": "Name",
-          "name": "a",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 12,
-            "end_index": 442,
-            "end_line": 16,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 441,
-            "start_line": 16
-          }
+          "name": "a"
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 12,
-        "end_index": 442,
-        "end_line": 16,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 435,
-        "start_line": 16
-      }
+      ]
     },
     {
       "TYPE": "Erase",
       "elements": [
         {
           "TYPE": "Name",
-          "name": "a",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 12,
-            "end_index": 454,
-            "end_line": 17,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 453,
-            "start_line": 17
-          }
+          "name": "a"
         },
         {
           "TYPE": "Name",
-          "name": "b",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 15,
-            "end_index": 457,
-            "end_line": 17,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 456,
-            "start_line": 17
-          }
+          "name": "b"
         },
         {
           "TYPE": "Name",
-          "name": "c",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 18,
-            "end_index": 460,
-            "end_line": 17,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 17,
-            "start_index": 459,
-            "start_line": 17
-          }
+          "name": "c"
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 18,
-        "end_index": 460,
-        "end_line": 17,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 447,
-        "start_line": 17
-      }
+      ]
     },
     {
       "TYPE": "Mid",
       "byte_level": false,
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 19,
-          "end_index": 479,
-          "end_line": 18,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 18,
-          "start_index": 478,
-          "start_line": 18
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -1477,28 +537,8 @@
           }
         }
       },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 28,
-        "end_index": 488,
-        "end_line": 18,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 465,
-        "start_line": 18
-      },
       "start": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 16,
-          "end_index": 476,
-          "end_line": 18,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 14,
-          "start_index": 474,
-          "start_line": 18
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -1510,30 +550,10 @@
       },
       "string_argument": {
         "TYPE": "Name",
-        "name": "str",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 12,
-          "end_index": 472,
-          "end_line": 18,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 9,
-          "start_index": 469,
-          "start_line": 18
-        }
+        "name": "str"
       },
       "value": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 28,
-          "end_index": 488,
-          "end_line": 18,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 23,
-          "start_index": 483,
-          "start_line": 18
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "String",
@@ -1548,28 +568,8 @@
       "TYPE": "Mid",
       "byte_level": true,
       "length": null,
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 32,
-        "end_index": 520,
-        "end_line": 19,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 493,
-        "start_line": 19
-      },
       "start": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 18,
-          "end_index": 506,
-          "end_line": 19,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 17,
-          "start_index": 505,
-          "start_line": 19
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -1581,47 +581,17 @@
       },
       "string_argument": {
         "TYPE": "Name",
-        "name": "name",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 15,
-          "end_index": 503,
-          "end_line": 19,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 11,
-          "start_index": 499,
-          "start_line": 19
-        }
+        "name": "name"
       },
       "value": {
         "TYPE": "Operation",
         "operands": [
           {
             "TYPE": "Name",
-            "name": "str",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 25,
-              "end_index": 513,
-              "end_line": 19,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 22,
-              "start_index": 510,
-              "start_line": 19
-            }
+            "name": "str"
           },
           {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 32,
-              "end_index": 520,
-              "end_line": 19,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 28,
-              "start_index": 516,
-              "start_line": 19
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -1634,54 +604,14 @@
         ],
         "operator": {
           "TYPE": "Operator",
-          "op": "<Type.PLUS>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 27,
-            "end_index": 515,
-            "end_line": 19,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 26,
-            "start_index": 514,
-            "start_line": 19
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 32,
-          "end_index": 520,
-          "end_line": 19,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 22,
-          "start_index": 510,
-          "start_line": 19
+          "op": "<Type.PLUS>"
         }
       }
     },
     {
       "TYPE": "LSet",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 19,
-        "end_index": 539,
-        "end_line": 20,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 525,
-        "start_line": 20
-      },
       "value": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 19,
-          "end_index": 539,
-          "end_line": 20,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 14,
-          "start_index": 534,
-          "start_line": 20
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "String",
@@ -1693,43 +623,13 @@
       },
       "variable": {
         "TYPE": "Name",
-        "name": "b",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 531,
-          "end_line": 20,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 530,
-          "start_line": 20
-        }
+        "name": "b"
       }
     },
     {
       "TYPE": "RSet",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 20,
-        "end_index": 559,
-        "end_line": 21,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 544,
-        "start_line": 21
-      },
       "value": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 20,
-          "end_index": 559,
-          "end_line": 21,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 14,
-          "start_index": 553,
-          "start_line": 21
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "String",
@@ -1741,44 +641,14 @@
       },
       "variable": {
         "TYPE": "Name",
-        "name": "a",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 550,
-          "end_line": 21,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 549,
-          "start_line": 21
-        }
+        "name": "a"
       }
     },
     {
       "TYPE": "Let",
       "l_expression": {
         "TYPE": "Name",
-        "name": "a",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 10,
-          "end_index": 569,
-          "end_line": 22,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 9,
-          "start_index": 568,
-          "start_line": 22
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 23,
-        "end_index": 582,
-        "end_line": 22,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 564,
-        "start_line": 22
+        "name": "a"
       },
       "value": {
         "TYPE": "Operation",
@@ -1787,82 +657,22 @@
             "TYPE": "IndexExpr",
             "args": {
               "TYPE": "ArgList",
-              "args": [],
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 17,
-                "end_index": 576,
-                "end_line": 22,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 16,
-                "start_index": 575,
-                "start_line": 22
-              }
+              "args": []
             },
             "expr": {
               "TYPE": "MemberAccess",
               "expr": {
                 "TYPE": "Name",
-                "name": "b",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 14,
-                  "end_index": 573,
-                  "end_line": 22,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 13,
-                  "start_index": 572,
-                  "start_line": 22
-                }
+                "name": "b"
               },
               "field": {
                 "TYPE": "Name",
-                "name": "c",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 16,
-                  "end_index": 575,
-                  "end_line": 22,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 15,
-                  "start_index": 574,
-                  "start_line": 22
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 16,
-                "end_index": 575,
-                "end_line": 22,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 13,
-                "start_index": 572,
-                "start_line": 22
+                "name": "c"
               }
-            },
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 17,
-              "end_index": 576,
-              "end_line": 22,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 16,
-              "start_index": 575,
-              "start_line": 22
             }
           },
           {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 23,
-              "end_index": 582,
-              "end_line": 22,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 21,
-              "start_index": 580,
-              "start_line": 22
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -1875,27 +685,7 @@
         ],
         "operator": {
           "TYPE": "Operator",
-          "op": "<Type.PLUS>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 20,
-            "end_index": 579,
-            "end_line": 22,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 19,
-            "start_index": 578,
-            "start_line": 22
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 23,
-          "end_index": 582,
-          "end_line": 22,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 16,
-          "start_index": 575,
-          "start_line": 22
+          "op": "<Type.PLUS>"
         }
       }
     },
@@ -1905,50 +695,20 @@
         "TYPE": "IndexExpr",
         "args": {
           "TYPE": "ArgList",
-          "args": [],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 1,
-            "end_index": 598,
-            "end_line": 24,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 15,
-            "start_index": 597,
-            "start_line": 23
-          }
+          "args": []
         },
         "expr": {
           "TYPE": "Operation",
           "operands": [
             {
               "TYPE": "Name",
-              "name": "b",
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 6,
-                "end_index": 588,
-                "end_line": 23,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 5,
-                "start_index": 587,
-                "start_line": 23
-              }
+              "name": "b"
             },
             {
               "TYPE": "Operation",
               "operands": [
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 10,
-                    "end_index": 592,
-                    "end_line": 23,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 9,
-                    "start_index": 591,
-                    "start_line": 23
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1960,16 +720,6 @@
                 },
                 {
                   "TYPE": "Literal",
-                  "position": {
-                    "TYPE": "FilePosition",
-                    "end_column": 15,
-                    "end_index": 597,
-                    "end_line": 23,
-                    "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                    "start_column": 13,
-                    "start_index": 595,
-                    "start_line": 23
-                  },
                   "variable": {
                     "TYPE": "Variable",
                     "declared_type": "Integer",
@@ -1982,75 +732,15 @@
               ],
               "operator": {
                 "TYPE": "Operator",
-                "op": "<Type.PLUS>",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 12,
-                  "end_index": 594,
-                  "end_line": 23,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 11,
-                  "start_index": 593,
-                  "start_line": 23
-                }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 15,
-                "end_index": 597,
-                "end_line": 23,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 9,
-                "start_index": 591,
-                "start_line": 23
+                "op": "<Type.PLUS>"
               }
             }
           ],
           "operator": {
             "TYPE": "Operator",
-            "op": "<Type.EQ>",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 8,
-              "end_index": 590,
-              "end_line": 23,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 7,
-              "start_index": 589,
-              "start_line": 23
-            }
-          },
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 15,
-            "end_index": 597,
-            "end_line": 23,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 5,
-            "start_index": 587,
-            "start_line": 23
+            "op": "<Type.EQ>"
           }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 15,
-        "end_index": 597,
-        "end_line": 23,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 587,
-        "start_line": 23
       }
     },
     {
@@ -2066,16 +756,6 @@
               "byval": false,
               "expr": {
                 "TYPE": "Literal",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 15,
-                  "end_index": 612,
-                  "end_line": 24,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 13,
-                  "start_index": 610,
-                  "start_line": 24
-                },
                 "variable": {
                   "TYPE": "Variable",
                   "declared_type": "Integer",
@@ -2084,16 +764,6 @@
                     "value": 12
                   }
                 }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 15,
-                "end_index": 612,
-                "end_line": 24,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 13,
-                "start_index": 610,
-                "start_line": 24
               }
             },
             {
@@ -2102,16 +772,6 @@
               "byval": false,
               "expr": {
                 "TYPE": "Literal",
-                "position": {
-                  "TYPE": "FilePosition",
-                  "end_column": 19,
-                  "end_index": 616,
-                  "end_line": 24,
-                  "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                  "start_column": 17,
-                  "start_index": 614,
-                  "start_line": 24
-                },
                 "variable": {
                   "TYPE": "Variable",
                   "declared_type": "Integer",
@@ -2120,104 +780,24 @@
                     "value": 14
                   }
                 }
-              },
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 19,
-                "end_index": 616,
-                "end_line": 24,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 17,
-                "start_index": 614,
-                "start_line": 24
               }
             }
-          ],
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 19,
-            "end_index": 616,
-            "end_line": 24,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 13,
-            "start_index": 610,
-            "start_line": 24
-          }
+          ]
         },
         "expr": {
           "TYPE": "MemberAccess",
           "expr": {
             "TYPE": "Name",
-            "name": "a",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 10,
-              "end_index": 607,
-              "end_line": 24,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 9,
-              "start_index": 606,
-              "start_line": 24
-            }
+            "name": "a"
           },
           "field": {
             "TYPE": "Name",
-            "name": "b",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 12,
-              "end_index": 609,
-              "end_line": 24,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 11,
-              "start_index": 608,
-              "start_line": 24
-            }
-          },
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 12,
-            "end_index": 609,
-            "end_line": 24,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 9,
-            "start_index": 606,
-            "start_line": 24
+            "name": "b"
           }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 20,
-          "end_index": 617,
-          "end_line": 24,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 609,
-          "start_line": 24
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 25,
-        "end_index": 622,
-        "end_line": 24,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 602,
-        "start_line": 24
       },
       "value": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 25,
-          "end_index": 622,
-          "end_line": 24,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 23,
-          "start_index": 620,
-          "start_line": 24
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2232,57 +812,17 @@
       "TYPE": "OnError",
       "goto_label": {
         "TYPE": "Name",
-        "name": "abcd",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 23,
-          "end_index": 645,
-          "end_line": 25,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 19,
-          "start_index": 641,
-          "start_line": 25
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 23,
-        "end_index": 645,
-        "end_line": 25,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 627,
-        "start_line": 25
+        "name": "abcd"
       }
     },
     {
       "TYPE": "OnError",
-      "goto_label": null,
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 46,
-        "end_index": 668,
-        "end_line": 25,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 26,
-        "start_index": 648,
-        "start_line": 25
-      }
+      "goto_label": null
     },
     {
       "TYPE": "OnError",
       "goto_label": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 22,
-          "end_index": 690,
-          "end_line": 26,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 19,
-          "start_index": 687,
-          "start_line": 26
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2291,56 +831,16 @@
             "value": 123
           }
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 22,
-        "end_index": 690,
-        "end_line": 26,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 673,
-        "start_line": 26
       }
     },
     {
       "TYPE": "Resume",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 16,
-        "end_index": 708,
-        "end_line": 27,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 697,
-        "start_line": 27
-      },
       "stmt_label": null
     },
     {
       "TYPE": "Resume",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 28,
-        "end_index": 720,
-        "end_line": 27,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 19,
-        "start_index": 711,
-        "start_line": 27
-      },
       "stmt_label": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 28,
-          "end_index": 720,
-          "end_line": 27,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 26,
-          "start_index": 718,
-          "start_line": 27
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2353,72 +853,22 @@
     },
     {
       "TYPE": "Resume",
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 42,
-        "end_index": 734,
-        "end_line": 27,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 31,
-        "start_index": 723,
-        "start_line": 27
-      },
       "stmt_label": {
         "TYPE": "Name",
-        "name": "abcd",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 42,
-          "end_index": 734,
-          "end_line": 27,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 38,
-          "start_index": 730,
-          "start_line": 27
-        }
+        "name": "abcd"
       }
     },
     {
       "TYPE": "Error",
       "error_number": {
         "TYPE": "Name",
-        "name": "abcd",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 55,
-          "end_index": 747,
-          "end_line": 27,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 51,
-          "start_index": 743,
-          "start_line": 27
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 56,
-        "end_index": 748,
-        "end_line": 27,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 45,
-        "start_index": 737,
-        "start_line": 27
+        "name": "abcd"
       }
     },
     {
       "TYPE": "Error",
       "error_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 67,
-          "end_index": 759,
-          "end_line": 27,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 64,
-          "start_index": 756,
-          "start_line": 27
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2427,16 +877,6 @@
             "value": 123
           }
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 67,
-        "end_index": 759,
-        "end_line": 27,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 58,
-        "start_index": 750,
-        "start_line": 27
       }
     },
     {
@@ -2444,16 +884,6 @@
       "access": "<Access.READ_WRITE>",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 19,
-          "end_index": 778,
-          "end_line": 28,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 17,
-          "start_index": 776,
-          "start_line": 28
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2465,16 +895,6 @@
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2488,27 +908,7 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "hey",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 772,
-          "end_line": 28,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 769,
-          "start_line": 28
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 19,
-        "end_index": 778,
-        "end_line": 28,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 764,
-        "start_line": 28
+        "name": "hey"
       }
     },
     {
@@ -2521,16 +921,6 @@
           "operands": [
             {
               "TYPE": "Literal",
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 65,
-                "end_index": 843,
-                "end_line": 29,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 63,
-                "start_index": 841,
-                "start_line": 29
-              },
               "variable": {
                 "TYPE": "Variable",
                 "declared_type": "Integer",
@@ -2542,16 +932,6 @@
             },
             {
               "TYPE": "Literal",
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 74,
-                "end_index": 852,
-                "end_line": 29,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 68,
-                "start_index": 846,
-                "start_line": 29
-              },
               "variable": {
                 "TYPE": "Variable",
                 "declared_type": "String",
@@ -2564,52 +944,12 @@
           ],
           "operator": {
             "TYPE": "Operator",
-            "op": "<Type.PLUS>",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 67,
-              "end_index": 845,
-              "end_line": 29,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 66,
-              "start_index": 844,
-              "start_line": 29
-            }
-          },
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 74,
-            "end_index": 852,
-            "end_line": 29,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 63,
-            "start_index": 841,
-            "start_line": 29
+            "op": "<Type.PLUS>"
           }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 75,
-          "end_index": 853,
-          "end_line": 29,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 62,
-          "start_index": 840,
-          "start_line": 29
         }
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 12,
-          "end_index": 867,
-          "end_line": 30,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 11,
-          "start_index": 866,
-          "start_line": 30
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2623,16 +963,6 @@
       "mode": "<Mode.BINARY>",
       "path_name": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 25,
-          "end_index": 803,
-          "end_line": 29,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 788,
-          "start_line": 29
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "String",
@@ -2641,16 +971,6 @@
             "value": "hi my name is"
           }
         }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 12,
-        "end_index": 867,
-        "end_line": 30,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 783,
-        "start_line": 29
       }
     },
     {
@@ -2658,30 +978,10 @@
       "access": "<Access.WRITE>",
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 45,
-          "end_index": 912,
-          "end_line": 31,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 44,
-          "start_index": 911,
-          "start_line": 31
-        }
+        "name": "f"
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2695,27 +995,7 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "s",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 878,
-          "end_line": 31,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 877,
-          "start_line": 31
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 45,
-        "end_index": 912,
-        "end_line": 31,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 872,
-        "start_line": 31
+        "name": "s"
       }
     },
     {
@@ -2723,30 +1003,10 @@
       "access": "<Access.READ_WRITE>",
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 44,
-          "end_index": 956,
-          "end_line": 32,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 43,
-          "start_index": 955,
-          "start_line": 32
-        }
+        "name": "f"
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2760,27 +1020,7 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "s",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 923,
-          "end_line": 32,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 922,
-          "start_line": 32
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 44,
-        "end_index": 956,
-        "end_line": 32,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 917,
-        "start_line": 32
+        "name": "s"
       }
     },
     {
@@ -2788,30 +1028,10 @@
       "access": "<Access.READ_WRITE>",
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 28,
-          "end_index": 984,
-          "end_line": 33,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 27,
-          "start_index": 983,
-          "start_line": 33
-        }
+        "name": "f"
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2825,27 +1045,7 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "s",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 967,
-          "end_line": 33,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 966,
-          "start_line": 33
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 28,
-        "end_index": 984,
-        "end_line": 33,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 961,
-        "start_line": 33
+        "name": "s"
       }
     },
     {
@@ -2853,30 +1053,10 @@
       "access": "<Access.READ_WRITE>",
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 25,
-          "end_index": 1009,
-          "end_line": 34,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 24,
-          "start_index": 1008,
-          "start_line": 34
-        }
+        "name": "f"
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2890,27 +1070,7 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "s",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 995,
-          "end_line": 34,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 994,
-          "start_line": 34
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 25,
-        "end_index": 1009,
-        "end_line": 34,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 989,
-        "start_line": 34
+        "name": "s"
       }
     },
     {
@@ -2918,30 +1078,10 @@
       "access": "<Access.READ_WRITE>",
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 16,
-          "end_index": 1025,
-          "end_line": 35,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 15,
-          "start_index": 1024,
-          "start_line": 35
-        }
+        "name": "f"
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 23,
-          "end_index": 1032,
-          "end_line": 35,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 21,
-          "start_index": 1030,
-          "start_line": 35
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -2955,27 +1095,7 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "s",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1020,
-          "end_line": 35,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1019,
-          "start_line": 35
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 23,
-        "end_index": 1032,
-        "end_line": 35,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1014,
-        "start_line": 35
+        "name": "s"
       }
     },
     {
@@ -2983,30 +1103,10 @@
       "access": "<Access.READ_WRITE>",
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 16,
-          "end_index": 1048,
-          "end_line": 36,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 15,
-          "start_index": 1047,
-          "start_line": 36
-        }
+        "name": "f"
       },
       "length": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 25,
-          "end_index": 1057,
-          "end_line": 36,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 23,
-          "start_index": 1055,
-          "start_line": 36
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3020,85 +1120,25 @@
       "mode": "<Mode.RANDOM>",
       "path_name": {
         "TYPE": "Name",
-        "name": "s",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1043,
-          "end_line": 36,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1042,
-          "start_line": 36
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 25,
-        "end_index": 1057,
-        "end_line": 36,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1037,
-        "start_line": 36
+        "name": "s"
       }
     },
     {
       "TYPE": "Close",
-      "file_numbers": null,
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 10,
-        "end_index": 1067,
-        "end_line": 37,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1062,
-        "start_line": 37
-      }
+      "file_numbers": null
     },
     {
       "TYPE": "Close",
       "file_numbers": [
         {
           "TYPE": "Name",
-          "name": "hey",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 20,
-            "end_index": 1077,
-            "end_line": 37,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 17,
-            "start_index": 1074,
-            "start_line": 37
-          }
+          "name": "hey"
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 20,
-        "end_index": 1077,
-        "end_line": 37,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 11,
-        "start_index": 1068,
-        "start_line": 37
-      }
+      ]
     },
     {
       "TYPE": "Close",
-      "file_numbers": null,
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 10,
-        "end_index": 1087,
-        "end_line": 38,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1082,
-        "start_line": 38
-      }
+      "file_numbers": null
     },
     {
       "TYPE": "Close",
@@ -3108,30 +1148,10 @@
           "operands": [
             {
               "TYPE": "Name",
-              "name": "abcd",
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 15,
-                "end_index": 1102,
-                "end_line": 39,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 11,
-                "start_index": 1098,
-                "start_line": 39
-              }
+              "name": "abcd"
             },
             {
               "TYPE": "Literal",
-              "position": {
-                "TYPE": "FilePosition",
-                "end_column": 19,
-                "end_index": 1106,
-                "end_line": 39,
-                "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-                "start_column": 18,
-                "start_index": 1105,
-                "start_line": 39
-              },
               "variable": {
                 "TYPE": "Variable",
                 "declared_type": "Integer",
@@ -3144,151 +1164,41 @@
           ],
           "operator": {
             "TYPE": "Operator",
-            "op": "<Type.PLUS>",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 17,
-              "end_index": 1104,
-              "end_line": 39,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 16,
-              "start_index": 1103,
-              "start_line": 39
-            }
-          },
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 19,
-            "end_index": 1106,
-            "end_line": 39,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 11,
-            "start_index": 1098,
-            "start_line": 39
+            "op": "<Type.PLUS>"
           }
         },
         {
           "TYPE": "IndexExpr",
           "args": {
             "TYPE": "ArgList",
-            "args": [],
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 26,
-              "end_index": 1113,
-              "end_line": 39,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 25,
-              "start_index": 1112,
-              "start_line": 39
-            }
+            "args": []
           },
           "expr": {
             "TYPE": "Name",
-            "name": "abcd",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 25,
-              "end_index": 1112,
-              "end_line": 39,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 21,
-              "start_index": 1108,
-              "start_line": 39
-            }
-          },
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 26,
-            "end_index": 1113,
-            "end_line": 39,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 25,
-            "start_index": 1112,
-            "start_line": 39
+            "name": "abcd"
           }
         },
         {
           "TYPE": "Name",
-          "name": "efg",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 32,
-            "end_index": 1119,
-            "end_line": 39,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 29,
-            "start_index": 1116,
-            "start_line": 39
-          }
+          "name": "efg"
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 32,
-        "end_index": 1119,
-        "end_line": 39,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1092,
-        "start_line": 39
-      }
+      ]
     },
     {
       "TYPE": "Close",
-      "file_numbers": [],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 10,
-        "end_index": 1129,
-        "end_line": 40,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1124,
-        "start_line": 40
-      }
+      "file_numbers": []
     },
     {
       "TYPE": "Seek",
       "file_number": {
         "TYPE": "Name",
-        "name": "ab",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 12,
-          "end_index": 1141,
-          "end_line": 41,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1139,
-          "start_line": 41
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 21,
-        "end_index": 1150,
-        "end_line": 41,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1134,
-        "start_line": 41
+        "name": "ab"
       },
       "seek_position": {
         "TYPE": "Operation",
         "operands": [
           {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 17,
-              "end_index": 1146,
-              "end_line": 41,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 14,
-              "start_index": 1143,
-              "start_line": 41
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -3300,16 +1210,6 @@
           },
           {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 21,
-              "end_index": 1150,
-              "end_line": 41,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 20,
-              "start_index": 1149,
-              "start_line": 41
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -3322,27 +1222,7 @@
         ],
         "operator": {
           "TYPE": "Operator",
-          "op": "<Type.PLUS>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 19,
-            "end_index": 1148,
-            "end_line": 41,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 18,
-            "start_index": 1147,
-            "start_line": 41
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 21,
-          "end_index": 1150,
-          "end_line": 41,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 14,
-          "start_index": 1143,
-          "start_line": 41
+          "op": "<Type.PLUS>"
         }
       }
     },
@@ -3351,27 +1231,7 @@
       "end_record_number": null,
       "file_number": {
         "TYPE": "Name",
-        "name": "c",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1161,
-          "end_line": 42,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1160,
-          "start_line": 42
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 11,
-        "end_index": 1161,
-        "end_line": 42,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1155,
-        "start_line": 42
+        "name": "c"
       },
       "start_record_number": null
     },
@@ -3379,54 +1239,14 @@
       "TYPE": "Lock",
       "end_record_number": {
         "TYPE": "Name",
-        "name": "b",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 17,
-          "end_index": 1178,
-          "end_line": 43,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 16,
-          "start_index": 1177,
-          "start_line": 43
-        }
+        "name": "b"
       },
       "file_number": {
         "TYPE": "Name",
-        "name": "d",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1172,
-          "end_line": 43,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1171,
-          "start_line": 43
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 17,
-        "end_index": 1178,
-        "end_line": 43,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1166,
-        "start_line": 43
+        "name": "d"
       },
       "start_record_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": -1,
-          "end_index": -1,
-          "end_line": -1,
-          "file_name": "",
-          "start_column": -1,
-          "start_index": -1,
-          "start_line": -1
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3444,16 +1264,6 @@
         "operands": [
           {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 20,
-              "end_index": 1198,
-              "end_line": 44,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 18,
-              "start_index": 1196,
-              "start_line": 44
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -3465,81 +1275,21 @@
           },
           {
             "TYPE": "Name",
-            "name": "b",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 24,
-              "end_index": 1202,
-              "end_line": 44,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 23,
-              "start_index": 1201,
-              "start_line": 44
-            }
+            "name": "b"
           }
         ],
         "operator": {
           "TYPE": "Operator",
-          "op": "<Type.PLUS>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 22,
-            "end_index": 1200,
-            "end_line": 44,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 21,
-            "start_index": 1199,
-            "start_line": 44
-          }
-        },
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 24,
-          "end_index": 1202,
-          "end_line": 44,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 18,
-          "start_index": 1196,
-          "start_line": 44
+          "op": "<Type.PLUS>"
         }
       },
       "file_number": {
         "TYPE": "Name",
-        "name": "f",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1189,
-          "end_line": 44,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1188,
-          "start_line": 44
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 24,
-        "end_index": 1202,
-        "end_line": 44,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1183,
-        "start_line": 44
+        "name": "f"
       },
       "start_record_number": {
         "TYPE": "Name",
-        "name": "a",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 14,
-          "end_index": 1192,
-          "end_line": 44,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 13,
-          "start_index": 1191,
-          "start_line": 44
-        }
+        "name": "a"
       }
     },
     {
@@ -3547,57 +1297,17 @@
       "end_record_number": null,
       "file_number": {
         "TYPE": "Name",
-        "name": "g",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1215,
-          "end_line": 45,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1214,
-          "start_line": 45
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 16,
-        "end_index": 1218,
-        "end_line": 45,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1207,
-        "start_line": 45
+        "name": "g"
       },
       "start_record_number": {
         "TYPE": "Name",
-        "name": "b",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 16,
-          "end_index": 1218,
-          "end_line": 45,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 15,
-          "start_index": 1217,
-          "start_line": 45
-        }
+        "name": "b"
       }
     },
     {
       "TYPE": "LineInput",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 20,
-          "end_index": 1238,
-          "end_line": 46,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 17,
-          "start_index": 1235,
-          "start_line": 46
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3607,45 +1317,15 @@
           }
         }
       },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 24,
-        "end_index": 1242,
-        "end_line": 46,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1223,
-        "start_line": 46
-      },
       "variable_name": {
         "TYPE": "Name",
-        "name": "ab",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 24,
-          "end_index": 1242,
-          "end_line": 46,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 22,
-          "start_index": 1240,
-          "start_line": 46
-        }
+        "name": "ab"
       }
     },
     {
       "TYPE": "Width",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 15,
-          "end_index": 1257,
-          "end_line": 47,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1254,
-          "start_line": 47
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3657,43 +1337,13 @@
       },
       "line_width": {
         "TYPE": "Name",
-        "name": "abcd",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 21,
-          "end_index": 1263,
-          "end_line": 47,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 17,
-          "start_index": 1259,
-          "start_line": 47
-        }
-      },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 21,
-        "end_index": 1263,
-        "end_line": 47,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1247,
-        "start_line": 47
+        "name": "abcd"
       }
     },
     {
       "TYPE": "Print",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1276,
-          "end_line": 48,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1275,
-          "start_line": 48
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3703,32 +1353,12 @@
           }
         }
       },
-      "outputs": [],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 14,
-        "end_index": 1277,
-        "end_line": 48,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1268,
-        "start_line": 48
-      }
+      "outputs": []
     },
     {
       "TYPE": "Print",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1290,
-          "end_line": 49,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1289,
-          "start_line": 49
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3744,16 +1374,6 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 31,
-              "end_index": 1308,
-              "end_line": 49,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1292,
-              "start_line": 49
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -3763,44 +1383,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 31,
-            "end_index": 1308,
-            "end_line": 49,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1291,
-            "start_line": 49
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 31,
-        "end_index": 1308,
-        "end_line": 49,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1282,
-        "start_line": 49
-      }
+      ]
     },
     {
       "TYPE": "Print",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1321,
-          "end_line": 50,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1320,
-          "start_line": 50
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3816,16 +1406,6 @@
           "char_position": "<CharPosition.COMMA>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 23,
-              "end_index": 1331,
-              "end_line": 50,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1323,
-              "start_line": 50
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -3835,49 +1415,19 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 1332,
-            "end_line": 50,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1322,
-            "start_line": 50
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": null,
-          "clause_title": "<Clause.TAB>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 29,
-            "end_index": 1337,
-            "end_line": 50,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 24,
-            "start_index": 1332,
-            "start_line": 50
-          }
+          "clause_title": "<Clause.TAB>"
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 37,
-              "end_index": 1345,
-              "end_line": 50,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 29,
-              "start_index": 1337,
-              "start_line": 50
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -3887,44 +1437,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 37,
-            "end_index": 1345,
-            "end_line": 50,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 29,
-            "start_index": 1337,
-            "start_line": 50
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 37,
-        "end_index": 1345,
-        "end_line": 50,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1313,
-        "start_line": 50
-      }
+      ]
     },
     {
       "TYPE": "Print",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1358,
-          "end_line": 51,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1357,
-          "start_line": 51
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -3940,16 +1460,6 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 22,
-              "end_index": 1367,
-              "end_line": 51,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1360,
-              "start_line": 51
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -3959,33 +1469,13 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 1369,
-            "end_line": 51,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1359,
-            "start_line": 51
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.COMMA>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 27,
-              "end_index": 1372,
-              "end_line": 51,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 24,
-              "start_index": 1369,
-              "start_line": 51
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -3995,33 +1485,13 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 30,
-            "end_index": 1375,
-            "end_line": 51,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 24,
-            "start_index": 1369,
-            "start_line": 51
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 37,
-              "end_index": 1382,
-              "end_line": 51,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 30,
-              "start_index": 1375,
-              "start_line": 51
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4031,44 +1501,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 37,
-            "end_index": 1382,
-            "end_line": 51,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 30,
-            "start_index": 1375,
-            "start_line": 51
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 37,
-        "end_index": 1382,
-        "end_line": 51,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1350,
-        "start_line": 51
-      }
+      ]
     },
     {
       "TYPE": "Print",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1395,
-          "end_line": 52,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1394,
-          "start_line": 52
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4084,16 +1524,6 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 20,
-              "end_index": 1402,
-              "end_line": 52,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 19,
-              "start_index": 1401,
-              "start_line": 52
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -4103,33 +1533,13 @@
               }
             }
           },
-          "clause_title": "<Clause.SPC>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 23,
-            "end_index": 1405,
-            "end_line": 52,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1396,
-            "start_line": 52
-          }
+          "clause_title": "<Clause.SPC>"
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 42,
-              "end_index": 1424,
-              "end_line": 52,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 23,
-              "start_index": 1405,
-              "start_line": 52
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4139,44 +1549,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 42,
-            "end_index": 1424,
-            "end_line": 52,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 23,
-            "start_index": 1405,
-            "start_line": 52
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 42,
-        "end_index": 1424,
-        "end_line": 52,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1387,
-        "start_line": 52
-      }
+      ]
     },
     {
       "TYPE": "Print",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1437,
-          "end_line": 53,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1436,
-          "start_line": 53
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4192,16 +1572,6 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 21,
-              "end_index": 1445,
-              "end_line": 53,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 19,
-              "start_index": 1443,
-              "start_line": 53
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -4211,49 +1581,19 @@
               }
             }
           },
-          "clause_title": "<Clause.TAB>",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 23,
-            "end_index": 1447,
-            "end_line": 53,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1438,
-            "start_line": 53
-          }
+          "clause_title": "<Clause.TAB>"
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": null,
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 1448,
-            "end_line": 53,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 23,
-            "start_index": 1447,
-            "start_line": 53
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 32,
-              "end_index": 1456,
-              "end_line": 53,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 25,
-              "start_index": 1449,
-              "start_line": 53
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4263,44 +1603,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 32,
-            "end_index": 1456,
-            "end_line": 53,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 24,
-            "start_index": 1448,
-            "start_line": 53
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 32,
-        "end_index": 1456,
-        "end_line": 53,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1429,
-        "start_line": 53
-      }
+      ]
     },
     {
       "TYPE": "Write",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1469,
-          "end_line": 54,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1468,
-          "start_line": 54
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4316,16 +1626,6 @@
           "char_position": "<CharPosition.COMMA>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 28,
-              "end_index": 1484,
-              "end_line": 54,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1471,
-              "start_line": 54
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4335,33 +1635,13 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 30,
-            "end_index": 1486,
-            "end_line": 54,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1470,
-            "start_line": 54
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 33,
-              "end_index": 1489,
-              "end_line": 54,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 30,
-              "start_index": 1486,
-              "start_line": 54
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "Integer",
@@ -4371,44 +1651,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 33,
-            "end_index": 1489,
-            "end_line": 54,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 30,
-            "start_index": 1486,
-            "start_line": 54
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 33,
-        "end_index": 1489,
-        "end_line": 54,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1461,
-        "start_line": 54
-      }
+      ]
     },
     {
       "TYPE": "Write",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1502,
-          "end_line": 55,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1501,
-          "start_line": 55
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4424,16 +1674,6 @@
           "char_position": "<CharPosition.COMMA>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": -1,
-              "end_index": -1,
-              "end_line": -1,
-              "file_name": "",
-              "start_column": -1,
-              "start_index": -1,
-              "start_line": -1
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4443,44 +1683,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": -1,
-            "end_index": -1,
-            "end_line": -1,
-            "file_name": "",
-            "start_column": -1,
-            "start_index": -1,
-            "start_line": -1
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 14,
-        "end_index": 1503,
-        "end_line": 55,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1494,
-        "start_line": 55
-      }
+      ]
     },
     {
       "TYPE": "Write",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1516,
-          "end_line": 56,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1515,
-          "start_line": 56
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4496,45 +1706,15 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Name",
-            "name": "MyBool",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 21,
-              "end_index": 1524,
-              "end_line": 56,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1518,
-              "start_line": 56
-            }
+            "name": "MyBool"
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 1527,
-            "end_line": 56,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1517,
-            "start_line": 56
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 45,
-              "end_index": 1548,
-              "end_line": 56,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 24,
-              "start_index": 1527,
-              "start_line": 56
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4544,44 +1724,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 45,
-            "end_index": 1548,
-            "end_line": 56,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 24,
-            "start_index": 1527,
-            "start_line": 56
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 45,
-        "end_index": 1548,
-        "end_line": 56,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1508,
-        "start_line": 56
-      }
+      ]
     },
     {
       "TYPE": "Write",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1561,
-          "end_line": 57,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1560,
-          "start_line": 57
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4597,45 +1747,15 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Name",
-            "name": "MyDate",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 21,
-              "end_index": 1569,
-              "end_line": 57,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1563,
-              "start_line": 57
-            }
+            "name": "MyDate"
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 1572,
-            "end_line": 57,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1562,
-            "start_line": 57
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 36,
-              "end_index": 1584,
-              "end_line": 57,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 24,
-              "start_index": 1572,
-              "start_line": 57
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4645,44 +1765,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 36,
-            "end_index": 1584,
-            "end_line": 57,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 24,
-            "start_index": 1572,
-            "start_line": 57
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 36,
-        "end_index": 1584,
-        "end_line": 57,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1553,
-        "start_line": 57
-      }
+      ]
     },
     {
       "TYPE": "Write",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1597,
-          "end_line": 58,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1596,
-          "start_line": 58
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4698,45 +1788,15 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Name",
-            "name": "MyNull",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 21,
-              "end_index": 1605,
-              "end_line": 58,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1599,
-              "start_line": 58
-            }
+            "name": "MyNull"
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 24,
-            "end_index": 1608,
-            "end_line": 58,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1598,
-            "start_line": 58
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 42,
-              "end_index": 1626,
-              "end_line": 58,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 24,
-              "start_index": 1608,
-              "start_line": 58
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4746,44 +1806,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 42,
-            "end_index": 1626,
-            "end_line": 58,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 24,
-            "start_index": 1608,
-            "start_line": 58
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 42,
-        "end_index": 1626,
-        "end_line": 58,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1589,
-        "start_line": 58
-      }
+      ]
     },
     {
       "TYPE": "Write",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1639,
-          "end_line": 59,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1638,
-          "start_line": 59
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4799,45 +1829,15 @@
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Name",
-            "name": "MyError",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 22,
-              "end_index": 1648,
-              "end_line": 59,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 15,
-              "start_index": 1641,
-              "start_line": 59
-            }
+            "name": "MyError"
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 25,
-            "end_index": 1651,
-            "end_line": 59,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 14,
-            "start_index": 1640,
-            "start_line": 59
-          }
+          "clause_title": null
         },
         {
           "TYPE": "OutputItem",
           "char_position": "<CharPosition.SEMICOLON>",
           "clause_argument": {
             "TYPE": "Literal",
-            "position": {
-              "TYPE": "FilePosition",
-              "end_column": 45,
-              "end_index": 1671,
-              "end_line": 59,
-              "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-              "start_column": 25,
-              "start_index": 1651,
-              "start_line": 59
-            },
             "variable": {
               "TYPE": "Variable",
               "declared_type": "String",
@@ -4847,44 +1847,14 @@
               }
             }
           },
-          "clause_title": null,
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 45,
-            "end_index": 1671,
-            "end_line": 59,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 25,
-            "start_index": 1651,
-            "start_line": 59
-          }
+          "clause_title": null
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 45,
-        "end_index": 1671,
-        "end_line": 59,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1631,
-        "start_line": 59
-      }
+      ]
     },
     {
       "TYPE": "Input",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 13,
-          "end_index": 1684,
-          "end_line": 60,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 12,
-          "start_index": 1683,
-          "start_line": 60
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4897,72 +1867,22 @@
       "inputs": [
         {
           "TYPE": "Name",
-          "name": "MyString",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 23,
-            "end_index": 1694,
-            "end_line": 60,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 15,
-            "start_index": 1686,
-            "start_line": 60
-          }
+          "name": "MyString"
         },
         {
           "TYPE": "Name",
-          "name": "MyNumber",
-          "position": {
-            "TYPE": "FilePosition",
-            "end_column": 33,
-            "end_index": 1704,
-            "end_line": 60,
-            "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-            "start_column": 25,
-            "start_index": 1696,
-            "start_line": 60
-          }
+          "name": "MyNumber"
         }
-      ],
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 33,
-        "end_index": 1704,
-        "end_line": 60,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1676,
-        "start_line": 60
-      }
+      ]
     },
     {
       "TYPE": "Put",
       "data": {
         "TYPE": "Name",
-        "name": "MyRecord",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 35,
-          "end_index": 1739,
-          "end_line": 61,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 27,
-          "start_index": 1731,
-          "start_line": 61
-        }
+        "name": "MyRecord"
       },
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1715,
-          "end_line": 61,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1714,
-          "start_line": 61
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -4972,45 +1892,15 @@
           }
         }
       },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 35,
-        "end_index": 1739,
-        "end_line": 61,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1709,
-        "start_line": 61
-      },
       "record_number": {
         "TYPE": "Name",
-        "name": "RecordNumber",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 25,
-          "end_index": 1729,
-          "end_line": 61,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 13,
-          "start_index": 1717,
-          "start_line": 61
-        }
+        "name": "RecordNumber"
       }
     },
     {
       "TYPE": "Get",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1750,
-          "end_line": 62,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1749,
-          "start_line": 62
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -5020,46 +1910,16 @@
           }
         }
       },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 23,
-        "end_index": 1762,
-        "end_line": 62,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1744,
-        "start_line": 62
-      },
       "record_number": null,
       "variable": {
         "TYPE": "Name",
-        "name": "FileBuffer",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 23,
-          "end_index": 1762,
-          "end_line": 62,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 13,
-          "start_index": 1752,
-          "start_line": 62
-        }
+        "name": "FileBuffer"
       }
     },
     {
       "TYPE": "Get",
       "file_number": {
         "TYPE": "Literal",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 11,
-          "end_index": 1773,
-          "end_line": 63,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 10,
-          "start_index": 1772,
-          "start_line": 63
-        },
         "variable": {
           "TYPE": "Variable",
           "declared_type": "Integer",
@@ -5069,43 +1929,13 @@
           }
         }
       },
-      "position": {
-        "TYPE": "FilePosition",
-        "end_column": 31,
-        "end_index": 1793,
-        "end_line": 63,
-        "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-        "start_column": 5,
-        "start_index": 1767,
-        "start_line": 63
-      },
       "record_number": {
         "TYPE": "Name",
-        "name": "Position",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 21,
-          "end_index": 1783,
-          "end_line": 63,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 13,
-          "start_index": 1775,
-          "start_line": 63
-        }
+        "name": "Position"
       },
       "variable": {
         "TYPE": "Name",
-        "name": "MyRecord",
-        "position": {
-          "TYPE": "FilePosition",
-          "end_column": 31,
-          "end_index": 1793,
-          "end_line": 63,
-          "file_name": "7e4a13c7cf8a3b3bf454559524452b99",
-          "start_column": 23,
-          "start_index": 1785,
-          "start_line": 63
-        }
+        "name": "MyRecord"
       }
     }
   ]

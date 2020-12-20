@@ -196,7 +196,7 @@ class For(StatementBlock):
     variable: Expression
     start: Expression
     end: Expression
-    step: Expression
+    step: Optional[Expression]
 
 
 @dataclass(frozen=True)
