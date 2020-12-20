@@ -15,16 +15,28 @@ from .abstract_syntax_tree import (
     Arg,
     ArgList,
     ArrayDimensions,
+    Call,
     Close,
     ConstItem,
+    ControlStatement,
     DataManipulationStatement,
     DictAccess,
+    Do,
     Erase,
     Error,
     ErrorHandlingStatement,
+    ExitFor,
+    ExitFunction,
+    ExitProperty,
+    ExitSub,
     Expression,
     FileStatement,
+    For,
+    ForEach,
     Get,
+    GoSub,
+    GoTo,
+    If,
     IndexExpr,
     Input,
     Let,
@@ -39,6 +51,8 @@ from .abstract_syntax_tree import (
     Mid,
     Name,
     OnError,
+    OnGoSub,
+    OnGoTo,
     Open,
     Operation,
     Operator,
@@ -46,17 +60,23 @@ from .abstract_syntax_tree import (
     ParenExpr,
     Print,
     Put,
+    RaiseEvent,
     ReDim,
     Resume,
+    Return,
     RSet,
     Seek,
+    SelectCase,
     Set,
     Statement,
     StatementBlock,
     StmtLabel,
+    Stop,
     Unlock,
     VariableDeclaration,
+    While,
     Width,
+    With,
     Write,
 )
 from .data import (
@@ -778,6 +798,7 @@ class Parser:
 
     def statement(self) -> Optional[Statement]:
         statement = self.__try_rules(
+            self.control_statement,
             self.error_handling_statement,
             self.file_statement,
             self.data_manipulation_statement,
@@ -789,6 +810,88 @@ class Parser:
 
     def statement_label(self) -> Optional[StmtLabel]:
         return self.__try_rules(self.NAME, self.literal)  # type: ignore
+
+    # Control statements
+
+    def control_statement(self) -> Optional[ControlStatement]:
+        return self.__try_rules(  # type: ignore [return-value]
+            self.call,
+            self.while_,
+            self.for_,
+            self.for_each,
+            self.exit_for,
+            self.do,
+            self.if_,
+            self.select_case,
+            self.stop,
+            self.go_to,
+            self.on_go_to,
+            self.go_sub,
+            self.return_,
+            self.on_go_Sub,
+            self.exit_sub,
+            self.exit_function,
+            self.exit_property,
+            self.raise_event,
+            self.with_,
+        )
+
+    def call(self) -> Optional[Call]:
+        return None
+
+    def while_(self) -> Optional[While]:
+        return None
+
+    def for_(self) -> Optional[For]:
+        return None
+
+    def for_each(self) -> Optional[ForEach]:
+        return None
+
+    def exit_for(self) -> Optional[ExitFor]:
+        return None
+
+    def do(self) -> Optional[Do]:
+        return None
+
+    def if_(self) -> Optional[If]:
+        return None
+
+    def select_case(self) -> Optional[SelectCase]:
+        return None
+
+    def stop(self) -> Optional[Stop]:
+        return None
+
+    def go_to(self) -> Optional[GoTo]:
+        return None
+
+    def on_go_to(self) -> Optional[OnGoTo]:
+        return None
+
+    def go_sub(self) -> Optional[GoSub]:
+        return None
+
+    def return_(self) -> Optional[Return]:
+        return None
+
+    def on_go_Sub(self) -> Optional[OnGoSub]:
+        return None
+
+    def exit_sub(self) -> Optional[ExitSub]:
+        return None
+
+    def exit_function(self) -> Optional[ExitFunction]:
+        return None
+
+    def exit_property(self) -> Optional[ExitProperty]:
+        return None
+
+    def raise_event(self) -> Optional[RaiseEvent]:
+        return None
+
+    def with_(self) -> Optional[With]:
+        return None
 
     # Data manipulation statements
 

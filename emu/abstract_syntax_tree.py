@@ -160,6 +160,183 @@ class Statement(AST):
     pass
 
 
+# Statement blocks
+
+
+@dataclass(frozen=True)
+class StatementBlock(AST):
+    statements: Tuple[Statement, ...]
+
+
+@dataclass(frozen=True)
+class Rem(Statement):
+    content: str
+
+
+@dataclass(frozen=True)
+class StatementLabel(Statement):
+    label: Union[str, int]
+
+
+# Control statement
+
+
+@dataclass(frozen=True)
+class Call(Statement):
+    callee: Expression
+    arguments: Optional[ArgList]
+
+
+@dataclass(frozen=True)
+class While(StatementBlock):
+    condition: Expression
+
+
+@dataclass(frozen=True)
+class For(StatementBlock):
+    variable: Expression
+    start: Expression
+    end: Expression
+    step: Expression
+
+
+@dataclass(frozen=True)
+class ForEach(StatementBlock):
+    variable: Expression
+    collection: Expression
+
+
+@dataclass(frozen=True)
+class ExitFor(Statement):
+    pass
+
+
+@dataclass(frozen=True)
+class Do(StatementBlock):
+    class ConditionType(Enum):
+        WHILE = 1
+        UNTIL = 2
+
+    condition_type: "Do.ConditionType"
+    condition: Expression
+
+
+@dataclass(frozen=True)
+class IfClause(StatementBlock):
+    condition: Expression
+
+
+@dataclass(frozen=True)
+class If(Statement):
+    conditional_blocks: Tuple[IfClause, ...]
+    else_block: Optional[StatementBlock]
+
+
+@dataclass(frozen=True)
+class RangeClause(AST):
+    """If only start is set, correspond to a single-expression range. If end
+    is set, comparison_operator must be None, and correspond to a start To end
+    range. Finally, if comparison_operator is set end must be None, and
+    correspond to a comparison range."""
+
+    start: Expression
+    end: Optional[Expression]
+    comparison_operator: Optional[Operator]
+
+
+@dataclass(frozen=True)
+class CaseClause(StatementBlock):
+    range_clause: RangeClause
+
+
+@dataclass(frozen=True)
+class SelectCase(Statement):
+    select_expression: Expression
+    case_clauses: Tuple[CaseClause, ...]
+    case_else_clause: Optional[CaseClause]
+
+
+@dataclass(frozen=True)
+class Stop(Statement):
+    pass
+
+
+@dataclass(frozen=True)
+class GoTo(Statement):
+    label: StatementLabel
+
+
+@dataclass(frozen=True)
+class OnGoTo(Statement):
+    expression: Expression
+    labels: Tuple[StatementLabel, ...]
+
+
+@dataclass(frozen=True)
+class GoSub(Statement):
+    label: StatementLabel
+
+
+@dataclass(frozen=True)
+class Return(Statement):
+    pass
+
+
+@dataclass(frozen=True)
+class OnGoSub(Statement):
+    expression: Expression
+    labels: Tuple[StatementLabel, ...]
+
+
+@dataclass(frozen=True)
+class ExitSub(Statement):
+    pass
+
+
+@dataclass(frozen=True)
+class ExitFunction(Statement):
+    pass
+
+
+@dataclass(frozen=True)
+class ExitProperty(Statement):
+    pass
+
+
+@dataclass(frozen=True)
+class RaiseEvent(Statement):
+    event: Name
+    arguments: Tuple[Expression, ...]
+
+
+@dataclass(frozen=True)
+class With(StatementBlock):
+    expression: Expression
+
+
+ControlStatement = Union[
+    Call,
+    While,
+    For,
+    ForEach,
+    ExitFor,
+    Do,
+    If,
+    SelectCase,
+    Stop,
+    GoTo,
+    OnGoTo,
+    GoSub,
+    Return,
+    OnGoSub,
+    ExitSub,
+    ExitFunction,
+    ExitProperty,
+    RaiseEvent,
+    With,
+]
+
+
 # Data manipulation statements
 
 
@@ -408,10 +585,3 @@ FileStatement = Union[
     Put,
     Get,
 ]
-
-# Module level elements
-
-
-@dataclass(frozen=True)
-class StatementBlock(AST):
-    statements: Tuple[Statement, ...]

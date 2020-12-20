@@ -87,6 +87,7 @@ def test_statements():
     LSet b = "Hey"
     RSet a = "abcd"
     Let a = b.c() + 12
+    b = 5 + 12
     Set a.b(12, 14) = 12
     On Error Goto abcd : On Error Resume Next
     On Error Goto 123 :
