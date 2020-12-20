@@ -1037,7 +1037,7 @@
   {
     "TYPE": "Token",
     "VALUE": "MidB",
-    "category": "<Category.IDENTIFIER>",
+    "category": "<Category.KEYWORD>",
     "position": {
       "TYPE": "FilePosition",
       "end_column": 5,
@@ -1067,7 +1067,7 @@
   {
     "TYPE": "Token",
     "VALUE": "MidB$",
-    "category": "<Category.IDENTIFIER>",
+    "category": "<Category.KEYWORD>",
     "position": {
       "TYPE": "FilePosition",
       "end_column": 11,
@@ -1127,7 +1127,7 @@
   {
     "TYPE": "Token",
     "VALUE": "Mid$",
-    "category": "<Category.IDENTIFIER>",
+    "category": "<Category.KEYWORD>",
     "position": {
       "TYPE": "FilePosition",
       "end_column": 22,
@@ -1157,7 +1157,7 @@
   {
     "TYPE": "Token",
     "VALUE": "Mid",
-    "category": "<Category.IDENTIFIER>",
+    "category": "<Category.KEYWORD>",
     "position": {
       "TYPE": "FilePosition",
       "end_column": 26,

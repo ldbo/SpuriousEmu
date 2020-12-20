@@ -570,6 +570,7 @@ class Lexer:
                 pass
             elif token in ("Mid", "MidB"):
                 next_token = self.__first_pass()
+                token.category = _TC.KEYWORD
                 if next_token == "$":
                     token = token + next_token  # type: ignore [assignment]
                     self.__next_tokens.append(token)
