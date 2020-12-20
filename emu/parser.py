@@ -1426,15 +1426,6 @@ class Parser:
             if self.__peek_token() == ",":
                 self.__pop_token()
 
-        if numbers == []:
-            for i in range(1, 512):
-                numbers.append(
-                    Literal(
-                        FilePosition.build_virtual(),
-                        Variable(Integer, Integer(i)),
-                    )
-                )
-
         return tuple(numbers)
 
     @_add_rule_position
