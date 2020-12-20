@@ -183,8 +183,7 @@ class StatementLabel(Statement):
 
 @dataclass(frozen=True)
 class Call(Statement):
-    callee: Expression
-    arguments: Optional[ArgList]
+    expression: IndexExpr
 
 
 @dataclass(frozen=True)

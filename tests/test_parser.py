@@ -129,6 +129,13 @@ def test_statements():
     Get #4,,FileBuffer
     Get #1, Position, MyRecord
     """
+    code = """
+    Call jean
+    Call jean(a, b, c)
+    msgBox
+    msgBox jacques(12)
+    msgBox abcd, efgh
+    """
     lexer = Lexer(code)
 
     parser = Parser(lexer)

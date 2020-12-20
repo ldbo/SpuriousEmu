@@ -443,28 +443,41 @@ class Parser:
 
     @_with_backtracking
     def expression(self) -> Optional[Expression]:
-        return self.__expression(False)
+        return self.__expression(l_expression=False, arglist=False)
 
     @_with_backtracking
     def l_expression(self) -> Optional[LExpression]:
-        return self.__expression(True)  # type: ignore [return-value]
+        return self.__expression(  # type: ignore [return-value]
+            l_expression=True, arglist=False
+        )
 
-    def __expression(self, l_expression: bool) -> Optional[Expression]:
+    def __expression(
+        self, l_expression: bool, arglist: bool
+    ) -> Optional[Expression]:
         """
-        Expression parser using the Shunting-Yard algorithm If l_expression
-        is True, only handle l-expression, by restricting the allowed operators.
+        Expression parser using the Shunting-Yard algorithm. Can be used to
+        parse any expression, only an l_expression (if l_expression is True),
+        or only an arguments list (if arglist is True).
         """
         # Operator stack, is never empty until parsing is done, which is
         # obtained by surrounding the expression in parentheses
         operators: List[Operator] = [Operator(self.__peek_token(), _OT.LPAREN)]
         # Operands, begins empty but stays non-empty during all parsing
         operands: List[Expression] = []
-        self.__last_operatorand = operators[-1]
         self.__index_expressions = 0
         self.__paren_expressions = 0
 
+        if arglist:
+            operators.append(Operator(self.__peek_token(), _OT.INDEX))
+            operands.append(Expression(VIRTUAL_POSITION))
+            self.__index_expressions = 1
+
+        self.__last_operatorand = operators[-1]
+
         try:
-            self.__expression_shunting_yard(operators, operands, l_expression)
+            self.__expression_shunting_yard(
+                operators, operands, l_expression, arglist
+            )
         except Exception as e:
             msg = "Encountered an unexpected exception during expression "
             msg += f"parsing: {e}"
@@ -489,6 +502,7 @@ class Parser:
         operators: List[Operator],
         operands: List[Expression],
         l_expression: bool,
+        arglist: bool,
     ) -> None:
         while True:
             if self.__categories_match(
@@ -523,9 +537,11 @@ class Parser:
             break
 
         # Close the virtual parenthesis
-        self.__expression_closing_parenthesis(
-            operators, operands, self.__peek_token().position
-        )
+        closing_parentheses = 1 if not arglist else 2
+        for _ in range(closing_parentheses):
+            self.__expression_closing_parenthesis(
+                operators, operands, self.__peek_token().position
+            )
 
     @_with_backtracking
     def __expression_loperator(self) -> Optional[Operator]:
@@ -649,6 +665,7 @@ class Parser:
         An expression representing the same operation, but formatted in a
         more semantic way, easing later processing.
         """
+        # TODO improve doc here
         op_type = operation.operator.op
         if op_type in (_OT.DOT, _OT.EXCLAMATION):  # Access operators
             access_type = {_OT.DOT: MemberAccess, _OT.EXCLAMATION: DictAccess}[
@@ -836,8 +853,36 @@ class Parser:
             self.with_,
         )
 
+    @_add_rule_position
+    @_with_backtracking
     def call(self) -> Optional[Call]:
-        return None
+        if self.__peek_token() == "Call":
+            self.__pop_token()
+
+            expr = self.expression()
+            if expr is None:
+                raise self.__craft_error("Call statement needs a valid callee")
+
+            if not isinstance(expr, IndexExpr):
+                expr = IndexExpr(
+                    VIRTUAL_POSITION, expr, ArgList(VIRTUAL_POSITION, tuple())
+                )
+        else:
+            if self.__category_match(_TC.KEYWORD):
+                return None
+
+            callee = self.expression()
+            if callee is None:
+                return None
+
+            arg_list = self.__expression(l_expression=False, arglist=True)
+            if arg_list is None or not isinstance(arg_list, IndexExpr):
+                return None
+
+            arguments = arg_list.args
+            expr = IndexExpr(VIRTUAL_POSITION, callee, arguments)
+
+        return Call(VIRTUAL_POSITION, expr)
 
     def while_(self) -> Optional[While]:
         return None
