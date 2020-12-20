@@ -784,6 +784,9 @@ class Parser:
     def integer_expression(self) -> Optional[Expression]:
         return self.expression()
 
+    def boolean_expression(self) -> Optional[Expression]:
+        return self.expression()
+
     def variable_expression(self) -> Optional[Expression]:
         return self.expression()
 
@@ -807,6 +810,7 @@ class Parser:
                 ok = False
             else:
                 statements.append(statement)
+        self.EOS()  # Skip trailing newlines
 
         return StatementBlock(VIRTUAL_POSITION, tuple(statements))
 
@@ -884,8 +888,27 @@ class Parser:
 
         return Call(VIRTUAL_POSITION, expr)
 
+    @_add_rule_position
+    @_with_backtracking
     def while_(self) -> Optional[While]:
-        return None
+        if self.__pop_token() != "While":
+            return None
+
+        condition = self.boolean_expression()
+        if condition is None:
+            raise self.__craft_error("While loop needs valid condition")
+
+        self.BLANK()
+        if self.__pop_token().category != _TC.END_OF_STATEMENT:
+            msg = "While loop header must be followed by a newline"
+            raise self.__craft_error(msg)
+
+        body = self.statement_block()
+
+        if self.__pop_token() != "Wend":
+            raise self.__craft_error("While loop must end with Wend footer")
+
+        return While(VIRTUAL_POSITION, body, condition)
 
     def for_(self) -> Optional[For]:
         return None
