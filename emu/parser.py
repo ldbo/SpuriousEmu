@@ -919,7 +919,11 @@ class Parser:
             return None
 
         # Header
-        iterator, start_value, end_value, step_value = self.__for_header()
+        self.BLANK()
+        header = self.__for_header()
+        if header is None:
+            return None
+        iterator, start_value, end_value, step_value = header
 
         # Body
         self.BLANK()
@@ -943,7 +947,12 @@ class Parser:
 
     def __for_header(
         self,
-    ) -> Tuple[Expression, Expression, Expression, Optional[Expression]]:
+    ) -> Optional[
+        Tuple[Expression, Expression, Expression, Optional[Expression]]
+    ]:
+        if self.__peek_token() == "Each":
+            return None
+
         iterator = self.bound_variable_expression()
         if iterator is None:
             raise self.__craft_error("For loop needs a valid iterator")
@@ -973,10 +982,47 @@ class Parser:
         return iterator, start_value, end_value, step_value
 
     def for_each(self) -> Optional[ForEach]:
-        return None
+        if self.__peek_tokens(0, 2) != ("For", "Each"):
+            return None
+        self.__pop_tokens(3)
 
+        # Header
+        iterator = self.bound_variable_expression()
+        if iterator is None:
+            raise self.__craft_error("For Each loop needs a valid iterator")
+
+        if self.__pop_token() != "In":
+            raise self.__craft_error("For Each loop needs a collection")
+
+        collection = self.expression()
+        if collection is None:
+            raise self.__craft_error("For Each loop needs a valid collection")
+
+        # Body
+        self.BLANK()
+        if self.__pop_token().category != _TC.END_OF_STATEMENT:
+            msg = "For Each loop header must be followed by a newline"
+            raise self.__craft_error(msg)
+
+        body = self.statement_block()
+        if body is None:
+            raise self.__craft_error("For Each loop needs a valid body")
+
+        # Footer
+        if self.__pop_token() != "Next":
+            raise self.__craft_error("For Each loop needs a Next footer")
+
+        self.bound_variable_expression()
+
+        return ForEach(VIRTUAL_POSITION, body, iterator, collection)
+
+    @_add_rule_position
     def exit_for(self) -> Optional[ExitFor]:
-        return None
+        if self.__peek_tokens(0, 2) != ("Exit", "For"):
+            return None
+
+        self.__pop_tokens(3)
+        return ExitFor(VIRTUAL_POSITION)
 
     def do(self) -> Optional[Do]:
         return None

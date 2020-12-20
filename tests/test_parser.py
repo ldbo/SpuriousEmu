@@ -105,7 +105,12 @@ def test_new_statements():
         For amnesty = 12 To 10
             msgBox amnesty
         Next amnesty
+        Exit For
     Next nasty
+
+    For Each carrot in bag
+        eat carrot
+    Next carrot
     """
     lexer = Lexer(code)
     parser = Parser(lexer)
