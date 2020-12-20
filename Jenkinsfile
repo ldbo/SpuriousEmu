@@ -16,7 +16,7 @@ pipeline {
                 script {
                     def commands = test_environments.collectEntries({ tox_env ->
                         [tox_env, {
-                            sh "tox --workdir .tox_$tox_env -vv -e $tox_env"
+                            sh "tox -vv -e $tox_env"
                             }
                         ]
                     })
