@@ -24,5 +24,11 @@ pipeline {
                 }
             }
         }
+
+        stage("Documentation") {
+            steps {
+                sh 'tox -e doc'
+            }
+        }
     }
 }
