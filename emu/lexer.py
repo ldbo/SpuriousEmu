@@ -81,6 +81,14 @@ class Token(str):
 
         return self.lower() == token.lower()
 
+    def __ne__(self, token: object) -> bool:
+        """Lowercase extended comparison
+
+        Returns:
+            ``not self.__eq__(token)``
+        """
+        return not self.__eq__(token)
+
     def __hash__(self) -> int:
         """
         Returns:
