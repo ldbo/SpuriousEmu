@@ -216,8 +216,13 @@ class Do(StatementBlock):
         WHILE = 1
         UNTIL = 2
 
-    condition_type: "Do.ConditionType"
-    condition: Expression
+    condition_type: Optional["Do.ConditionType"]
+    condition: Optional[Expression]
+
+
+@dataclass(frozen=True)
+class ExitDo(Statement):
+    pass
 
 
 @dataclass(frozen=True)

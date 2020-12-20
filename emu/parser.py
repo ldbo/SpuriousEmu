@@ -25,6 +25,7 @@ from .abstract_syntax_tree import (
     Erase,
     Error,
     ErrorHandlingStatement,
+    ExitDo,
     ExitFor,
     ExitFunction,
     ExitProperty,
@@ -842,6 +843,7 @@ class Parser:
             self.for_each,
             self.exit_for,
             self.do,
+            self.exit_do,
             self.if_,
             self.select_case,
             self.stop,
@@ -891,6 +893,7 @@ class Parser:
     @_add_rule_position
     @_with_backtracking
     def while_(self) -> Optional[While]:
+        # Header
         if self.__pop_token() != "While":
             return None
 
@@ -898,6 +901,7 @@ class Parser:
         if condition is None:
             raise self.__craft_error("While loop needs valid condition")
 
+        # Body
         self.BLANK()
         if self.__pop_token().category != _TC.END_OF_STATEMENT:
             msg = "While loop header must be followed by a newline"
@@ -907,6 +911,7 @@ class Parser:
         if body is None:
             raise self.__craft_error("While loop needs a valid body")
 
+        # Footer
         if self.__pop_token() != "Wend":
             raise self.__craft_error("While loop must end with Wend footer")
 
@@ -915,10 +920,10 @@ class Parser:
     @_add_rule_position
     @_with_backtracking
     def for_(self) -> Optional[For]:
+        # Header
         if self.__pop_token() != "For":
             return None
 
-        # Header
         self.BLANK()
         header = self.__for_header()
         if header is None:
@@ -981,12 +986,14 @@ class Parser:
 
         return iterator, start_value, end_value, step_value
 
+    @_add_rule_position
+    @_with_backtracking
     def for_each(self) -> Optional[ForEach]:
+        # Header
         if self.__peek_tokens(0, 2) != ("For", "Each"):
             return None
         self.__pop_tokens(3)
 
-        # Header
         iterator = self.bound_variable_expression()
         if iterator is None:
             raise self.__craft_error("For Each loop needs a valid iterator")
@@ -1024,8 +1031,68 @@ class Parser:
         self.__pop_tokens(3)
         return ExitFor(VIRTUAL_POSITION)
 
+    @_add_rule_position
+    @_with_backtracking
     def do(self) -> Optional[Do]:
-        return None
+        # Header
+        if self.__pop_token() != "Do":
+            return None
+
+        first_condition = self.__do_condition()
+
+        # Body
+        self.BLANK()
+        if self.__pop_token().category != _TC.END_OF_STATEMENT:
+            raise self.__craft_error("Do loop header must end with a newline")
+        body = self.statement_block()
+
+        # Footer
+        if self.__pop_token() != "Loop":
+            raise self.__craft_error("Do loop needs a Loop footer")
+
+        second_condition = self.__do_condition()
+
+        # Extract condition
+        condition_type: Optional[Do.ConditionType]
+        condition: Optional[Expression]
+        if (first_condition is not None) and (second_condition is not None):
+            msg = "Do loop needs at most one condition, located either at its "
+            msg += "header or footer"
+            raise self.__craft_error(msg)
+        elif first_condition is not None:
+            condition_type, condition = first_condition
+        elif second_condition is not None:
+            condition_type, condition = second_condition
+        else:
+            condition_type, condition = None, None
+
+        return Do(VIRTUAL_POSITION, body, condition_type, condition)
+
+    def __do_condition(self) -> Optional[Tuple[Do.ConditionType, Expression]]:
+        self.BLANK()
+        keyword = self.__peek_token()
+        if keyword == "While":
+            condition_type = Do.ConditionType.WHILE
+        elif keyword == "Until":
+            condition_type = Do.ConditionType.UNTIL
+        else:
+            return None
+        self.__pop_token()
+
+        condition = self.boolean_expression()
+        if condition is None:
+            msg = "Do condition needs a valid boolean expression"
+            raise self.__craft_error(msg)
+
+        return condition_type, condition
+
+    @_add_rule_position
+    def exit_do(self) -> Optional[ExitDo]:
+        if self.__peek_tokens(0, 2) != ("Exit", "Do"):
+            return None
+
+        self.__pop_tokens(3)
+        return ExitDo(VIRTUAL_POSITION)
 
     def if_(self) -> Optional[If]:
         return None

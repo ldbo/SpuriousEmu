@@ -111,6 +111,19 @@ def test_new_statements():
     For Each carrot in bag
         eat carrot
     Next carrot
+
+    Do
+        msgBox "Hey, when will I stop ?"
+        Exit Do
+    Loop
+
+    Do While a > 12
+        a = a - 1
+    Loop
+
+    Do
+        b = b + 1
+    Loop Until b > 10
     """
     lexer = Lexer(code)
     parser = Parser(lexer)
