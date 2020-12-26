@@ -38,6 +38,7 @@ from .abstract_syntax_tree import (
     GoSub,
     GoTo,
     If,
+    IfClause,
     IndexExpr,
     Input,
     Let,
@@ -71,6 +72,7 @@ from .abstract_syntax_tree import (
     Set,
     Statement,
     StatementBlock,
+    StatementLabel,
     StmtLabel,
     Stop,
     Unlock,
@@ -837,6 +839,13 @@ class Parser:
 
     def control_statement(self) -> Optional[ControlStatement]:
         return self.__try_rules(  # type: ignore [return-value]
+            self.if_, self.control_statement_except_multiline_if
+        )
+
+    def control_statement_except_multiline_if(
+        self,
+    ) -> Optional[ControlStatement]:
+        return self.__try_rules(  # type: ignore [return-value]
             self.call,
             self.while_,
             self.for_,
@@ -844,7 +853,7 @@ class Parser:
             self.exit_for,
             self.do,
             self.exit_do,
-            self.if_,
+            self.single_line_if,
             self.select_case,
             self.stop,
             self.go_to,
@@ -1094,8 +1103,186 @@ class Parser:
         self.__pop_tokens(3)
         return ExitDo(VIRTUAL_POSITION)
 
+    @_add_rule_position
+    @_with_backtracking
     def if_(self) -> Optional[If]:
-        return None
+        clauses = []
+        # First If block
+        if_clause = self.__if_clause()
+        if if_clause is None:
+            return None
+        clauses.append(if_clause)
+
+        # Optional following ElseIf blocks
+        while True:
+            elif_clause = self.__else_if_clause()
+            if elif_clause is None:
+                break
+            else:
+                clauses.append(elif_clause)
+
+        # Optional Else blocks
+        if self.__peek_token() == "Else":
+            self.__pop_token()
+            else_block = self.statement_block()
+            if else_block is None:
+                raise self.__craft_error("Else block needs a valid body")
+        else:
+            else_block = None
+
+        # Footer
+        if self.__peek_token() == "EndIf":
+            self.__pop_token()
+        elif self.__peek_tokens(0, 2) == ("End", "If"):
+            self.__pop_tokens(3)
+        else:
+            raise self.__craft_error("If block needs an EndIf or End If footer")
+
+        return If(VIRTUAL_POSITION, tuple(clauses), else_block)
+
+    @_add_rule_position
+    @_with_backtracking
+    def __if_clause(self) -> Optional[IfClause]:
+        return self.__if_elseif_clause(else_if=False)
+
+    @_add_rule_position
+    @_with_backtracking
+    def __else_if_clause(self) -> Optional[IfClause]:
+        return self.__if_elseif_clause(else_if=True)
+
+    def __if_elseif_clause(self, else_if: bool) -> Optional[IfClause]:
+        # Header
+        keyword = {True: "ElseIf", False: "If"}
+        if self.__peek_token() != keyword[else_if]:
+            return None
+
+        self.__pop_token()
+        condition = self.boolean_expression()
+        if condition is None:
+            raise self.__craft_error(f"{keyword} block needs a valid condition")
+
+        if self.__pop_token() != "Then":
+            raise self.__craft_error("If header needs a Then keyword")
+
+        # Body
+        self.BLANK()
+        if self.__pop_token().category != _TC.END_OF_STATEMENT:
+            if else_if:
+                msg = f"{keyword} block header must be followed by a newline"
+                raise self.__craft_error(msg)
+            else:
+                return None  # Exception might be raised by single_line_if
+
+        body = self.statement_block()
+        if body is None:
+            raise self.__craft_error(f"{keyword} block needs a valid body")
+
+        return IfClause(VIRTUAL_POSITION, body, condition)
+
+    @_add_rule_position
+    @_with_backtracking
+    def single_line_if(self) -> Optional[If]:
+        # First list of statements (if block)
+        if_clause = self.__single_line_if_clause()
+        if if_clause is None:
+            return None
+
+        # Second list of statements (else block)
+        if self.__peek_token() != "Else":
+            if len(if_clause.statements) == 0:
+                msg = "If statement needs to trigger at least one statement"
+                raise self.__craft_error(msg)
+            else_block = None
+        else:
+            self.__pop_token()
+            else_block = self.__single_line_if_list_or_label()
+            if else_block is None:
+                msg = "If statement needs a valid Else block"
+                raise self.__craft_error(msg)
+
+        return If(VIRTUAL_POSITION, tuple([if_clause]), else_block)
+
+    @_add_rule_position
+    @_with_backtracking
+    def __single_line_if_clause(self) -> Optional[IfClause]:
+        # Condition
+        if self.__pop_token() != "If":
+            return None
+
+        condition = self.boolean_expression()
+        if condition is None:
+            raise self.__craft_error("If statement needs a valid condition")
+
+        if self.__pop_token() != "Then":
+            raise self.__craft_error("If condition must be followed by Then")
+
+        # List of statements
+        if_statements = self.__single_line_if_list_or_label()
+        if if_statements is None:
+            raise self.__craft_error("If statement needs a valid If block")
+        if_clause = IfClause(
+            VIRTUAL_POSITION, if_statements.statements, condition
+        )
+
+        return if_clause
+
+    @_add_rule_position
+    @_with_backtracking
+    def __single_line_if_list_or_label(self) -> Optional[StatementBlock]:
+        self.BLANK()
+        statements = []
+
+        # First element: try any statement first, then label
+        first_statement = self.same_line_statement()
+        if first_statement is None:
+            label = self.statement_label()
+            if label is None:
+                return None
+
+            statement_label = StatementLabel(
+                VIRTUAL_POSITION, label  # type: ignore
+            )
+            first_statement = GoTo(label.position, statement_label)
+
+        statements.append(first_statement)
+
+        # Subsequent colon-separated elements
+        while self.__single_line_if_colon():
+            statement = self.same_line_statement()
+            if statement is None:
+                break
+            statements.append(statement)
+
+        self.__single_line_if_colon()
+
+        return StatementBlock(VIRTUAL_POSITION, tuple(statements))
+
+    def __single_line_if_colon(self) -> bool:
+        """
+        Consumes colons, without backtracking needed.
+
+        Returns:
+          ``True`` if a BLANK-separated list of at least one colon is
+          encountered, else ``False``
+        """
+        seen_one = False
+        while True:
+            self.BLANK()
+            if self.__peek_token() == ":":
+                self.__pop_token()
+                seen_one = True
+            else:
+                return seen_one
+
+            self.BLANK()
+
+    def same_line_statement(self) -> Optional[Statement]:
+        return self.__try_rules(  # type: ignore [return-value]
+            self.file_statement,
+            self.error_handling_statement,
+            self.data_manipulation_statement,
+            self.control_statement_except_multiline_if,
+        )
 
     def select_case(self) -> Optional[SelectCase]:
         return None

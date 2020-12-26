@@ -61,3 +61,68 @@ Input #1, MyString, MyNumber
 Put #1, RecordNumber, MyRecord
 Get #4,,FileBuffer
 Get #1, Position, MyRecord
+
+While a = 12
+    msgBox Hey
+    a = a / 2
+Wend
+
+While False
+
+Wend
+
+For i = 0 To 12
+
+Next i
+
+For j = 12 To 16 Step 5
+    msgBox j
+Next
+
+For nasty = 0 to 1
+    For amnesty = 12 To 10
+        msgBox amnesty
+    Next amnesty
+    Exit For
+Next nasty
+
+For Each carrot in bag
+    eat carrot
+Next carrot
+
+Do
+    msgBox "Hey, when will I stop ?"
+    Exit Do
+Loop
+
+Do While a > 12
+    a = a - 1
+Loop
+
+Do
+    b = b + 1
+Loop Until b > 10
+
+If a Then
+    printf "Youhou \\%s", hey
+EndIf
+
+If fifi Then
+    Let fofo = false
+ElseIf fofo Then
+    Let fifi = True
+Elseif trou Then
+    Let coupcoup = False
+Elseif coupcoup Then
+EndIf
+
+If a = 10 Then
+    msgBox "Game over"
+ElseIf b > 10 Then
+Else
+    msgBox "You win"
+EndIf
+
+If True Then msgBox 12
+If a < 12 Then Let a = a + 12 Else msgBox "Nothing to do here"
+If True Then If False Then msgBox "Trou" Else msgBox "False"

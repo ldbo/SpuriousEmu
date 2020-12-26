@@ -84,46 +84,7 @@ def test_statements():
 
 def test_new_statements():
     code = """
-    While a = 12
-        msgBox Hey
-        a = a / 2
-    Wend
 
-    While False
-
-    Wend
-
-    For i = 0 To 12
-
-    Next i
-
-    For j = 12 To 16 Step 5
-        msgBox j
-    Next
-
-    For nasty = 0 to 1
-        For amnesty = 12 To 10
-            msgBox amnesty
-        Next amnesty
-        Exit For
-    Next nasty
-
-    For Each carrot in bag
-        eat carrot
-    Next carrot
-
-    Do
-        msgBox "Hey, when will I stop ?"
-        Exit Do
-    Loop
-
-    Do While a > 12
-        a = a - 1
-    Loop
-
-    Do
-        b = b + 1
-    Loop Until b > 10
     """
     lexer = Lexer(code)
     parser = Parser(lexer)
@@ -131,7 +92,8 @@ def test_new_statements():
     print()
     try:
         block = parser.statement_block()
-    except ParserError as error:
+    except ParserError as e:
+        error = e
         print(f"Error: {error}")
         print(f"Next token: {lexer.peek_token()}")
         import ipdb
@@ -146,6 +108,7 @@ def test_new_statements():
         print()
 
     if lexer.peek_token().category != lexer.peek_token().Category.END_OF_FILE:
+        print(f"Next token: {lexer.peek_token()}")
 
         import ipdb
 

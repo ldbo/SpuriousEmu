@@ -1937,6 +1937,1135 @@
         "TYPE": "Name",
         "name": "MyRecord"
       }
+    },
+    {
+      "TYPE": "While",
+      "condition": {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 12
+              }
+            }
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.EQ>"
+        }
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Name",
+                      "name": "Hey"
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "msgBox"
+              }
+            }
+          },
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": []
+              },
+              "expr": {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "Name",
+                    "name": "a"
+                  },
+                  {
+                    "TYPE": "Operation",
+                    "operands": [
+                      {
+                        "TYPE": "Name",
+                        "name": "a"
+                      },
+                      {
+                        "TYPE": "Literal",
+                        "variable": {
+                          "TYPE": "Variable",
+                          "declared_type": "Integer",
+                          "value": {
+                            "TYPE": "Integer",
+                            "value": 2
+                          }
+                        }
+                      }
+                    ],
+                    "operator": {
+                      "TYPE": "Operator",
+                      "op": "<Type.DIV>"
+                    }
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.EQ>"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "TYPE": "While",
+      "condition": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Boolean",
+          "value": {
+            "TYPE": "Boolean",
+            "value": false
+          }
+        }
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": []
+      }
+    },
+    {
+      "TYPE": "For",
+      "end": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 12
+          }
+        }
+      },
+      "start": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 0
+          }
+        }
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": []
+      },
+      "step": null,
+      "variable": {
+        "TYPE": "Name",
+        "name": "i"
+      }
+    },
+    {
+      "TYPE": "For",
+      "end": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 16
+          }
+        }
+      },
+      "start": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 12
+          }
+        }
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Name",
+                      "name": "j"
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "msgBox"
+              }
+            }
+          }
+        ]
+      },
+      "step": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 5
+          }
+        }
+      },
+      "variable": {
+        "TYPE": "Name",
+        "name": "j"
+      }
+    },
+    {
+      "TYPE": "For",
+      "end": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 1
+          }
+        }
+      },
+      "start": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 0
+          }
+        }
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "For",
+            "end": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 10
+                }
+              }
+            },
+            "start": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 12
+                }
+              }
+            },
+            "statements": {
+              "TYPE": "StatementBlock",
+              "statements": [
+                {
+                  "TYPE": "Call",
+                  "expression": {
+                    "TYPE": "IndexExpr",
+                    "args": {
+                      "TYPE": "ArgList",
+                      "args": [
+                        {
+                          "TYPE": "Arg",
+                          "addressof": false,
+                          "byval": false,
+                          "expr": {
+                            "TYPE": "Name",
+                            "name": "amnesty"
+                          }
+                        }
+                      ]
+                    },
+                    "expr": {
+                      "TYPE": "Name",
+                      "name": "msgBox"
+                    }
+                  }
+                }
+              ]
+            },
+            "step": null,
+            "variable": {
+              "TYPE": "Name",
+              "name": "amnesty"
+            }
+          },
+          {
+            "TYPE": "ExitFor"
+          }
+        ]
+      },
+      "step": null,
+      "variable": {
+        "TYPE": "Name",
+        "name": "nasty"
+      }
+    },
+    {
+      "TYPE": "ForEach",
+      "collection": {
+        "TYPE": "Name",
+        "name": "bag"
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Name",
+                      "name": "carrot"
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "eat"
+              }
+            }
+          }
+        ]
+      },
+      "variable": {
+        "TYPE": "Name",
+        "name": "carrot"
+      }
+    },
+    {
+      "TYPE": "Do",
+      "condition": null,
+      "condition_type": null,
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Literal",
+                      "variable": {
+                        "TYPE": "Variable",
+                        "declared_type": "String",
+                        "value": {
+                          "TYPE": "String",
+                          "value": "Hey, when will I stop ?"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "msgBox"
+              }
+            }
+          },
+          {
+            "TYPE": "ExitDo"
+          }
+        ]
+      }
+    },
+    {
+      "TYPE": "Do",
+      "condition": {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 12
+              }
+            }
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.GT>"
+        }
+      },
+      "condition_type": "<ConditionType.WHILE>",
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": []
+              },
+              "expr": {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "Name",
+                    "name": "a"
+                  },
+                  {
+                    "TYPE": "Operation",
+                    "operands": [
+                      {
+                        "TYPE": "Name",
+                        "name": "a"
+                      },
+                      {
+                        "TYPE": "Literal",
+                        "variable": {
+                          "TYPE": "Variable",
+                          "declared_type": "Integer",
+                          "value": {
+                            "TYPE": "Integer",
+                            "value": 1
+                          }
+                        }
+                      }
+                    ],
+                    "operator": {
+                      "TYPE": "Operator",
+                      "op": "<Type.MINUS>"
+                    }
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.EQ>"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "TYPE": "Do",
+      "condition": {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Name",
+            "name": "b"
+          },
+          {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 10
+              }
+            }
+          }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.GT>"
+        }
+      },
+      "condition_type": "<ConditionType.UNTIL>",
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": []
+              },
+              "expr": {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "Name",
+                    "name": "b"
+                  },
+                  {
+                    "TYPE": "Operation",
+                    "operands": [
+                      {
+                        "TYPE": "Name",
+                        "name": "b"
+                      },
+                      {
+                        "TYPE": "Literal",
+                        "variable": {
+                          "TYPE": "Variable",
+                          "declared_type": "Integer",
+                          "value": {
+                            "TYPE": "Integer",
+                            "value": 1
+                          }
+                        }
+                      }
+                    ],
+                    "operator": {
+                      "TYPE": "Operator",
+                      "op": "<Type.PLUS>"
+                    }
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.EQ>"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "TYPE": "If",
+      "conditional_blocks": [
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Name",
+            "name": "a"
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Call",
+                "expression": {
+                  "TYPE": "IndexExpr",
+                  "args": {
+                    "TYPE": "ArgList",
+                    "args": [
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Literal",
+                          "variable": {
+                            "TYPE": "Variable",
+                            "declared_type": "String",
+                            "value": {
+                              "TYPE": "String",
+                              "value": "Youhou \\\\%s"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Name",
+                          "name": "hey"
+                        }
+                      }
+                    ]
+                  },
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "printf"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "else_block": null
+    },
+    {
+      "TYPE": "If",
+      "conditional_blocks": [
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Name",
+            "name": "fifi"
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Let",
+                "l_expression": {
+                  "TYPE": "Name",
+                  "name": "fofo"
+                },
+                "value": {
+                  "TYPE": "Literal",
+                  "variable": {
+                    "TYPE": "Variable",
+                    "declared_type": "Boolean",
+                    "value": {
+                      "TYPE": "Boolean",
+                      "value": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Name",
+            "name": "fofo"
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Let",
+                "l_expression": {
+                  "TYPE": "Name",
+                  "name": "fifi"
+                },
+                "value": {
+                  "TYPE": "Literal",
+                  "variable": {
+                    "TYPE": "Variable",
+                    "declared_type": "Boolean",
+                    "value": {
+                      "TYPE": "Boolean",
+                      "value": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Name",
+            "name": "trou"
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Let",
+                "l_expression": {
+                  "TYPE": "Name",
+                  "name": "coupcoup"
+                },
+                "value": {
+                  "TYPE": "Literal",
+                  "variable": {
+                    "TYPE": "Variable",
+                    "declared_type": "Boolean",
+                    "value": {
+                      "TYPE": "Boolean",
+                      "value": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Name",
+            "name": "coupcoup"
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": []
+          }
+        }
+      ],
+      "else_block": null
+    },
+    {
+      "TYPE": "If",
+      "conditional_blocks": [
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "a"
+              },
+              {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 10
+                  }
+                }
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.EQ>"
+            }
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Call",
+                "expression": {
+                  "TYPE": "IndexExpr",
+                  "args": {
+                    "TYPE": "ArgList",
+                    "args": [
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Literal",
+                          "variable": {
+                            "TYPE": "Variable",
+                            "declared_type": "String",
+                            "value": {
+                              "TYPE": "String",
+                              "value": "Game over"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "msgBox"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "b"
+              },
+              {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 10
+                  }
+                }
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.GT>"
+            }
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": []
+          }
+        }
+      ],
+      "else_block": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Literal",
+                      "variable": {
+                        "TYPE": "Variable",
+                        "declared_type": "String",
+                        "value": {
+                          "TYPE": "String",
+                          "value": "You win"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "msgBox"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "TYPE": "If",
+      "conditional_blocks": [
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Boolean",
+              "value": {
+                "TYPE": "Boolean",
+                "value": true
+              }
+            }
+          },
+          "statements": [
+            {
+              "TYPE": "Call",
+              "expression": {
+                "TYPE": "IndexExpr",
+                "args": {
+                  "TYPE": "ArgList",
+                  "args": [
+                    {
+                      "TYPE": "Arg",
+                      "addressof": false,
+                      "byval": false,
+                      "expr": {
+                        "TYPE": "Literal",
+                        "variable": {
+                          "TYPE": "Variable",
+                          "declared_type": "Integer",
+                          "value": {
+                            "TYPE": "Integer",
+                            "value": 12
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "expr": {
+                  "TYPE": "Name",
+                  "name": "msgBox"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "else_block": null
+    },
+    {
+      "TYPE": "If",
+      "conditional_blocks": [
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Operation",
+            "operands": [
+              {
+                "TYPE": "Name",
+                "name": "a"
+              },
+              {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 12
+                  }
+                }
+              }
+            ],
+            "operator": {
+              "TYPE": "Operator",
+              "op": "<Type.LT>"
+            }
+          },
+          "statements": [
+            {
+              "TYPE": "Let",
+              "l_expression": {
+                "TYPE": "Name",
+                "name": "a"
+              },
+              "value": {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "Name",
+                    "name": "a"
+                  },
+                  {
+                    "TYPE": "Literal",
+                    "variable": {
+                      "TYPE": "Variable",
+                      "declared_type": "Integer",
+                      "value": {
+                        "TYPE": "Integer",
+                        "value": 12
+                      }
+                    }
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.PLUS>"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "else_block": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Literal",
+                      "variable": {
+                        "TYPE": "Variable",
+                        "declared_type": "String",
+                        "value": {
+                          "TYPE": "String",
+                          "value": "Nothing to do here"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "msgBox"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "TYPE": "If",
+      "conditional_blocks": [
+        {
+          "TYPE": "IfClause",
+          "condition": {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Boolean",
+              "value": {
+                "TYPE": "Boolean",
+                "value": true
+              }
+            }
+          },
+          "statements": [
+            {
+              "TYPE": "If",
+              "conditional_blocks": [
+                {
+                  "TYPE": "IfClause",
+                  "condition": {
+                    "TYPE": "Literal",
+                    "variable": {
+                      "TYPE": "Variable",
+                      "declared_type": "Boolean",
+                      "value": {
+                        "TYPE": "Boolean",
+                        "value": false
+                      }
+                    }
+                  },
+                  "statements": [
+                    {
+                      "TYPE": "Call",
+                      "expression": {
+                        "TYPE": "IndexExpr",
+                        "args": {
+                          "TYPE": "ArgList",
+                          "args": [
+                            {
+                              "TYPE": "Arg",
+                              "addressof": false,
+                              "byval": false,
+                              "expr": {
+                                "TYPE": "Literal",
+                                "variable": {
+                                  "TYPE": "Variable",
+                                  "declared_type": "String",
+                                  "value": {
+                                    "TYPE": "String",
+                                    "value": "Trou"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "expr": {
+                          "TYPE": "Name",
+                          "name": "msgBox"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "else_block": {
+                "TYPE": "StatementBlock",
+                "statements": [
+                  {
+                    "TYPE": "Call",
+                    "expression": {
+                      "TYPE": "IndexExpr",
+                      "args": {
+                        "TYPE": "ArgList",
+                        "args": [
+                          {
+                            "TYPE": "Arg",
+                            "addressof": false,
+                            "byval": false,
+                            "expr": {
+                              "TYPE": "Literal",
+                              "variable": {
+                                "TYPE": "Variable",
+                                "declared_type": "String",
+                                "value": {
+                                  "TYPE": "String",
+                                  "value": "False"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "expr": {
+                        "TYPE": "Name",
+                        "name": "msgBox"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "else_block": null
     }
   ]
 }
