@@ -148,3 +148,7 @@ Case Is <= 15, 17, 26, Is >= 100
 Case 20 To 22
     msgBox "D"
 End Select
+
+Stop
+GoTo 12
+Go To abcd

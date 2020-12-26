@@ -3460,6 +3460,30 @@
         "TYPE": "Name",
         "name": "cas"
       }
+    },
+    {
+      "TYPE": "Stop"
+    },
+    {
+      "TYPE": "GoTo",
+      "label": {
+        "TYPE": "Literal",
+        "variable": {
+          "TYPE": "Variable",
+          "declared_type": "Integer",
+          "value": {
+            "TYPE": "Integer",
+            "value": 12
+          }
+        }
+      }
+    },
+    {
+      "TYPE": "GoTo",
+      "label": {
+        "TYPE": "Name",
+        "name": "abcd"
+      }
     }
   ]
 }

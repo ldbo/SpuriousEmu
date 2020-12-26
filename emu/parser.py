@@ -1428,11 +1428,30 @@ class Parser:
             VIRTUAL_POSITION, first_expression, second_expression, None
         )
 
+    @_add_rule_position
     def stop(self) -> Optional[Stop]:
-        return None
+        if self.__peek_token() != "Stop":
+            return None
 
+        self.__pop_token()
+        return Stop(VIRTUAL_POSITION)
+
+    @_add_rule_position
+    @_with_backtracking
     def go_to(self) -> Optional[GoTo]:
-        return None
+        if self.__peek_token() == "GoTo":
+            self.__pop_token()
+        elif self.__peek_tokens(0, 2) == ("Go", "To"):
+            self.__pop_tokens(3)
+        else:
+            return None
+        self.BLANK()
+
+        label = self.statement_label()
+        if label is None:
+            raise self.__craft_error("GoTo statement needs a valid label")
+
+        return GoTo(VIRTUAL_POSITION, label)  # type: ignore
 
     def on_go_to(self) -> Optional[OnGoTo]:
         return None
