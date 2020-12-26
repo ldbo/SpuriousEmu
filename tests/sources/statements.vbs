@@ -126,3 +126,25 @@ EndIf
 If True Then msgBox 12
 If a < 12 Then Let a = a + 12 Else msgBox "Nothing to do here"
 If True Then If False Then msgBox "Trou" Else msgBox "False"
+
+Select Case number
+Case Is <= 12
+    msgBox "rikiki"
+Case Is = 42
+    msgBox "duh"
+Case Else
+    msgBox "Duh ?"
+End Select
+
+Select Case a
+Case Else
+    Let a = 12
+    Dim b As String
+End Select
+
+Select Case cas
+Case Is <= 15, 17, 26, Is >= 100
+    msgBox "Ho"
+Case 20 To 22
+    msgBox "D"
+End Select

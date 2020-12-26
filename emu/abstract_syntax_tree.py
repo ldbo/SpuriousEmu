@@ -250,14 +250,15 @@ class RangeClause(AST):
 
 @dataclass(frozen=True)
 class CaseClause(StatementBlock):
-    range_clause: RangeClause
+    first_range_clause: RangeClause
+    subsequent_range_clauses: Tuple[RangeClause, ...]
 
 
 @dataclass(frozen=True)
 class SelectCase(Statement):
     select_expression: Expression
     case_clauses: Tuple[CaseClause, ...]
-    case_else_clause: Optional[CaseClause]
+    case_else_clause: Optional[StatementBlock]
 
 
 @dataclass(frozen=True)

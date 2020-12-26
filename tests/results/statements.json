@@ -3066,6 +3066,400 @@
         }
       ],
       "else_block": null
+    },
+    {
+      "TYPE": "SelectCase",
+      "case_clauses": [
+        {
+          "TYPE": "CaseClause",
+          "first_range_clause": {
+            "TYPE": "RangeClause",
+            "comparison_operator": {
+              "TYPE": "Operator",
+              "op": "<Type.LE>"
+            },
+            "end": null,
+            "start": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 12
+                }
+              }
+            }
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Call",
+                "expression": {
+                  "TYPE": "IndexExpr",
+                  "args": {
+                    "TYPE": "ArgList",
+                    "args": [
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Literal",
+                          "variable": {
+                            "TYPE": "Variable",
+                            "declared_type": "String",
+                            "value": {
+                              "TYPE": "String",
+                              "value": "rikiki"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "msgBox"
+                  }
+                }
+              }
+            ]
+          },
+          "subsequent_range_clauses": []
+        },
+        {
+          "TYPE": "CaseClause",
+          "first_range_clause": {
+            "TYPE": "RangeClause",
+            "comparison_operator": {
+              "TYPE": "Operator",
+              "op": "<Type.EQ>"
+            },
+            "end": null,
+            "start": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 42
+                }
+              }
+            }
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Call",
+                "expression": {
+                  "TYPE": "IndexExpr",
+                  "args": {
+                    "TYPE": "ArgList",
+                    "args": [
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Literal",
+                          "variable": {
+                            "TYPE": "Variable",
+                            "declared_type": "String",
+                            "value": {
+                              "TYPE": "String",
+                              "value": "duh"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "msgBox"
+                  }
+                }
+              }
+            ]
+          },
+          "subsequent_range_clauses": []
+        }
+      ],
+      "case_else_clause": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Call",
+            "expression": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Literal",
+                      "variable": {
+                        "TYPE": "Variable",
+                        "declared_type": "String",
+                        "value": {
+                          "TYPE": "String",
+                          "value": "Duh ?"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Name",
+                "name": "msgBox"
+              }
+            }
+          }
+        ]
+      },
+      "select_expression": {
+        "TYPE": "Name",
+        "name": "number"
+      }
+    },
+    {
+      "TYPE": "SelectCase",
+      "case_clauses": [],
+      "case_else_clause": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Let",
+            "l_expression": {
+              "TYPE": "Name",
+              "name": "a"
+            },
+            "value": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 12
+                }
+              }
+            }
+          },
+          {
+            "TYPE": "LocalVariableDeclaration",
+            "static": false,
+            "variable_declarations": [
+              {
+                "TYPE": "VariableDeclaration",
+                "array_dimensions": null,
+                "declared_type": "String",
+                "name": "b",
+                "new": false
+              }
+            ]
+          }
+        ]
+      },
+      "select_expression": {
+        "TYPE": "Name",
+        "name": "a"
+      }
+    },
+    {
+      "TYPE": "SelectCase",
+      "case_clauses": [
+        {
+          "TYPE": "CaseClause",
+          "first_range_clause": {
+            "TYPE": "RangeClause",
+            "comparison_operator": {
+              "TYPE": "Operator",
+              "op": "<Type.LE>"
+            },
+            "end": null,
+            "start": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 15
+                }
+              }
+            }
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Call",
+                "expression": {
+                  "TYPE": "IndexExpr",
+                  "args": {
+                    "TYPE": "ArgList",
+                    "args": [
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Literal",
+                          "variable": {
+                            "TYPE": "Variable",
+                            "declared_type": "String",
+                            "value": {
+                              "TYPE": "String",
+                              "value": "Ho"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "msgBox"
+                  }
+                }
+              }
+            ]
+          },
+          "subsequent_range_clauses": [
+            {
+              "TYPE": "RangeClause",
+              "comparison_operator": null,
+              "end": null,
+              "start": {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 17
+                  }
+                }
+              }
+            },
+            {
+              "TYPE": "RangeClause",
+              "comparison_operator": null,
+              "end": null,
+              "start": {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 26
+                  }
+                }
+              }
+            },
+            {
+              "TYPE": "RangeClause",
+              "comparison_operator": {
+                "TYPE": "Operator",
+                "op": "<Type.GE>"
+              },
+              "end": null,
+              "start": {
+                "TYPE": "Literal",
+                "variable": {
+                  "TYPE": "Variable",
+                  "declared_type": "Integer",
+                  "value": {
+                    "TYPE": "Integer",
+                    "value": 100
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "TYPE": "CaseClause",
+          "first_range_clause": {
+            "TYPE": "RangeClause",
+            "comparison_operator": null,
+            "end": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 22
+                }
+              }
+            },
+            "start": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 20
+                }
+              }
+            }
+          },
+          "statements": {
+            "TYPE": "StatementBlock",
+            "statements": [
+              {
+                "TYPE": "Call",
+                "expression": {
+                  "TYPE": "IndexExpr",
+                  "args": {
+                    "TYPE": "ArgList",
+                    "args": [
+                      {
+                        "TYPE": "Arg",
+                        "addressof": false,
+                        "byval": false,
+                        "expr": {
+                          "TYPE": "Literal",
+                          "variable": {
+                            "TYPE": "Variable",
+                            "declared_type": "String",
+                            "value": {
+                              "TYPE": "String",
+                              "value": "D"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "expr": {
+                    "TYPE": "Name",
+                    "name": "msgBox"
+                  }
+                }
+              }
+            ]
+          },
+          "subsequent_range_clauses": []
+        }
+      ],
+      "case_else_clause": null,
+      "select_expression": {
+        "TYPE": "Name",
+        "name": "cas"
+      }
     }
   ]
 }

@@ -84,7 +84,6 @@ def test_statements():
 
 def test_new_statements():
     code = """
-
     """
     lexer = Lexer(code)
     parser = Parser(lexer)

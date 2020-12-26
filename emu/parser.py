@@ -16,6 +16,7 @@ from .abstract_syntax_tree import (
     ArgList,
     ArrayDimensions,
     Call,
+    CaseClause,
     Close,
     ConstItem,
     ControlStatement,
@@ -63,6 +64,7 @@ from .abstract_syntax_tree import (
     Print,
     Put,
     RaiseEvent,
+    RangeClause,
     ReDim,
     Resume,
     Return,
@@ -1284,8 +1286,147 @@ class Parser:
             self.control_statement_except_multiline_if,
         )
 
+    @_add_rule_position
+    @_with_backtracking
     def select_case(self) -> Optional[SelectCase]:
-        return None
+        # Header
+        if self.__peek_token() == "Select":
+            if self.__peek_token(2) != "Case":
+                raise self.__craft_error("Select must be followed by Case")
+        else:
+            return None
+        self.__pop_tokens(3)
+
+        select_expression = self.expression()
+        if select_expression is None:
+            msg = "Select Case statement needs a valid expression"
+            raise self.__craft_error(msg)
+
+        if not self.EOS():
+            msg = "Select Case statement header must end with a newline"
+            raise self.__craft_error(msg)
+
+        # Clauses
+        clauses = []
+        while True:
+            self.EOS()
+            clause = self.case_clause()
+            if clause is None:
+                break
+            clauses.append(clause)
+
+        self.EOS()
+        case_else = self.case_else_clause()
+
+        self.EOS()
+        if self.__peek_tokens(0, 2) != ("End", "Select"):
+            msg = "Select Case statement must end with End Select"
+            raise self.__craft_error(msg)
+        self.__pop_tokens(3)
+
+        return SelectCase(
+            VIRTUAL_POSITION, select_expression, tuple(clauses), case_else
+        )
+
+    @_add_rule_position
+    @_with_backtracking
+    def case_clause(self) -> Optional[CaseClause]:
+        if self.__pop_token() != "Case":
+            return None
+        self.BLANK()
+
+        first_range = self.range_clause()
+        if first_range is None:
+            return None  # It can be a Case Else clause
+
+        subsequent_ranges = []
+        while True:
+            if self.__peek_token() == ",":
+                self.__pop_token()
+                self.BLANK()
+                clause = self.range_clause()
+            else:
+                break
+            subsequent_ranges.append(clause)
+
+        if not self.EOS():
+            raise self.__craft_error("Case clause must end with a newline")
+
+        body = self.statement_block()
+
+        return CaseClause(
+            VIRTUAL_POSITION, body, first_range, tuple(subsequent_ranges)
+        )
+
+    def case_else_clause(self) -> Optional[StatementBlock]:
+        if self.__peek_token() == "Case":
+            if self.__peek_token(2) != "Else":
+                msg = "Case keyword must be followed by Else or a "
+                msg += "valid expression"
+                raise self.__craft_error(msg)
+            self.__pop_tokens(3)
+
+            if not self.EOS():
+                msg = "Case Else clause must end with a newline"
+                raise self.__craft_error(msg)
+
+            case_else = self.statement_block()
+            if case_else is None:
+                msg = "Case Else clause needs a valid statements block"
+                raise self.__craft_error(msg)
+        else:
+            case_else = None
+
+        return case_else
+
+    @_add_rule_position
+    @_with_backtracking
+    def range_clause(self) -> Optional[RangeClause]:
+        if self.__peek_token() == "Is":
+            self.__pop_token()
+            self.BLANK()
+            comparison_operator = self.__pop_token()
+            valid_operators = (
+                "=",
+                "<>",
+                "><",
+                "<",
+                ">",
+                ">=",
+                "<=",
+                "=<",
+                "=>",
+            )
+
+            if comparison_operator not in valid_operators:
+                msg = "Range clause comparison operator needs to be one of "
+                msg += ", ".join(valid_operators)
+                raise self.__craft_error(msg)
+
+            operator_type = self.__OP_TYPE[comparison_operator]
+            operator = Operator(comparison_operator, operator_type)
+
+            expression = self.expression()
+
+            return RangeClause(VIRTUAL_POSITION, expression, None, operator)
+
+        first_expression = self.expression()
+        if first_expression is None:
+            return None
+
+        if self.__peek_token() != "To":
+            return RangeClause(VIRTUAL_POSITION, first_expression, None, None)
+
+        self.__pop_token()
+        second_expression = self.expression()
+
+        if second_expression is None:
+            msg = "Range clause needs To to be followed by a valid expression"
+            raise self.__craft_error(msg)
+
+        return RangeClause(
+            VIRTUAL_POSITION, first_expression, second_expression, None
+        )
 
     def stop(self) -> Optional[Stop]:
         return None
