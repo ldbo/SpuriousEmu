@@ -3562,6 +3562,25 @@
           "name": "Sub12"
         }
       ]
+    },
+    {
+      "TYPE": "GoSub",
+      "label": {
+        "TYPE": "Name",
+        "name": "subway"
+      }
+    },
+    {
+      "TYPE": "Return"
+    },
+    {
+      "TYPE": "ExitSub"
+    },
+    {
+      "TYPE": "ExitFunction"
+    },
+    {
+      "TYPE": "ExitProperty"
     }
   ]
 }

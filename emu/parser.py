@@ -1488,20 +1488,57 @@ class Parser:
 
         return ast_type(VIRTUAL_POSITION, expression, tuple(labels))
 
-    def go_sub(self) -> Optional[GoSub]:
-        return None
+    @_add_rule_position
+    @_with_backtracking
+    def go_sub(self) -> Optional[GoTo]:
+        if self.__peek_token() == "GoSub":
+            self.__pop_token()
+        elif self.__peek_tokens(0, 2) == ("Go", "Sub"):
+            self.__pop_tokens(3)
+        else:
+            return None
+        self.BLANK()
 
+        label = self.statement_label()
+        if label is None:
+            raise self.__craft_error("GoSub statement needs a valid label")
+
+        return GoSub(VIRTUAL_POSITION, label)  # type: ignore
+
+    @_add_rule_position
     def return_(self) -> Optional[Return]:
-        return None
+        if self.__peek_token() != "Return":
+            return None
 
+        self.__pop_token()
+        return Return(VIRTUAL_POSITION)
+
+    @_add_rule_position
+    @_with_backtracking
     def exit_sub(self) -> Optional[ExitSub]:
-        return None
+        if self.__peek_tokens(0, 2) != ("Exit", "Sub"):
+            return None
+        self.__pop_tokens(3)
 
+        return ExitSub(VIRTUAL_POSITION)
+
+    @_add_rule_position
+    @_with_backtracking
     def exit_function(self) -> Optional[ExitFunction]:
-        return None
+        if self.__peek_tokens(0, 2) != ("Exit", "Function"):
+            return None
+        self.__pop_tokens(3)
 
+        return ExitFunction(VIRTUAL_POSITION)
+
+    @_add_rule_position
+    @_with_backtracking
     def exit_property(self) -> Optional[ExitProperty]:
-        return None
+        if self.__peek_tokens(0, 2) != ("Exit", "Property"):
+            return None
+        self.__pop_tokens(3)
+
+        return ExitProperty(VIRTUAL_POSITION)
 
     def raise_event(self) -> Optional[RaiseEvent]:
         return None

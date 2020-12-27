@@ -100,6 +100,7 @@ def test_new_statements():
 
     from pprint import pprint
 
+    print("\n")
     for statement in block.statements:
         print(statement.position.body())
         pprint(to_dict(statement, excluded_fields={"position"}))

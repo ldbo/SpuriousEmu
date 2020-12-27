@@ -156,3 +156,8 @@ On ex GoTo 12, my_line, 1
 On expr GoTo label
 On Number GoSub Sub1, Sub2
 On Number GoSub Sub12
+GoSub subway
+Return
+Exit Sub
+Exit Function
+Exit Property
