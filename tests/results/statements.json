@@ -3484,6 +3484,84 @@
         "TYPE": "Name",
         "name": "abcd"
       }
+    },
+    {
+      "TYPE": "OnGoTo",
+      "expression": {
+        "TYPE": "Name",
+        "name": "ex"
+      },
+      "labels": [
+        {
+          "TYPE": "Literal",
+          "variable": {
+            "TYPE": "Variable",
+            "declared_type": "Integer",
+            "value": {
+              "TYPE": "Integer",
+              "value": 12
+            }
+          }
+        },
+        {
+          "TYPE": "Name",
+          "name": "my_line"
+        },
+        {
+          "TYPE": "Literal",
+          "variable": {
+            "TYPE": "Variable",
+            "declared_type": "Integer",
+            "value": {
+              "TYPE": "Integer",
+              "value": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "TYPE": "OnGoTo",
+      "expression": {
+        "TYPE": "Name",
+        "name": "expr"
+      },
+      "labels": [
+        {
+          "TYPE": "Name",
+          "name": "label"
+        }
+      ]
+    },
+    {
+      "TYPE": "OnGoSub",
+      "expression": {
+        "TYPE": "Name",
+        "name": "Number"
+      },
+      "labels": [
+        {
+          "TYPE": "Name",
+          "name": "Sub1"
+        },
+        {
+          "TYPE": "Name",
+          "name": "Sub2"
+        }
+      ]
+    },
+    {
+      "TYPE": "OnGoSub",
+      "expression": {
+        "TYPE": "Name",
+        "name": "Number"
+      },
+      "labels": [
+        {
+          "TYPE": "Name",
+          "name": "Sub12"
+        }
+      ]
     }
   ]
 }

@@ -88,7 +88,6 @@ def test_new_statements():
     lexer = Lexer(code)
     parser = Parser(lexer)
 
-    print()
     try:
         block = parser.statement_block()
     except ParserError as e:

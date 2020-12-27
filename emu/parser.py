@@ -859,10 +859,9 @@ class Parser:
             self.select_case,
             self.stop,
             self.go_to,
-            self.on_go_to,
+            self.on_go_to_sub,
             self.go_sub,
             self.return_,
-            self.on_go_Sub,
             self.exit_sub,
             self.exit_function,
             self.exit_property,
@@ -1453,16 +1452,46 @@ class Parser:
 
         return GoTo(VIRTUAL_POSITION, label)  # type: ignore
 
-    def on_go_to(self) -> Optional[OnGoTo]:
-        return None
+    @_add_rule_position
+    @_with_backtracking
+    def on_go_to_sub(self) -> Optional[Union[OnGoTo, OnGoSub]]:
+        if self.__pop_token() != "On":
+            return None
+
+        expression = self.expression()
+        if expression is None:
+            return None
+
+        keyword = self.__pop_token()
+        ast_type: Union[Type[OnGoTo], Type[OnGoSub]]
+        if keyword == "GoTo":
+            ast_type = OnGoTo
+        elif keyword == "GoSub":
+            ast_type = OnGoSub
+        else:
+            msg = "On keyword must be used with GoTo or GoSub"
+            raise self.__craft_error(msg)
+
+        labels: List[StatementLabel] = []
+        while True:
+            self.BLANK()
+            label = self.statement_label()
+            if label is None:
+                break
+            labels.append(label)  # type: ignore
+
+            self.BLANK()
+            if self.__peek_token() != ",":
+                break
+
+            self.__pop_token()
+
+        return ast_type(VIRTUAL_POSITION, expression, tuple(labels))
 
     def go_sub(self) -> Optional[GoSub]:
         return None
 
     def return_(self) -> Optional[Return]:
-        return None
-
-    def on_go_Sub(self) -> Optional[OnGoSub]:
         return None
 
     def exit_sub(self) -> Optional[ExitSub]:

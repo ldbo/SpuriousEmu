@@ -152,3 +152,7 @@ End Select
 Stop
 GoTo 12
 Go To abcd
+On ex GoTo 12, my_line, 1
+On expr GoTo label
+On Number GoSub Sub1, Sub2
+On Number GoSub Sub12
