@@ -161,3 +161,4 @@ Return
 Exit Sub
 Exit Function
 Exit Property
+RaiseEvent LogonCompleted ("AntoineJan")

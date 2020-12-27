@@ -88,6 +88,7 @@ def test_new_statements():
     lexer = Lexer(code)
     parser = Parser(lexer)
 
+    print("\n")
     try:
         block = parser.statement_block()
     except ParserError as e:
@@ -100,7 +101,6 @@ def test_new_statements():
 
     from pprint import pprint
 
-    print("\n")
     for statement in block.statements:
         print(statement.position.body())
         pprint(to_dict(statement, excluded_fields={"position"}))

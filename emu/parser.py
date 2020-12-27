@@ -1540,8 +1540,46 @@ class Parser:
 
         return ExitProperty(VIRTUAL_POSITION)
 
+    @_add_rule_position
+    @_with_backtracking
     def raise_event(self) -> Optional[RaiseEvent]:
-        return None
+        if self.__peek_token() != "RaiseEvent":
+            return None
+        self.__pop_token()
+        self.BLANK()
+
+        event = self.NAME()
+        if event is None:
+            raise self.__craft_error("RaiseEvent needs a valid event name")
+
+        self.BLANK()
+        if self.__peek_token() == "(":
+            self.__pop_token()
+            arguments = self.event_argument_list()
+
+            if self.__pop_token() != ")":
+                msg = "RaiseEvent argument list must end with )"
+                raise self.__craft_error(msg)
+        else:
+            arguments = ()
+
+        return RaiseEvent(VIRTUAL_POSITION, event, arguments)
+
+    def event_argument_list(self) -> Tuple[Expression, ...]:
+        arguments = []
+        while True:
+            self.BLANK()
+            argument = self.expression()
+            if argument is None:
+                break
+
+            arguments.append(argument)
+            self.BLANK()
+            if self.__peek_token() != ",":
+                break
+            self.__pop_token()
+
+        return tuple(arguments)
 
     def with_(self) -> Optional[With]:
         return None

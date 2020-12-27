@@ -3581,6 +3581,26 @@
     },
     {
       "TYPE": "ExitProperty"
+    },
+    {
+      "TYPE": "RaiseEvent",
+      "arguments": [
+        {
+          "TYPE": "Literal",
+          "variable": {
+            "TYPE": "Variable",
+            "declared_type": "String",
+            "value": {
+              "TYPE": "String",
+              "value": "AntoineJan"
+            }
+          }
+        }
+      ],
+      "event": {
+        "TYPE": "Name",
+        "name": "LogonCompleted"
+      }
     }
   ]
 }
