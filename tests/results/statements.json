@@ -690,56 +690,40 @@
       }
     },
     {
-      "TYPE": "Call",
-      "expression": {
-        "TYPE": "IndexExpr",
-        "args": {
-          "TYPE": "ArgList",
-          "args": []
-        },
-        "expr": {
-          "TYPE": "Operation",
-          "operands": [
-            {
-              "TYPE": "Name",
-              "name": "b"
-            },
-            {
-              "TYPE": "Operation",
-              "operands": [
-                {
-                  "TYPE": "Literal",
-                  "variable": {
-                    "TYPE": "Variable",
-                    "declared_type": "Integer",
-                    "value": {
-                      "TYPE": "Integer",
-                      "value": 5
-                    }
-                  }
-                },
-                {
-                  "TYPE": "Literal",
-                  "variable": {
-                    "TYPE": "Variable",
-                    "declared_type": "Integer",
-                    "value": {
-                      "TYPE": "Integer",
-                      "value": 12
-                    }
-                  }
-                }
-              ],
-              "operator": {
-                "TYPE": "Operator",
-                "op": "<Type.PLUS>"
+      "TYPE": "Let",
+      "l_expression": {
+        "TYPE": "Name",
+        "name": "b"
+      },
+      "value": {
+        "TYPE": "Operation",
+        "operands": [
+          {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 5
               }
             }
-          ],
-          "operator": {
-            "TYPE": "Operator",
-            "op": "<Type.EQ>"
+          },
+          {
+            "TYPE": "Literal",
+            "variable": {
+              "TYPE": "Variable",
+              "declared_type": "Integer",
+              "value": {
+                "TYPE": "Integer",
+                "value": 12
+              }
+            }
           }
+        ],
+        "operator": {
+          "TYPE": "Operator",
+          "op": "<Type.PLUS>"
         }
       }
     },
@@ -1992,49 +1976,33 @@
             }
           },
           {
-            "TYPE": "Call",
-            "expression": {
-              "TYPE": "IndexExpr",
-              "args": {
-                "TYPE": "ArgList",
-                "args": []
-              },
-              "expr": {
-                "TYPE": "Operation",
-                "operands": [
-                  {
-                    "TYPE": "Name",
-                    "name": "a"
-                  },
-                  {
-                    "TYPE": "Operation",
-                    "operands": [
-                      {
-                        "TYPE": "Name",
-                        "name": "a"
-                      },
-                      {
-                        "TYPE": "Literal",
-                        "variable": {
-                          "TYPE": "Variable",
-                          "declared_type": "Integer",
-                          "value": {
-                            "TYPE": "Integer",
-                            "value": 2
-                          }
-                        }
-                      }
-                    ],
-                    "operator": {
-                      "TYPE": "Operator",
-                      "op": "<Type.DIV>"
+            "TYPE": "Let",
+            "l_expression": {
+              "TYPE": "Name",
+              "name": "a"
+            },
+            "value": {
+              "TYPE": "Operation",
+              "operands": [
+                {
+                  "TYPE": "Name",
+                  "name": "a"
+                },
+                {
+                  "TYPE": "Literal",
+                  "variable": {
+                    "TYPE": "Variable",
+                    "declared_type": "Integer",
+                    "value": {
+                      "TYPE": "Integer",
+                      "value": 2
                     }
                   }
-                ],
-                "operator": {
-                  "TYPE": "Operator",
-                  "op": "<Type.EQ>"
                 }
+              ],
+              "operator": {
+                "TYPE": "Operator",
+                "op": "<Type.DIV>"
               }
             }
           }
@@ -2374,49 +2342,33 @@
         "TYPE": "StatementBlock",
         "statements": [
           {
-            "TYPE": "Call",
-            "expression": {
-              "TYPE": "IndexExpr",
-              "args": {
-                "TYPE": "ArgList",
-                "args": []
-              },
-              "expr": {
-                "TYPE": "Operation",
-                "operands": [
-                  {
-                    "TYPE": "Name",
-                    "name": "a"
-                  },
-                  {
-                    "TYPE": "Operation",
-                    "operands": [
-                      {
-                        "TYPE": "Name",
-                        "name": "a"
-                      },
-                      {
-                        "TYPE": "Literal",
-                        "variable": {
-                          "TYPE": "Variable",
-                          "declared_type": "Integer",
-                          "value": {
-                            "TYPE": "Integer",
-                            "value": 1
-                          }
-                        }
-                      }
-                    ],
-                    "operator": {
-                      "TYPE": "Operator",
-                      "op": "<Type.MINUS>"
+            "TYPE": "Let",
+            "l_expression": {
+              "TYPE": "Name",
+              "name": "a"
+            },
+            "value": {
+              "TYPE": "Operation",
+              "operands": [
+                {
+                  "TYPE": "Name",
+                  "name": "a"
+                },
+                {
+                  "TYPE": "Literal",
+                  "variable": {
+                    "TYPE": "Variable",
+                    "declared_type": "Integer",
+                    "value": {
+                      "TYPE": "Integer",
+                      "value": 1
                     }
                   }
-                ],
-                "operator": {
-                  "TYPE": "Operator",
-                  "op": "<Type.EQ>"
                 }
+              ],
+              "operator": {
+                "TYPE": "Operator",
+                "op": "<Type.MINUS>"
               }
             }
           }
@@ -2454,49 +2406,33 @@
         "TYPE": "StatementBlock",
         "statements": [
           {
-            "TYPE": "Call",
-            "expression": {
-              "TYPE": "IndexExpr",
-              "args": {
-                "TYPE": "ArgList",
-                "args": []
-              },
-              "expr": {
-                "TYPE": "Operation",
-                "operands": [
-                  {
-                    "TYPE": "Name",
-                    "name": "b"
-                  },
-                  {
-                    "TYPE": "Operation",
-                    "operands": [
-                      {
-                        "TYPE": "Name",
-                        "name": "b"
-                      },
-                      {
-                        "TYPE": "Literal",
-                        "variable": {
-                          "TYPE": "Variable",
-                          "declared_type": "Integer",
-                          "value": {
-                            "TYPE": "Integer",
-                            "value": 1
-                          }
-                        }
-                      }
-                    ],
-                    "operator": {
-                      "TYPE": "Operator",
-                      "op": "<Type.PLUS>"
+            "TYPE": "Let",
+            "l_expression": {
+              "TYPE": "Name",
+              "name": "b"
+            },
+            "value": {
+              "TYPE": "Operation",
+              "operands": [
+                {
+                  "TYPE": "Name",
+                  "name": "b"
+                },
+                {
+                  "TYPE": "Literal",
+                  "variable": {
+                    "TYPE": "Variable",
+                    "declared_type": "Integer",
+                    "value": {
+                      "TYPE": "Integer",
+                      "value": 1
                     }
                   }
-                ],
-                "operator": {
-                  "TYPE": "Operator",
-                  "op": "<Type.EQ>"
                 }
+              ],
+              "operator": {
+                "TYPE": "Operator",
+                "op": "<Type.PLUS>"
               }
             }
           }
@@ -3600,6 +3536,106 @@
       "event": {
         "TYPE": "Name",
         "name": "LogonCompleted"
+      }
+    },
+    {
+      "TYPE": "With",
+      "expression": {
+        "TYPE": "Name",
+        "name": "MyObject"
+      },
+      "statements": {
+        "TYPE": "StatementBlock",
+        "statements": [
+          {
+            "TYPE": "Let",
+            "l_expression": {
+              "TYPE": "WithMemberAccess",
+              "field": {
+                "TYPE": "Name",
+                "name": "a"
+              }
+            },
+            "value": {
+              "TYPE": "Literal",
+              "variable": {
+                "TYPE": "Variable",
+                "declared_type": "Integer",
+                "value": {
+                  "TYPE": "Integer",
+                  "value": 12
+                }
+              }
+            }
+          },
+          {
+            "TYPE": "Let",
+            "l_expression": {
+              "TYPE": "WithMemberAccess",
+              "field": {
+                "TYPE": "Name",
+                "name": "b"
+              }
+            },
+            "value": {
+              "TYPE": "IndexExpr",
+              "args": {
+                "TYPE": "ArgList",
+                "args": [
+                  {
+                    "TYPE": "Arg",
+                    "addressof": false,
+                    "byval": false,
+                    "expr": {
+                      "TYPE": "Literal",
+                      "variable": {
+                        "TYPE": "Variable",
+                        "declared_type": "Integer",
+                        "value": {
+                          "TYPE": "Integer",
+                          "value": 1
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expr": {
+                "TYPE": "Operation",
+                "operands": [
+                  {
+                    "TYPE": "Operation",
+                    "operands": [
+                      {
+                        "TYPE": "Literal",
+                        "variable": {
+                          "TYPE": "Variable",
+                          "declared_type": "Integer",
+                          "value": {
+                            "TYPE": "Integer",
+                            "value": 14
+                          }
+                        }
+                      }
+                    ],
+                    "operator": {
+                      "TYPE": "Operator",
+                      "op": "<Type.UNARY_MINUS>"
+                    }
+                  },
+                  {
+                    "TYPE": "Name",
+                    "name": "f"
+                  }
+                ],
+                "operator": {
+                  "TYPE": "Operator",
+                  "op": "<Type.PLUS>"
+                }
+              }
+            }
+          }
+        ]
       }
     }
   ]

@@ -135,6 +135,7 @@ class Operator(AST):
         UNARY_MINUS: str = "UNARY_MINUS"
         EXP: str = "EXP"
         DOT: str = "DOT"
+        UNARY_DOT: str = "UNARY_DOT"
         EXCLAMATION: str = "EXCLAMATION"
         COMMA: str = "COMMA"
         INDEX: str = "INDEX"

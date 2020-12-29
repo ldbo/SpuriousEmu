@@ -162,3 +162,8 @@ Exit Sub
 Exit Function
 Exit Property
 RaiseEvent LogonCompleted ("AntoineJan")
+
+With MyObject
+    .a = 12
+    .b = -14 + f(1)
+End With

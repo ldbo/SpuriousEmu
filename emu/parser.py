@@ -82,6 +82,7 @@ from .abstract_syntax_tree import (
     While,
     Width,
     With,
+    WithMemberAccess,
     Write,
 )
 from .data import (
@@ -274,6 +275,7 @@ class Parser:
         _OT.UNARY_MINUS: 13,
         _OT.EXP: 14,
         _OT.DOT: 15,
+        _OT.UNARY_DOT: 15,
         _OT.EXCLAMATION: 15,
         _OT.LPAREN: 15,
     }  #: Mapping between operators and precedence
@@ -304,7 +306,7 @@ class Parser:
         "/": _OT.DIV,
         "*": _OT.MULT,
         "^": _OT.EXP,
-        ".": _OT.DOT,
+        # ".": _OT.DOT,
         "!": _OT.EXCLAMATION,
         ",": _OT.COMMA,
     }  #: Mapping between single-arity operators and their symbols
@@ -312,12 +314,17 @@ class Parser:
     __OP_ARITY_TYPE = {
         "(": {1: _OT.LPAREN, 2: _OT.INDEX},
         "-": {1: _OT.UNARY_MINUS, 2: _OT.MINUS},
+        ".": {1: _OT.UNARY_DOT, 2: _OT.DOT},
     }  #: Mapping between multiple-arity operators symbols and their operator
+
+    __UNARY_OPS: set
+    """Set of unary operators, defined later from __OP_ARITY_TYPE"""
 
     __LEXPRESSION_OPERATORS = {
         _OT.INDEX,
         _OT.EXCLAMATION,
         _OT.DOT,
+        _OT.UNARY_DOT,
         _OT.RPAREN,
         _OT.LPAREN,
         _OT.COMMA,
@@ -509,7 +516,11 @@ class Parser:
         l_expression: bool,
         arglist: bool,
     ) -> None:
+        # print("Start: " + ''.join(self.__peek_token(i) for i in range(6)))
         while True:
+            # print(f"Opors: {operators}")
+            # print(f"Opands: {operands}")
+            # print("----")
             if self.__categories_match(
                 (_TC.END_OF_STATEMENT, _TC.END_OF_FILE, _TC.SYMBOL)
             ):
@@ -616,7 +627,7 @@ class Parser:
             operator
         ):
             operators.append(operator)
-        elif operator.op in (_OT.NOT, _OT.UNARY_MINUS):
+        elif operator.op in self.__UNARY_OPS:
             operators.append(operator)
         else:
             while (
@@ -638,7 +649,7 @@ class Parser:
         operands = [operands_stack.pop()]
         operator = operators[-1]
 
-        if operator.op in (_OT.UNARY_MINUS, _OT.NOT):  # Local unary operator
+        if operator.op in Parser.__UNARY_OPS:  # Local unary operator
             while Parser.__op_eq(operators[-1], operator):
                 new_operand = Operation(
                     operators.pop().position + operands[0].position,
@@ -672,24 +683,12 @@ class Parser:
         """
         # TODO improve doc here
         op_type = operation.operator.op
-        if op_type in (_OT.DOT, _OT.EXCLAMATION):  # Access operators
-            access_type = {_OT.DOT: MemberAccess, _OT.EXCLAMATION: DictAccess}[
-                op_type
-            ]
-
-            expr = operation.operands[0]
-            for field in operation.operands[1:]:
-                if not isinstance(field, Name):
-                    msg = "The last element of a member access expression must "
-                    msg += "be a name"
-                    raise ParserError(msg, field.position)
-
-                access = access_type(
-                    expr.position + field.position, expr, field
-                )
-                expr = access
-
-            return access
+        if op_type in (
+            _OT.DOT,
+            _OT.EXCLAMATION,
+            _OT.UNARY_DOT,
+        ):  # Access operators
+            return Parser.__expression_unroll_access_operator(operation)
         elif op_type == _OT.COMMA:  # Argument list
             args = tuple(Arg(expr, expr) for expr in operation.operands)
             return ArgList(operation, args)
@@ -706,6 +705,34 @@ class Parser:
             return ParenExpr(operation, operation.operands[0])
         else:
             return operation
+
+    @staticmethod
+    def __expression_unroll_access_operator(operation: Operation) -> Expression:
+        op_type = operation.operator.op
+        access_types = {
+            _OT.DOT: MemberAccess,
+            _OT.EXCLAMATION: DictAccess,
+            _OT.UNARY_DOT: MemberAccess,
+        }[op_type]
+
+        expr = operation.operands[0]
+        access: Expression
+
+        if op_type in (_OT.UNARY_DOT,):
+            assert isinstance(expr, Name)
+            expr = WithMemberAccess(expr.position, expr)
+            access = expr
+
+        for field in operation.operands[1:]:
+            if not isinstance(field, Name):
+                msg = "The last element of a member access expression must "
+                msg += "be a name"
+                raise ParserError(msg, field.position)
+
+            access = access_types(expr.position + field.position, expr, field)
+            expr = access
+
+        return access
 
     @staticmethod
     def __op_eq(operator1: Operator, operator2: Operator):
@@ -875,7 +902,7 @@ class Parser:
         if self.__peek_token() == "Call":
             self.__pop_token()
 
-            expr = self.expression()
+            expr = self.l_expression()
             if expr is None:
                 raise self.__craft_error("Call statement needs a valid callee")
 
@@ -887,8 +914,11 @@ class Parser:
             if self.__category_match(_TC.KEYWORD):
                 return None
 
-            callee = self.expression()
+            callee = self.l_expression()
             if callee is None:
+                return None
+
+            if self.__peek_token() == "=":  # Don't mistake a let for a call
                 return None
 
             arg_list = self.__expression(l_expression=False, arglist=True)
@@ -1581,8 +1611,30 @@ class Parser:
 
         return tuple(arguments)
 
+    @_add_rule_position
+    @_with_backtracking
     def with_(self) -> Optional[With]:
-        return None
+        if self.__peek_token() != "With":
+            return None
+        self.__pop_token()
+
+        expression = self.expression()
+        if not self.EOS():
+            raise self.__craft_error("With header must end with a newline")
+
+        body = self.statement_block()
+        if body is None:
+            msg = "With statement needs a valid statements block"
+            raise self.__craft_error(msg)
+
+        self.EOS()
+        if self.__peek_tokens(0, 2) != ("End", "With"):
+            msg = "With statement must have an End With footer"
+            raise self.__craft_error(msg)
+
+        self.__pop_tokens(3)
+
+        return With(VIRTUAL_POSITION, body, expression)
 
     # Data manipulation statements
 
@@ -2865,6 +2917,10 @@ class Parser:
 
         return None
 
+
+Parser._Parser__UNARY_OPS = set(  # type: ignore [attr-defined]
+    map(lambda d: d[1], Parser._Parser__OP_ARITY_TYPE.values())  # type: ignore
+)
 
 _INTEGER_BUILDERS = {
     None: Parser._Parser__build_number_no_suffix,  # type: ignore [attr-defined]

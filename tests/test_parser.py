@@ -74,44 +74,9 @@ def test_statements():
     parser = Parser(lexer)
     parsed_block = parser.statement_block()
 
-    # export_result(
-    #     "statements", to_dict(parsed_block, excluded_fields={"position"})
-    # )
     assert_result(
         "statements", to_dict(parsed_block, excluded_fields={"position"})
     )
-
-
-def test_new_statements():
-    code = """
-    """
-    lexer = Lexer(code)
-    parser = Parser(lexer)
-
-    print("\n")
-    try:
-        block = parser.statement_block()
-    except ParserError as e:
-        error = e
-        print(f"Error: {error}")
-        print(f"Next token: {lexer.peek_token()}")
-        import ipdb
-
-        ipdb.set_trace()
-
-    from pprint import pprint
-
-    for statement in block.statements:
-        print(statement.position.body())
-        pprint(to_dict(statement, excluded_fields={"position"}))
-        print()
-
-    if lexer.peek_token().category != lexer.peek_token().Category.END_OF_FILE:
-        print(f"Next token: {lexer.peek_token()}")
-
-        import ipdb
-
-        ipdb.set_trace()
 
 
 def test_string():
