@@ -79,6 +79,49 @@ def test_statements():
     )
 
 
+def test_module():
+    """parser: module structure"""
+    test_names = ("procedural_module", "class_module")
+
+    for test_name in test_names:
+        code = load_source(test_name + ".vbs")
+        module = Parser(Lexer(code)).module()
+
+        export_result(test_name, to_dict(module, excluded_fields={"position"}))
+        assert_result(test_name, to_dict(module, excluded_fields={"position"}))
+
+
+def test_module_exp():
+    code = """Attribute VB_Name = "Zbop"
+Attribute VB_Globalnamespace = False
+Attribute VB_Exposed = True
+    """
+    lexer = Lexer(code)
+    parser = Parser(lexer)
+
+    print("\n")
+    try:
+        module = parser.module()
+    except ParserError as e:
+        error = e
+        print(f"Error: {error}")
+        print(f"Next token: {lexer.peek_token()}")
+        import ipdb
+
+        ipdb.set_trace()
+
+    from pprint import pprint
+
+    pprint(to_dict(module, excluded_fields={"position"}))
+
+    if lexer.peek_token().category != lexer.peek_token().Category.END_OF_FILE:
+        print(f"Next token: {lexer.peek_token()}")
+
+        import ipdb
+
+        ipdb.set_trace()
+
+
 def test_string():
     """parser: string literals"""
     codes = '"hey"', '"""ho"""', '"let""s go"'

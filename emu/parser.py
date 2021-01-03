@@ -52,6 +52,8 @@ from .abstract_syntax_tree import (
     LSet,
     MemberAccess,
     Mid,
+    Module,
+    ModuleAttribute,
     Name,
     OnError,
     OnGoSub,
@@ -329,6 +331,15 @@ class Parser:
         _OT.LPAREN,
         _OT.COMMA,
     }  #: Operators allowed in an l-expression
+
+    __MODULE_ATTRIBUTE_TYPES = {
+        "vb_name": (ModuleAttribute.Name.NAME, str),
+        "vb_globalnamespace": (ModuleAttribute.Name.GLOBAL_NAMESPACE, bool),
+        "vb_creatable": (ModuleAttribute.Name.CREATABLE, bool),
+        "vb_predeclaredid": (ModuleAttribute.Name.PREDECLARED_ID, bool),
+        "vb_exposed": (ModuleAttribute.Name.EXPOSED, bool),
+        "vb_customizable": (ModuleAttribute.Name.CUSTOMIZABLE, bool),
+    }  #: Allowed attribute names and associated type and value type
 
     # API
 
@@ -2616,6 +2627,60 @@ class Parser:
     @_with_backtracking
     def get(self) -> Optional[Get]:
         return self.__put_get(put=False)  # type: ignore [return-value]
+
+    # Module
+
+    @_add_rule_position
+    def module(self) -> Optional[Module]:
+        attributes = []
+        while True:
+            attribute = self.module_attribute()
+            if attribute is None:
+                break
+
+            attributes.append(attribute)
+
+        return Module(VIRTUAL_POSITION, tuple(attributes))
+
+    @_add_rule_position
+    @_with_backtracking
+    def module_attribute(self) -> Optional[ModuleAttribute]:
+        # Parse
+        if self.__pop_token() != "Attribute":
+            return None
+
+        self.BLANK()
+        name = self.__pop_token()
+        self.BLANK()
+
+        if not self.__pop_token() == "=":
+            raise self.__craft_error("Module attribute expects a value")
+
+        self.BLANK()
+        value = self.__pop_token()
+
+        if not self.EOS():
+            raise self.__craft_error("Module attribute must end with a newline")
+
+        # Verify
+        if name not in self.__MODULE_ATTRIBUTE_TYPES:
+            msg = f"Module attribute {name} is not supported"
+            raise self.__craft_error(msg)
+
+        attribute_type = self.__MODULE_ATTRIBUTE_TYPES[name]
+        name_value, value_type = attribute_type
+        value_value: Union[str, bool]
+
+        if value_type is str:
+            if value.category is not _TC.STRING:
+                raise self.__craft_error("Attribute expects a string value")
+            value_value = value[1:-1]
+        elif value_type is bool:
+            if value.category is not _TC.BOOLEAN:
+                raise self.__craft_error("Attribute expects a boolean value")
+            value_value = value == "True"
+
+        return ModuleAttribute(VIRTUAL_POSITION, name_value, value_value)
 
     # Literals
 

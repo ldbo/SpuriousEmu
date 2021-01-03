@@ -1,0 +1,20 @@
+{
+  "TYPE": "Module",
+  "header": [
+    {
+      "TYPE": "ModuleAttribute",
+      "name": "<Name.NAME>",
+      "value": "OurModule"
+    },
+    {
+      "TYPE": "ModuleAttribute",
+      "name": "<Name.GLOBAL_NAMESPACE>",
+      "value": false
+    },
+    {
+      "TYPE": "ModuleAttribute",
+      "name": "<Name.EXPOSED>",
+      "value": true
+    }
+  ]
+}

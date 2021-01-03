@@ -591,3 +591,24 @@ FileStatement = Union[
     Put,
     Get,
 ]
+
+# Modules
+
+
+@dataclass(frozen=True)
+class ModuleAttribute(AST):
+    class Name(Enum):
+        NAME = "VB_Name"
+        GLOBAL_NAMESPACE = "VB_GlobalNameSpace"
+        CREATABLE = "VB_Creatable"
+        PREDECLARED_ID = "VB_PredeclaredId"
+        EXPOSED = "VB_Exposed"
+        CUSTOMIZABLE = "VB_Customizable"
+
+    name: "ModuleAttribute.Name"
+    value: Union[str, bool]
+
+
+@dataclass(frozen=True)
+class Module(AST):
+    header: Tuple[ModuleAttribute, ...]

@@ -1,0 +1,10 @@
+{
+  "TYPE": "Module",
+  "header": [
+    {
+      "TYPE": "ModuleAttribute",
+      "name": "<Name.NAME>",
+      "value": "MyModule"
+    }
+  ]
+}
