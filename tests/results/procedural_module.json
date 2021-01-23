@@ -1,5 +1,41 @@
 {
-  "TYPE": "Module",
+  "TYPE": "ProceduralModule",
+  "declarations": [],
+  "directives": [
+    {
+      "TYPE": "OptionCompareDirective",
+      "comparison_mode": "<ComparisonMode.BINARY>"
+    },
+    {
+      "TYPE": "OptionBaseDirective",
+      "lower_bound": "<LowerBound.ONE>"
+    },
+    {
+      "TYPE": "OptionExplicitDirective"
+    },
+    {
+      "TYPE": "OptionPrivateDirective"
+    },
+    {
+      "TYPE": "DefDirective",
+      "def_type": "Boolean",
+      "letter_spec": [
+        {
+          "TYPE": "LetterSpec",
+          "lower_bound": {
+            "TYPE": "Token",
+            "VALUE": "A",
+            "category": "<Category.IDENTIFIER>"
+          },
+          "upper_bound": {
+            "TYPE": "Token",
+            "VALUE": "Z",
+            "category": "<Category.IDENTIFIER>"
+          }
+        }
+      ]
+    }
+  ],
   "header": [
     {
       "TYPE": "ModuleAttribute",

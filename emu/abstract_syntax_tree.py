@@ -4,6 +4,7 @@ from typing import Optional, Tuple, Union
 
 from .data import DeclaredType, Variable
 from .lexer import Token
+from .runtime import ComparisonMode, LetterSpec, LowerBound
 from .utils import FilePosition, Visitable
 
 
@@ -612,3 +613,68 @@ class ModuleAttribute(AST):
 @dataclass(frozen=True)
 class Module(AST):
     header: Tuple[ModuleAttribute, ...]
+
+
+@dataclass(frozen=True)
+class CommonOptionDirective(AST):
+    pass
+
+
+@dataclass(frozen=True)
+class OptionCompareDirective(CommonOptionDirective):
+    comparison_mode: ComparisonMode
+
+
+@dataclass(frozen=True)
+class OptionBaseDirective(CommonOptionDirective):
+    lower_bound: LowerBound
+
+
+@dataclass(frozen=True)
+class OptionExplicitDirective(CommonOptionDirective):
+    pass
+
+
+@dataclass(frozen=True)
+class OptionPrivateDirective(AST):
+    pass
+
+
+@dataclass(frozen=True)
+class DefDirective(AST):
+    def_type: DeclaredType
+    letter_spec: Tuple[LetterSpec, ...]
+
+
+@dataclass(frozen=True)
+class OptionsPrivateDirective(AST):
+    pass
+
+
+@dataclass(frozen=True)
+class ImplementsDirective(AST):
+    class_type: LExpression
+
+
+ProceduralDirective = Union[
+    CommonOptionDirective, DefDirective, OptionPrivateDirective, Rem
+]
+ProceduralDeclaration = Union[None]
+ClassDirective = Union[
+    CommonOptionDirective,
+    DefDirective,
+    ImplementsDirective,
+]
+ClassDeclaration = Union[None]
+
+
+@dataclass(frozen=True)
+class ProceduralModule(Module):
+    directives: Tuple[ProceduralDirective, ...]
+    declarations: Tuple[ProceduralDeclaration, ...]
+
+
+@dataclass(frozen=True)
+class ClassModule(Module):
+    directives: Tuple[ClassDirective, ...]
+    declarations: Tuple[ClassDeclaration, ...]

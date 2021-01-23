@@ -1,5 +1,61 @@
 {
-  "TYPE": "Module",
+  "TYPE": "ClassModule",
+  "declarations": [],
+  "directives": [
+    {
+      "TYPE": "OptionCompareDirective",
+      "comparison_mode": "<ComparisonMode.TEXT>"
+    },
+    {
+      "TYPE": "OptionBaseDirective",
+      "lower_bound": "<LowerBound.ZERO>"
+    },
+    {
+      "TYPE": "OptionExplicitDirective"
+    },
+    {
+      "TYPE": "DefDirective",
+      "def_type": "Long",
+      "letter_spec": [
+        {
+          "TYPE": "LetterSpec",
+          "lower_bound": {
+            "TYPE": "Token",
+            "VALUE": "B",
+            "category": "<Category.IDENTIFIER>"
+          },
+          "upper_bound": null
+        },
+        {
+          "TYPE": "LetterSpec",
+          "lower_bound": {
+            "TYPE": "Token",
+            "VALUE": "D",
+            "category": "<Category.IDENTIFIER>"
+          },
+          "upper_bound": {
+            "TYPE": "Token",
+            "VALUE": "F",
+            "category": "<Category.IDENTIFIER>"
+          }
+        }
+      ]
+    },
+    {
+      "TYPE": "ImplementsDirective",
+      "class_type": {
+        "TYPE": "MemberAccess",
+        "expr": {
+          "TYPE": "Name",
+          "name": "Foo"
+        },
+        "field": {
+          "TYPE": "Name",
+          "name": "Bar"
+        }
+      }
+    }
+  ],
   "header": [
     {
       "TYPE": "ModuleAttribute",

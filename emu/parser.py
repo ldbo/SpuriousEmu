@@ -17,10 +17,15 @@ from .abstract_syntax_tree import (
     ArrayDimensions,
     Call,
     CaseClause,
+    ClassDeclaration,
+    ClassDirective,
+    ClassModule,
     Close,
+    CommonOptionDirective,
     ConstItem,
     ControlStatement,
     DataManipulationStatement,
+    DefDirective,
     DictAccess,
     Do,
     Erase,
@@ -40,6 +45,7 @@ from .abstract_syntax_tree import (
     GoTo,
     If,
     IfClause,
+    ImplementsDirective,
     IndexExpr,
     Input,
     Let,
@@ -61,13 +67,21 @@ from .abstract_syntax_tree import (
     Open,
     Operation,
     Operator,
+    OptionBaseDirective,
+    OptionCompareDirective,
+    OptionExplicitDirective,
+    OptionPrivateDirective,
     OutputItem,
     ParenExpr,
     Print,
+    ProceduralDeclaration,
+    ProceduralDirective,
+    ProceduralModule,
     Put,
     RaiseEvent,
     RangeClause,
     ReDim,
+    Rem,
     Resume,
     Return,
     RSet,
@@ -98,6 +112,7 @@ from .data import (
     Integer,
     Long,
     LongLong,
+    LongPtr,
     Null,
     ObjectReference,
     Single,
@@ -109,6 +124,7 @@ from .data import (
 )
 from .error import ParserError
 from .lexer import Lexer, Token
+from .runtime import ComparisonMode, LetterSpec, LowerBound
 from .utils import VIRTUAL_POSITION, FilePosition
 
 _TC = Token.Category
@@ -340,6 +356,26 @@ class Parser:
         "vb_exposed": (ModuleAttribute.Name.EXPOSED, bool),
         "vb_customizable": (ModuleAttribute.Name.CUSTOMIZABLE, bool),
     }  #: Allowed attribute names and associated type and value type
+
+    __DEF_TYPES = {
+        "defbool": Boolean,
+        "defbyte": Byte,
+        "defcur": Currency,
+        "defdate": Date,
+        "defdbl": Double,
+        "defint": Integer,
+        "deflng": Long,
+        "deflnglng": LongLong,
+        "deflngptr": LongPtr,
+        "defobj": ObjectReference,
+        "defsng": Single,
+        "defstr": String,
+        "defvar": Variant,
+    }
+    """
+    Mapping between a def-directive def-type and the corresponding declared
+    type
+    """
 
     # API
 
@@ -833,14 +869,22 @@ class Parser:
     def variable_expression(self) -> Optional[Expression]:
         return self.expression()
 
-    def bound_variable_expression(self) -> Optional[Expression]:
+    def bound_variable_expression(self) -> Optional[LExpression]:
         return self.l_expression()
 
-    def defined_type_expression(self) -> Optional[Expression]:
+    def defined_type_expression(self) -> Optional[LExpression]:
         return self.l_expression()
 
     # Statements (individual statements do not include the END_OF_STATEMENT
     # token)
+
+    @_add_rule_position
+    def rem(self) -> Optional[Rem]:
+        token = self.__peek_token()
+        if token.category is not _TC.COMMENT or not token.has_prefix("Rem"):
+            return None
+
+        return Rem(VIRTUAL_POSITION, str(self.__pop_token()[4:]))
 
     @_add_rule_position
     def statement_block(self) -> Optional[StatementBlock]:
@@ -2630,8 +2674,14 @@ class Parser:
 
     # Module
 
-    @_add_rule_position
     def module(self) -> Optional[Module]:
+        return self.__try_rules(  # type: ignore [return-value]
+            self.class_module, self.procedural_module
+        )
+
+    @_add_rule_position
+    @_with_backtracking
+    def class_module(self) -> Optional[Module]:
         attributes = []
         while True:
             attribute = self.module_attribute()
@@ -2640,7 +2690,43 @@ class Parser:
 
             attributes.append(attribute)
 
-        return Module(VIRTUAL_POSITION, tuple(attributes))
+        if len(attributes) == 0:
+            return None
+
+        directives = self.class_directives()
+        declarations = self.class_declarations()
+
+        self.EOS()
+
+        if not self.__category_match(_TC.END_OF_FILE):
+            return None
+
+        return ClassModule(
+            VIRTUAL_POSITION, tuple(attributes), directives, declarations
+        )
+
+    @_add_rule_position
+    @_with_backtracking
+    def procedural_module(self) -> Optional[Module]:
+        attributes = []
+        while True:
+            attribute = self.module_attribute()
+            if attribute is None:
+                break
+
+            attributes.append(attribute)
+
+        if len(attributes) != 1:
+            return None
+
+        directives = self.procedural_directives()
+        declarations = self.procedural_declarations()
+
+        return ProceduralModule(
+            VIRTUAL_POSITION, tuple(attributes), directives, declarations
+        )
+
+    # Module header
 
     @_add_rule_position
     @_with_backtracking
@@ -2681,6 +2767,188 @@ class Parser:
             value_value = value == "True"
 
         return ModuleAttribute(VIRTUAL_POSITION, name_value, value_value)
+
+    # Module directives
+
+    def class_directives(
+        self,
+    ) -> Tuple[ClassDirective, ...]:
+        ok = True
+        directives = []
+        self.EOS()  # Skip newlines at the beginning
+        while ok:
+            directive = self.__try_rules(
+                self.common_option_directive,
+                self.def_directive,
+                self.implements_directive,
+            )
+            if directive is None:
+                ok = False
+            else:
+                directives.append(directive)
+            self.EOS()
+
+        return tuple(directives)  # type: ignore [arg-type]
+
+    def procedural_directives(
+        self,
+    ) -> Tuple[ProceduralDirective, ...]:
+        ok = True
+        directives = []
+        self.EOS()  # Skip newlines at the beginning
+        while ok:
+            directive = self.__try_rules(
+                self.common_option_directive,
+                self.option_private_directive,
+                self.def_directive,
+            )
+            if directive is None:
+                ok = False
+            else:
+                directives.append(directive)
+            self.EOS()
+
+        return tuple(directives)  # type: ignore [arg-type]
+
+    def common_option_directive(self) -> Optional[CommonOptionDirective]:
+        return self.__try_rules(  # type: ignore [return-value]
+            self.option_compare_directive,
+            self.option_base_directive,
+            self.option_explicit_directive,
+            self.rem,
+        )
+
+    @_add_rule_position
+    def option_compare_directive(self) -> Optional[OptionCompareDirective]:
+        if self.__peek_tokens(0, 2) != ("Option", "Compare"):
+            return None
+
+        mode_token = self.__peek_token(4)
+        if mode_token == "Binary":
+            mode = ComparisonMode.BINARY
+        elif mode_token == "Text":
+            mode = ComparisonMode.TEXT
+        else:
+            return None
+
+        self.__pop_tokens(5)
+
+        return OptionCompareDirective(VIRTUAL_POSITION, mode)
+
+    @_add_rule_position
+    @_with_backtracking
+    def option_base_directive(self) -> Optional[OptionBaseDirective]:
+        if self.__peek_tokens(0, 2) != ("Option", "Base"):
+            return None
+
+        lower_bound = self.__peek_token(4)
+        if lower_bound.category != _TC.INTEGER:
+            return None
+
+        self.__pop_tokens(5)
+
+        lower_bound_int = self.__split_integer(lower_bound)[1]
+        if lower_bound_int == 0:
+            lower_bound_value = LowerBound.ZERO
+        elif lower_bound_int == 1:
+            lower_bound_value = LowerBound.ONE
+        else:
+            msg = "Option Base lower bound value must be 0 or 1"
+            raise self.__craft_error(msg)
+
+        return OptionBaseDirective(VIRTUAL_POSITION, lower_bound_value)
+
+    @_add_rule_position
+    def option_explicit_directive(self) -> Optional[OptionExplicitDirective]:
+        if self.__peek_tokens(0, 2) != ("Option", "Explicit"):
+            return None
+
+        self.__pop_tokens(3)
+        return OptionExplicitDirective(VIRTUAL_POSITION)
+
+    @_add_rule_position
+    def option_private_directive(self) -> Optional[OptionPrivateDirective]:
+        if self.__peek_tokens(0, 2, 4) != ("Option", "Private", "Module"):
+            return None
+
+        self.__pop_tokens(5)
+        return OptionPrivateDirective(VIRTUAL_POSITION)
+
+    @_add_rule_position
+    @_with_backtracking
+    def def_directive(self) -> Optional[DefDirective]:
+        deftype = self.__pop_token()
+        if deftype not in self.__DEF_TYPES:
+            return None
+
+        letter_specs: List[LetterSpec] = []
+        while True:
+            self.BLANK()
+            letter_spec = self.letter_spec()
+            if letter_spec is None:
+                if len(letter_specs) == 0:
+                    msg = "Def type directive needs a letter spec"
+                    raise self.__craft_error(msg)
+                else:
+                    raise self.__craft_error("Invalid letter spec")
+
+            letter_specs.append(letter_spec)
+            if self.__peek_token() == ",":
+                self.__pop_token()
+                self.BLANK()
+            else:
+                break
+
+        declared_type = self.__DEF_TYPES[deftype]
+
+        return DefDirective(
+            VIRTUAL_POSITION, declared_type, tuple(letter_specs)
+        )
+
+    def letter_spec(self) -> Optional[LetterSpec]:
+        lower_bound = self.__peek_token()
+        if lower_bound.category != _TC.IDENTIFIER:
+            return None
+        if len(lower_bound) != 1:
+            msg = "Def type directive letter spec does not support "
+            msg += "multi-characters bounds"
+            raise self.__craft_error(msg)
+
+        upper_bound: Optional[str]
+        if self.__peek_token(1) == "-":
+            upper_bound = self.__peek_token(2)
+            if len(upper_bound) != 1:
+                msg = "Def type directive letter spec does not support "
+                msg += "multi-characters bounds"
+                raise self.__craft_error(msg)
+            else:
+                self.__pop_tokens(3)
+        else:
+            upper_bound = None
+            self.__pop_tokens(1)
+
+        return LetterSpec(lower_bound, upper_bound)
+
+    @_add_rule_position
+    @_with_backtracking
+    def implements_directive(self) -> Optional[ImplementsDirective]:
+        if self.__pop_token() != "Implements":
+            return None
+
+        self.BLANK()
+        class_type = self.defined_type_expression()
+        if class_type is None:
+            raise self.__craft_error("Implements directive needs a valid class")
+
+        return ImplementsDirective(VIRTUAL_POSITION, class_type)
+
+    # Module declarations
+
+    def class_declarations(self) -> Tuple[ClassDeclaration, ...]:
+        return tuple([])
+
+    def procedural_declarations(self) -> Tuple[ProceduralDeclaration, ...]:
+        return tuple([])
 
     # Literals
 

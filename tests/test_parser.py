@@ -1,3 +1,5 @@
+from pprint import pprint  # noqa: F401
+
 from nose.tools import assert_equals, assert_raises
 
 from emu.abstract_syntax_tree import Literal, Name
@@ -16,7 +18,7 @@ from emu.lexer import Lexer
 from emu.parser import Parser
 from emu.utils import to_dict
 
-from .test import assert_result, export_result, load_source
+from .test import assert_result, export_result, load_source  # noqa: F401
 
 
 def test_api():
@@ -87,14 +89,11 @@ def test_module():
         code = load_source(test_name + ".vbs")
         module = Parser(Lexer(code)).module()
 
-        export_result(test_name, to_dict(module, excluded_fields={"position"}))
         assert_result(test_name, to_dict(module, excluded_fields={"position"}))
 
 
 def test_module_exp():
     code = """Attribute VB_Name = "Zbop"
-Attribute VB_Globalnamespace = False
-Attribute VB_Exposed = True
     """
     lexer = Lexer(code)
     parser = Parser(lexer)
@@ -109,8 +108,6 @@ Attribute VB_Exposed = True
         import ipdb
 
         ipdb.set_trace()
-
-    from pprint import pprint
 
     pprint(to_dict(module, excluded_fields={"position"}))
 
