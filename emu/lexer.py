@@ -81,6 +81,19 @@ class Token(str):
 
         return self.lower() == token.lower()
 
+    def has_prefix(self, prefix: str) -> bool:
+        """
+        Check if a token contains a prefix, using case-insensitive comparison.
+
+        Returns:
+            ``True`` if the token contains ``prefix``.
+
+        Arguments:
+          prefix: String that the token can contain. Note: it can be a
+          :py:class:`Token`.
+        """
+        return self.lower().startswith(prefix.lower())
+
     def __ne__(self, token: object) -> bool:
         """Lowercase extended comparison
 
