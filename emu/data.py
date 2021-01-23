@@ -150,6 +150,9 @@ class LongLong(Value):
             raise ValueError(msg)
 
 
+LongPtr = LongLong
+
+
 @dataclass(frozen=True)
 class ObjectReference(Value):
     value: Optional["Object"] = None  # Empty means nothing
